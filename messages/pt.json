@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Motionshelf · Componentes React animados para sites que vendem",
-    "description": "Componentes React animados que você instala como código: notificação de pagamento, conversa no WhatsApp, pino no mapa, resultado de busca e mais."
+    "description": "Componentes React animados que você instala como código: notificação de pagamento, fluxo de conversa, pino no mapa, resultado de busca e mais."
   },
   "nav": {
     "components": "Componentes",
@@ -15,6 +15,53 @@
     "subtitle": "Componentes animados para sites que vendem. React, Tailwind e GSAP, instalados como código seu.",
     "browse": "Ver componentes",
     "install": "Instalar"
+  },
+  "home": {
+    "installTitle": "Instale qualquer componente com um comando",
+    "installText": "Cada componente é publicado num registry do shadcn. O arquivo entra no seu projeto, na sua stack."
+  },
+  "components": {
+    "title": "Componentes",
+    "intro": "Cada componente tem preview ao vivo, o código-fonte, o comando de instalação e as props. Copie o arquivo para o seu projeto e mude o que precisar.",
+    "all": "Todos os componentes"
+  },
+  "component": {
+    "preview": "Preview",
+    "code": "Código",
+    "replay": "Replay",
+    "install": "Instalar",
+    "installNote": "Copia o arquivo para o seu projeto. Precisa de React 19, Tailwind CSS v4 e GSAP (instalado como dependência).",
+    "props": "Props",
+    "dependencies": "Dependências",
+    "onThisPage": "Nesta página",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "name": "Nome",
+    "type": "Tipo",
+    "default": "Padrão",
+    "description": "Descrição"
+  },
+  "search": {
+    "title": "Buscar componentes",
+    "placeholder": "Buscar componentes…",
+    "empty": "Nenhum componente encontrado."
+  },
+  "docs": {
+    "installTitle": "Instalação",
+    "intro": "Os componentes da Motionshelf são publicados num registry do shadcn. Um comando copia o componente para o seu projeto, para ele rodar na sua configuração de Tailwind e React.",
+    "requirementsTitle": "Requisitos",
+    "req1": "React 19 com Next.js ou Vite.",
+    "req2": "Tailwind CSS v4.",
+    "req3": "A CLI do shadcn, rodada com npx (sem instalação global).",
+    "depsTitle": "1. Instale as dependências",
+    "depsText": "Cada componente lista as próprias dependências. A maioria usa GSAP:",
+    "addTitle": "2. Adicione um componente",
+    "addText": "Copie o comando da página do componente. Por exemplo:",
+    "useTitle": "3. Use",
+    "useText": "Importe a partir da pasta onde a CLI gravou e depois renderize:",
+    "licenseTitle": "Licença e créditos",
+    "licenseText": "Os componentes têm licença MIT. O fundo Faulty Terminal deste site vem do React Bits (MIT + Commons Clause) e não faz parte do registry.",
+    "browseLink": "Ver componentes →"
   },
   "footer": {
     "license": "Componentes sob a licença MIT.",

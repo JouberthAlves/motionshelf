@@ -16,6 +16,53 @@
     "browse": "Browse components",
     "install": "Install"
   },
+  "home": {
+    "installTitle": "Install any component with one command",
+    "installText": "Every component is published to a shadcn registry. The file lands in your project, on your own stack."
+  },
+  "components": {
+    "title": "Components",
+    "intro": "Each component has a live preview, the source code, the install command and its props. Copy the file into your project and change whatever you need.",
+    "all": "All components"
+  },
+  "component": {
+    "preview": "Preview",
+    "code": "Code",
+    "replay": "Replay",
+    "install": "Install",
+    "installNote": "Copies the file into your project. Requires React 19, Tailwind CSS v4 and GSAP (installed as a dependency).",
+    "props": "Props",
+    "dependencies": "Dependencies",
+    "onThisPage": "On this page",
+    "copy": "Copy",
+    "copied": "Copied",
+    "name": "Name",
+    "type": "Type",
+    "default": "Default",
+    "description": "Description"
+  },
+  "search": {
+    "title": "Search components",
+    "placeholder": "Search components…",
+    "empty": "No components found."
+  },
+  "docs": {
+    "installTitle": "Installation",
+    "intro": "Motionshelf components are published to a shadcn registry. One command copies the component into your project, so it runs on your own Tailwind and React setup.",
+    "requirementsTitle": "Requirements",
+    "req1": "React 19 with Next.js or Vite.",
+    "req2": "Tailwind CSS v4.",
+    "req3": "The shadcn CLI, run with npx (no global install).",
+    "depsTitle": "1. Install the dependencies",
+    "depsText": "Each component lists its own dependencies. Most use GSAP:",
+    "addTitle": "2. Add a component",
+    "addText": "Copy the command from the component page. For example:",
+    "useTitle": "3. Use it",
+    "useText": "Import it from the folder the CLI wrote to, then render it:",
+    "licenseTitle": "License and credits",
+    "licenseText": "Components are MIT licensed. The Faulty Terminal background on this site comes from React Bits (MIT + Commons Clause) and is not part of the registry.",
+    "browseLink": "Browse components →"
+  },
   "footer": {
     "license": "Components released under the MIT license.",
     "credits": "Background: Faulty Terminal from React Bits (MIT + Commons Clause), used as decoration only.",

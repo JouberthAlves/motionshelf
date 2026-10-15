@@ -1,0 +1,118 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "motionshelf",
+  "homepage": "https://motionshelf-pi.vercel.app",
+  "items": [
+    {
+      "name": "title-reveal",
+      "type": "registry:component",
+      "title": "Title Reveal",
+      "description": "Each word rises in turn, then a marker draws under the key word.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/title-reveal/title-reveal.tsx", "type": "registry:component", "target": "components/motionshelf/title-reveal.tsx" }
+      ]
+    },
+    {
+      "name": "rotating-word",
+      "type": "registry:component",
+      "title": "Rotating Word",
+      "description": "One sentence, one word that keeps changing.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/rotating-word/rotating-word.tsx", "type": "registry:component", "target": "components/motionshelf/rotating-word.tsx" }
+      ]
+    },
+    {
+      "name": "before-after-text",
+      "type": "registry:component",
+      "title": "Before and After Text",
+      "description": "The old way is crossed out and the new way takes its place.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/before-after-text/before-after-text.tsx", "type": "registry:component", "target": "components/motionshelf/before-after-text.tsx" }
+      ]
+    },
+    {
+      "name": "chat-flow",
+      "type": "registry:component",
+      "title": "Chat Flow",
+      "description": "From a button to a chat: picks, a sent message, typing dots and a reply.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/chat-flow/chat-flow.tsx", "type": "registry:component", "target": "components/motionshelf/chat-flow.tsx" }
+      ]
+    },
+    {
+      "name": "question-typer",
+      "type": "registry:component",
+      "title": "Question Typer",
+      "description": "The questions visitors type, one after another, with the answer and a call to action.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/question-typer/question-typer.tsx", "type": "registry:component", "target": "components/motionshelf/question-typer.tsx" }
+      ]
+    },
+    {
+      "name": "appointment-reminder",
+      "type": "registry:component",
+      "title": "Appointment Reminder",
+      "description": "A reminder with buttons: the customer taps Confirm and the confirmation comes back.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/appointment-reminder/appointment-reminder.tsx", "type": "registry:component", "target": "components/motionshelf/appointment-reminder.tsx" }
+      ]
+    },
+    {
+      "name": "pix-notification",
+      "type": "registry:component",
+      "title": "Pix Notification",
+      "description": "A payment lands on the lock screen, the app opens and the amount counts up.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/pix-notification/pix-notification.tsx", "type": "registry:component", "target": "components/motionshelf/pix-notification.tsx" }
+      ]
+    },
+    {
+      "name": "search-ad",
+      "type": "registry:component",
+      "title": "Search Ad",
+      "description": "A search types out, the results show up, and the sponsored result is highlighted.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/search-ad/search-ad.tsx", "type": "registry:component", "target": "components/motionshelf/search-ad.tsx" }
+      ]
+    },
+    {
+      "name": "map-pin-drop",
+      "type": "registry:component",
+      "title": "Map Pin Drop",
+      "description": "A pin drops on the map, bounces, and the address card slides up.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/map-pin-drop/map-pin-drop.tsx", "type": "registry:component", "target": "components/motionshelf/map-pin-drop.tsx" }
+      ]
+    },
+    {
+      "name": "slot-booking",
+      "type": "registry:component",
+      "title": "Slot Booking",
+      "description": "A time slot fills with color and the booking is confirmed.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/slot-booking/slot-booking.tsx", "type": "registry:component", "target": "components/motionshelf/slot-booking.tsx" }
+      ]
+    },
+    {
+      "name": "sales-funnel",
+      "type": "registry:component",
+      "title": "Sales Funnel",
+      "description": "A sales funnel as a sieve: people drop out at each stage and only the booked ones reach the bin.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/sales-funnel/sales-funnel.tsx", "type": "registry:component", "target": "components/motionshelf/sales-funnel.tsx" },
+        { "path": "registry/motionshelf/sales-funnel/sales-funnel-figure.ts", "type": "registry:lib", "target": "components/motionshelf/sales-funnel-figure.ts" }
+      ]
+    }
+  ]
+}
