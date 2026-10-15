@@ -200,9 +200,9 @@ function Laptop({ screen }: { screen: ReactNode }) {
   const LW = 548 * K; // tampa
   const LH = 361 * K;
   const LT = 0.22;
-  // Base um pouco mais estreita que a tampa na geometria: com 12,4 a borda de trás (na dobradiça) sai
-  // na largura da tampa e a da frente, mais perto da câmera, só um pouco maior.
-  const BW = 12.4;
+  // Base um pouco mais estreita que a tampa na geometria (a tampa tem 13,7): com a perspectiva, a borda
+  // da frente, mais perto da câmera, aparece um pouco maior que a tampa.
+  const BW = 13.2;
   const BL = 9.6; // profundidade da base (de trás para a frente)
   const BT = 0.36;
   const lid = useMemo(() => slab(LW, LH, 18 * K, LT, 0.05), [LW, LH]);
