@@ -5,6 +5,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { CATEGORIES, ENTRIES, type Locale } from "@/lib/catalog";
+import { siteUrl } from "@/lib/seo";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { CommandMenu, type SearchItem } from "@/components/site/CommandMenu";
@@ -22,9 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "meta" });
   return {
+    metadataBase: new URL(siteUrl),
     title: { default: t("title"), template: "%s · Motionshelf" },
     description: t("description"),
-    alternates: { languages: { en: "/en", pt: "/pt" } },
   };
 }
 

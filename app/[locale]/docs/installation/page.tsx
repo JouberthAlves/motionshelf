@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { installCommand } from "@/lib/code";
 import { CopyCommand } from "@/components/site/CopyCommand";
+import type { Locale } from "@/lib/catalog";
+import { pageMetadata } from "@/lib/seo";
 
 const USAGE = `import PixNotification from "@/components/motionshelf/pix-notification";
 
@@ -10,8 +12,10 @@ export default function Page() {
   return <PixNotification amount={150} sender="Alex M." />;
 }`;
 
-export async function generateMetadata(): Promise<Metadata> {
-  return { title: "Installation" };
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "docs" });
+  return pageMetadata({ locale: locale as Locale, path: "/docs/installation", title: t("installTitle"), description: t("intro") });
 }
 
 export default async function InstallationPage({ params }: { params: Promise<{ locale: string }> }) {

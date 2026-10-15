@@ -187,7 +187,7 @@ export default function ChatFlow({
               className="relative max-w-[82%] self-end rounded-lg bg-[#d7f7c9] px-2.5 pt-2 pb-4 text-[13px] leading-snug text-[#111b16]"
             >
               <span data-typed className="whitespace-pre-line" />
-              <span className="absolute right-2 bottom-0.5 flex items-center gap-0.5 text-[10px] text-[#6b7b72]">
+              <span className="absolute right-2 bottom-0.5 flex items-center gap-0.5 text-[10px] text-[#56645c]">
                 <span>{time}</span>
                 <span className="relative inline-block w-4 text-[11px]">
                   <span>✓✓</span>
@@ -207,11 +207,11 @@ export default function ChatFlow({
               className="relative max-w-[82%] self-start rounded-lg bg-white px-2.5 pt-2 pb-4 text-[13px] leading-snug text-[#111b16]"
             >
               {reply}
-              <span className="absolute right-2 bottom-0.5 text-[10px] text-[#6b7b72]">{time}</span>
+              <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">{time}</span>
             </div>
           </div>
 
-          <div className="absolute inset-x-2 bottom-2 flex h-[42px] items-center rounded-3xl bg-white px-3.5 text-[13px] text-[#8a948e]">
+          <div className="absolute inset-x-2 bottom-2 flex h-[42px] items-center rounded-3xl bg-white px-3.5 text-[13px] text-[#69736d]">
             Message
           </div>
         </div>

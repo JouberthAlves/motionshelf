@@ -105,7 +105,7 @@ export default function AppointmentReminder({
             className="relative max-w-[84%] self-start rounded-lg bg-white px-2.5 pt-2 pb-[17px] text-[13px] leading-snug"
           >
             Hi {name}! Reminder: your appointment is {day} at {time}.
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-neutral-500">9:00</span>
+            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:00</span>
           </div>
           <div data-acts className="flex w-[84%] flex-col gap-1 self-start overflow-hidden">
             <span
@@ -127,18 +127,18 @@ export default function AppointmentReminder({
             className="relative max-w-[84%] self-end rounded-lg bg-[#d7f7c9] px-2.5 pt-2 pb-[17px] text-[13px]"
           >
             Confirm
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-neutral-500">9:04 ✓✓</span>
+            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:04 ✓✓</span>
           </div>
           <div
             data-m3
             className="relative max-w-[84%] self-start rounded-lg bg-white px-2.5 pt-2 pb-[17px] text-[13px] leading-snug"
           >
             Confirmed! See you {day} at {time}. Please arrive 10 minutes early.
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-neutral-500">9:04</span>
+            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:04</span>
           </div>
         </div>
 
-        <div className="absolute inset-x-2 bottom-2 flex h-[42px] items-center rounded-3xl bg-white px-3.5 text-[13px] text-neutral-400">
+        <div className="absolute inset-x-2 bottom-2 flex h-[42px] items-center rounded-3xl bg-white px-3.5 text-[13px] text-[#69736d]">
           Message
         </div>
 

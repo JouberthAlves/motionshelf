@@ -105,7 +105,7 @@ export default function MapPinDrop({
       >
         <div className="min-w-0">
           <b className="block text-sm">{title}</b>
-          <small className="block truncate text-xs text-neutral-500">{address}</small>
+          <small className="block truncate text-xs text-neutral-600">{address}</small>
         </div>
         <span
           data-btn

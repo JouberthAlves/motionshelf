@@ -39,6 +39,8 @@ export interface FaultyTerminalProps extends Omit<HTMLAttributes<HTMLDivElement>
   variation?: number;
   lightMode?: boolean;
   dpr?: number;
+  /** Motionshelf: teto de quadros por segundo (0 = sem teto). */
+  maxFps?: number;
   className?: string;
   style?: CSSProperties;
 }
@@ -73,6 +75,7 @@ type Settings = {
   variation?: number;
   lightMode: boolean;
   dpr?: number;
+  maxFps: number;
 };
 
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
@@ -599,6 +602,7 @@ export default function FaultyTerminal({
   variation,
   lightMode = false,
   dpr,
+  maxFps = 0,
   className = '',
   style,
   ...rest
@@ -635,7 +639,8 @@ export default function FaultyTerminal({
     clickSeconds: CLICK_SECONDS[clickEffect] ?? 1,
     variation,
     lightMode,
-    dpr
+    dpr,
+    maxFps
   };
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
@@ -698,6 +703,10 @@ export default function FaultyTerminal({
     let last = 0;
     let visible = true;
     let quiet = 0;
+    // Motionshelf: vigia de quadros. Se 5 quadros seguidos passam de 120 ms, o aparelho não dá
+    // conta do shader: o fundo congela no último quadro em vez de travar a página.
+    let slow = 0;
+    let stalled = false;
 
     const layoutCells = (s: Settings) => {
       const reach = 1 + Math.max(0, s.curvature) * 2;
@@ -818,8 +827,22 @@ export default function FaultyTerminal({
 
     const frame = (now: number) => {
       raf = 0;
-      if (!visible || document.hidden) return;
+      if (!visible || document.hidden || stalled) return;
       const s = settingsRef.current;
+      // Teto de fps: pula o quadro sem desenhar até passar o intervalo mínimo.
+      if (s.maxFps > 0 && last && now - last < 1000 / s.maxFps - 1) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
+      slow = last && now - last > 120 ? slow + 1 : 0;
+      if (slow >= 5) {
+        // Congela num quadro completo: termina a animação de entrada antes do último desenho.
+        stalled = true;
+        introClock = 1;
+        stepCells(s, 0);
+        draw();
+        return;
+      }
       const dt = last ? clamp((now - last) / 1000, 0.001, 1 / 20) : 1 / 60;
       last = now;
       clock += dt;
@@ -848,7 +871,7 @@ export default function FaultyTerminal({
 
     function wake() {
       quiet = 0;
-      if (!raf && visible && !document.hidden) {
+      if (!raf && visible && !document.hidden && !stalled) {
         last = 0;
         raf = requestAnimationFrame(frame);
       }

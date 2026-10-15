@@ -10,6 +10,7 @@ import { CodeTabs } from "@/components/site/CodeTabs";
 import { CopyCommand } from "@/components/site/CopyCommand";
 import { Preview } from "@/components/site/Preview";
 import { Link } from "@/i18n/navigation";
+import { pageMetadata } from "@/lib/seo";
 
 type Params = Promise<{ locale: string; slug: string }>;
 
@@ -21,7 +22,12 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { locale, slug } = await params;
   const entry = bySlug(slug);
   if (!entry) return {};
-  return { title: entry.name, description: entry.summary[locale as Locale] };
+  return pageMetadata({
+    locale: locale as Locale,
+    path: `/components/${slug}`,
+    title: entry.name,
+    description: entry.summary[locale as Locale],
+  });
 }
 
 export default async function ComponentPage({ params }: { params: Params }) {

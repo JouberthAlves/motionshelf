@@ -1,6 +1,14 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/catalog";
 import { Shelves } from "@/components/site/Shelf";
+import { pageMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "components" });
+  return pageMetadata({ locale: locale as Locale, path: "/components", title: t("title"), description: t("intro") });
+}
 
 export default async function ComponentsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

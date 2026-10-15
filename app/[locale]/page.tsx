@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/lib/catalog";
@@ -6,6 +7,14 @@ import { TerminalBackground } from "@/components/site/TerminalBackground";
 import { Pedestals } from "@/components/site/Pedestals";
 import { Shelves } from "@/components/site/Shelf";
 import { CopyCommand } from "@/components/site/CopyCommand";
+import { pageMetadata } from "@/lib/seo";
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "meta" });
+  const meta = pageMetadata({ locale: locale as Locale, path: "", description: t("description") });
+  return { ...meta, openGraph: { ...meta.openGraph, title: t("title") } };
+}
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
