@@ -44,15 +44,18 @@ export default function AppointmentReminder({
       const m2 = q("[data-m2]")[0];
       const m3 = q("[data-m3]")[0];
 
-      // Centro do botão Confirmar, medido na tela (o cursor tem 22px).
+      // Centro do botão Confirmar, medido na tela (o cursor tem 22px). k desfaz a escala de quem
+      // mostra o componente reduzido: o retângulo medido vem escalado, o left/top do cursor não.
       const aim = () => {
         const a = screen.getBoundingClientRect();
         const b = confirm.getBoundingClientRect();
-        return { x: b.left - a.left + b.width / 2 - 11, y: b.top - a.top + b.height / 2 - 11 };
+        const k = a.width ? screen.offsetWidth / a.width : 1;
+        return { x: (b.left - a.left + b.width / 2) * k - 11, y: (b.top - a.top + b.height / 2) * k - 11 };
       };
 
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.4 });
       tl.set([m1, acts, m2, m3], { autoAlpha: 0, y: 12 })
+        .set([m2, m3], { display: "none" })
         .set(acts, { clearProps: "height" })
         .set(cursor, { autoAlpha: 0, left: 180, top: 470 })
         .set(confirm, { backgroundColor: "#ffffff" })
@@ -64,7 +67,9 @@ export default function AppointmentReminder({
         .to(confirm, { backgroundColor: "#e3eefa", duration: 0.15 }, 2.4)
         .to(cursor, { autoAlpha: 0, duration: 0.25 }, 2.7)
         .to(acts, { autoAlpha: 0, height: 0, duration: 0.3 }, 2.8)
+        .set(m2, { display: "block" }, 2.8)
         .to(m2, { autoAlpha: 1, y: 0, duration: 0.3 }, 2.8)
+        .set(m3, { display: "block" }, 3.6)
         .to(m3, { autoAlpha: 1, y: 0, duration: 0.4, ease: "back.out(1.5)" }, 3.6)
         .to({}, { duration: 1.6 });
 
@@ -99,13 +104,13 @@ export default function AppointmentReminder({
           </div>
         </div>
 
-        <div className="absolute inset-x-2.5 bottom-[62px] flex flex-col gap-1.5">
+        <div className="absolute inset-x-2 bottom-[60px] flex flex-col gap-1">
           <div
             data-m1
-            className="relative max-w-[84%] self-start rounded-lg bg-white px-2.5 pt-2 pb-[17px] text-[13px] leading-snug"
+            className="relative max-w-[84%] self-start rounded-lg bg-white px-2 pt-1.5 pb-3.5 text-[13px] leading-snug"
           >
             Hi {name}! Reminder: your appointment is {day} at {time}.
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:00</span>
+            <span className="absolute right-1.5 bottom-0.5 text-[10px] text-[#56645c]">9:00</span>
           </div>
           <div data-acts className="flex w-[84%] flex-col gap-1 self-start overflow-hidden">
             <span
@@ -124,17 +129,17 @@ export default function AppointmentReminder({
           </div>
           <div
             data-m2
-            className="relative max-w-[84%] self-end rounded-lg bg-[#d7f7c9] px-2.5 pt-2 pb-[17px] text-[13px]"
+            className="relative max-w-[84%] self-end rounded-lg bg-[#d7f7c9] px-2 pt-1.5 pb-3.5 text-[13px]"
           >
             Confirm
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:04 ✓✓</span>
+            <span className="absolute right-1.5 bottom-0.5 text-[10px] text-[#56645c]">9:04 ✓✓</span>
           </div>
           <div
             data-m3
-            className="relative max-w-[84%] self-start rounded-lg bg-white px-2.5 pt-2 pb-[17px] text-[13px] leading-snug"
+            className="relative max-w-[84%] self-start rounded-lg bg-white px-2 pt-1.5 pb-3.5 text-[13px] leading-snug"
           >
             Confirmed! See you {day} at {time}. Please arrive 10 minutes early.
-            <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">9:04</span>
+            <span className="absolute right-1.5 bottom-0.5 text-[10px] text-[#56645c]">9:04</span>
           </div>
         </div>
 

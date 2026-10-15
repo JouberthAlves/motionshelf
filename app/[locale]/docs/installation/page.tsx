@@ -26,9 +26,9 @@ export default async function InstallationPage({ params }: { params: Promise<{ l
   const labels = { copy: c("copy"), copied: c("copied") };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-16 pb-24 sm:px-6">
+    <div className="@container mx-auto max-w-3xl px-4 pt-16 pb-24 sm:px-6">
       <p className="font-mono text-xs text-led-soft">Docs</p>
-      <h1 className="display-wide mt-2 text-4xl text-text sm:text-5xl">{t("installTitle")}</h1>
+      <h1 className="display-wide mt-2 text-[clamp(1.75rem,9cqi,3rem)] text-text">{t("installTitle")}</h1>
       <p className="mt-4 text-muted">{t("intro")}</p>
 
       <h2 className="display-wide mt-12 text-xl text-text">{t("requirementsTitle")}</h2>

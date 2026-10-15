@@ -34,11 +34,16 @@ export default function RotatingWord({
     () => {
       const q = gsap.utils.selector(root);
       const track = q("[data-track]")[0];
+      const slot = q("[data-slot]")[0] as HTMLElement;
       const n = words.length;
+      // A largura do espaço acompanha a palavra da vez (em em, para seguir o tamanho da fonte).
+      const size = parseFloat(getComputedStyle(slot).fontSize) || 16;
+      const widths = (q("[data-word]") as HTMLElement[]).map((el) => `${el.offsetWidth / size}em`);
       const tl = gsap.timeline({ repeat: loop ? -1 : 0 });
-      tl.set(track, { yPercent: 0 });
+      tl.set(track, { yPercent: 0 }).set(slot, { width: widths[0] });
       for (let i = 1; i <= n; i++) {
         tl.to(track, { yPercent: -(100 / (n + 1)) * i, duration: 0.45, ease: "power3.inOut" }, i * 1.3);
+        tl.to(slot, { width: widths[i], duration: 0.45, ease: "power3.inOut" }, i * 1.3);
       }
       tl.set(track, { yPercent: 0 }, n * 1.3 + 0.5).to({}, { duration: 1.2 });
 
@@ -50,14 +55,14 @@ export default function RotatingWord({
   return (
     <div
       ref={root}
-      className={`text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.15] font-bold tracking-tight text-neutral-900 ${className}`}
+      className={`text-[clamp(1.75rem,5vw,2.75rem)] leading-[1.15] font-bold tracking-tight ${className}`}
     >
       <p>
         {prefix}{" "}
-        <span className="inline-block h-[1.15em] overflow-hidden align-bottom" style={{ color: accent }}>
+        <span data-slot className="inline-block h-[1.15em] overflow-hidden align-bottom" style={{ color: accent }}>
           <span data-track className="block">
             {[...words, words[0]].map((word, i) => (
-              <span key={i} className="block h-[1.15em] leading-[1.15em] whitespace-nowrap">
+              <span key={i} data-word className="block h-[1.15em] w-max leading-[1.15em] whitespace-nowrap">
                 {word}
               </span>
             ))}

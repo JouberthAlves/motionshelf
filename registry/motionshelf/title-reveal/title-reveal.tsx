@@ -6,7 +6,6 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
-const INK = "#171717";
 
 export type TitleRevealProps = {
   /** One string per line. Words are separated by spaces. */
@@ -35,10 +34,12 @@ export default function TitleReveal({
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
+      // O texto herda a cor da página; a palavra destacada parte dessa cor e vira branca sobre o marcador.
+      const ink = root.current ? getComputedStyle(root.current).color : "currentColor";
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.6 });
       tl.set(q("[data-word]"), { yPercent: 110 })
         .set(q("[data-mark]"), { scaleX: 0 })
-        .set(q("[data-hl]"), { color: INK })
+        .set(q("[data-hl]"), { color: ink })
         .set(q("[data-sub]"), { autoAlpha: 0, y: 8 })
         .to(q("[data-word]"), { yPercent: 0, duration: 0.6, ease: "power3.out", stagger: 0.09 }, 0.2)
         .to(q("[data-mark]"), { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 1.0)
@@ -52,7 +53,7 @@ export default function TitleReveal({
   );
 
   return (
-    <div ref={root} className={`w-full max-w-xl px-6 py-8 text-[${INK}] ${className}`} style={{ color: INK }}>
+    <div ref={root} className={`w-full max-w-xl px-6 py-8 ${className}`}>
       {lines.map((line, row) => (
         <div
           key={row}
@@ -82,7 +83,7 @@ export default function TitleReveal({
           })}
         </div>
       ))}
-      <p data-sub className="mt-4 text-[15px] text-neutral-600">
+      <p data-sub className="mt-4 text-[15px] text-current/70">
         {subtitle}
       </p>
     </div>

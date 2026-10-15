@@ -71,11 +71,13 @@ export default function ChatFlow({
       const blue = q("[data-blue]")[0];
       const counter = { n: 0 };
 
-      // Centro do alvo, medido na tela do celular (o cursor tem 22px).
+      // Centro do alvo, medido na tela do celular (o cursor tem 22px). k desfaz a escala de quem
+      // mostra o componente reduzido: o retângulo medido vem escalado, o left/top do cursor não.
       const aim = (el: HTMLElement) => {
         const a = screen.getBoundingClientRect();
         const b = el.getBoundingClientRect();
-        return { x: b.left - a.left + b.width / 2 - 11, y: b.top - a.top + b.height / 2 - 11 };
+        const k = a.width ? screen.offsetWidth / a.width : 1;
+        return { x: (b.left - a.left + b.width / 2) * k - 11, y: (b.top - a.top + b.height / 2) * k - 11 };
       };
       const write = () => {
         typedEl.textContent = message.slice(0, Math.round(counter.n));
@@ -84,7 +86,7 @@ export default function ChatFlow({
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.4 });
       tl.set(chat, { autoAlpha: 0, x: 40 })
         .set(landing, { autoAlpha: 1 })
-        .set([out, typing, replyEl], { autoAlpha: 0, y: 10 })
+        .set([out, typing, replyEl], { autoAlpha: 0, y: 10, display: "none" })
         .set(blue, { opacity: 0 })
         .set([...chips, ...slotChips], { backgroundColor: "rgba(0,0,0,0)", color: INK })
         .set(cursor, { left: 150, top: 430, autoAlpha: 1 })
@@ -103,19 +105,23 @@ export default function ChatFlow({
         .to(cta, { scale: 0.94, duration: 0.1, yoyo: true, repeat: 1 }, 2.6)
         .to(cursor, { autoAlpha: 0, duration: 0.2 }, 2.8)
         .to(chat, { autoAlpha: 1, x: 0, duration: 0.4, ease: "power2.out" }, 2.85)
+        .set(out, { display: "block" }, 3.2)
         .to(out, { autoAlpha: 1, y: 0, duration: 0.3 }, 3.2)
         .to(counter, { n: message.length, duration: 1.4, ease: "none", onUpdate: write }, 3.2)
         .to(blue, { opacity: 1, duration: 0.2 }, 5.0)
         .add(() => {
           statusEl.textContent = "typing...";
         }, 5.2)
+        .set(typing, { display: "flex" }, 5.2)
         .to(typing, { autoAlpha: 1, y: 0, duration: 0.25 }, 5.2)
         .to(dots, { y: -4, duration: 0.25, stagger: 0.12, yoyo: true, repeat: 3 }, 5.3)
         .to(typing, { autoAlpha: 0, duration: 0.15 }, 6.6)
+        .set(typing, { display: "none" }, 6.75)
+        .set(replyEl, { display: "block" }, 6.75)
         .add(() => {
           statusEl.textContent = "online";
         }, 6.6)
-        .to(replyEl, { autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 6.65)
+        .to(replyEl, { autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, 6.75)
         .to({}, { duration: 1.6 });
 
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) tl.progress(1).pause();
@@ -181,13 +187,13 @@ export default function ChatFlow({
             </div>
           </div>
 
-          <div className="absolute inset-x-2.5 bottom-[62px] flex flex-col gap-1.5">
+          <div className="absolute inset-x-2 bottom-[60px] flex flex-col gap-1">
             <div
               data-out
-              className="relative max-w-[82%] self-end rounded-lg bg-[#d7f7c9] px-2.5 pt-2 pb-4 text-[13px] leading-snug text-[#111b16]"
+              className="relative max-w-[82%] self-end rounded-lg bg-[#d7f7c9] px-2 pt-1.5 pb-3.5 text-[13px] leading-snug text-[#111b16]"
             >
               <span data-typed className="whitespace-pre-line" />
-              <span className="absolute right-2 bottom-0.5 flex items-center gap-0.5 text-[10px] text-[#56645c]">
+              <span className="absolute right-1.5 bottom-0.5 flex items-center gap-0.5 text-[10px] text-[#56645c]">
                 <span>{time}</span>
                 <span className="relative inline-block w-4 text-[11px]">
                   <span>✓✓</span>
@@ -197,17 +203,17 @@ export default function ChatFlow({
                 </span>
               </span>
             </div>
-            <div data-typing className="flex gap-1 self-start rounded-lg bg-white px-3 py-2.5">
+            <div data-typing className="hidden gap-1 self-start rounded-lg bg-white px-3 py-2.5">
               <span data-dot className="h-1.5 w-1.5 rounded-full bg-[#9aa69f]" />
               <span data-dot className="h-1.5 w-1.5 rounded-full bg-[#9aa69f]" />
               <span data-dot className="h-1.5 w-1.5 rounded-full bg-[#9aa69f]" />
             </div>
             <div
               data-reply
-              className="relative max-w-[82%] self-start rounded-lg bg-white px-2.5 pt-2 pb-4 text-[13px] leading-snug text-[#111b16]"
+              className="relative max-w-[82%] self-start rounded-lg bg-white px-2 pt-1.5 pb-3.5 text-[13px] leading-snug text-[#111b16]"
             >
               {reply}
-              <span className="absolute right-2 bottom-0.5 text-[10px] text-[#56645c]">{time}</span>
+              <span className="absolute right-1.5 bottom-0.5 text-[10px] text-[#56645c]">{time}</span>
             </div>
           </div>
 

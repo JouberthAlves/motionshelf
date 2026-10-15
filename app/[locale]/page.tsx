@@ -26,7 +26,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
-      <section className="relative isolate overflow-hidden">
+      <section className="relative isolate -mt-16 overflow-hidden pt-16">
         <TerminalBackground />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-20 pb-14 text-center sm:px-6 sm:pt-28">
           <h1 className="display-wide max-w-4xl text-[clamp(2.4rem,7vw,5.4rem)] text-balance text-text">

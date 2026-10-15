@@ -30,7 +30,7 @@ export const CATEGORIES: { id: CategoryId; name: Text }[] = [
   { id: "commerce", name: { en: "Commerce", pt: "Comércio" } },
   { id: "location", name: { en: "Location", pt: "Localização" } },
   { id: "scheduling", name: { en: "Scheduling", pt: "Agenda" } },
-  { id: "anatomy", name: { en: "Anatomy", pt: "Anatomy" } },
+  { id: "anatomy", name: { en: "Anatomy", pt: "Anatomia" } },
 ];
 
 const p = (name: string, type: string, def: string, en: string, pt: string): PropDoc => ({
@@ -133,15 +133,14 @@ export const ENTRIES: Entry[] = [
     category: "messages",
     code: "MSG-02",
     summary: {
-      en: "The questions visitors type, one after another, with the answer and a call to action.",
-      pt: "As perguntas dos visitantes, uma depois da outra, com a resposta e o botão.",
+      en: "Each question is typed out and its answer appears right under it, changing with every question.",
+      pt: "Cada pergunta é digitada e a resposta aparece logo abaixo, mudando a cada pergunta.",
     },
     dependencies: deps,
     props: [
-      p("questions", "string[]", "three example questions", "The questions typed one after another.", "As perguntas digitadas uma após a outra."),
-      p("answer", "string", '"These questions have answers…"', "Text shown once the first question is typed.", "Texto que aparece quando a primeira pergunta termina."),
-      p("cta", "string", '"Chat with us"', "Button label under the answer.", "Texto do botão embaixo da resposta."),
-      ACCENT("Accent of the bar and the button.", "Cor da barra e do botão."),
+      p("items", "{ question, answer }[]", "three example pairs", "Each question is typed out, then its answer appears under it.", "Cada pergunta é digitada e a resposta dela aparece embaixo."),
+      p("answerLabel", "string", '"Answer"', "Label above the answer.", "Rótulo acima da resposta."),
+      ACCENT("Accent of the bar and the answer mark.", "Cor da barra e da marca da resposta."),
       LOOP,
       CLASS,
     ],

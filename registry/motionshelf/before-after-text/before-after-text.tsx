@@ -56,14 +56,14 @@ export default function BeforeAfterText({
   );
 
   return (
-    <div ref={root} className={`w-full max-w-xl text-neutral-900 ${className}`}>
-      <p data-title className="mb-4 text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">
+    <div ref={root} className={`w-full max-w-xl ${className}`}>
+      <p data-title className="mb-4 text-xs font-semibold tracking-[0.14em] text-current/60 uppercase">
         {title}
       </p>
       <div className="flex flex-col gap-2.5">
         {rows.map((row, i) => (
           <div key={i} data-row className="relative h-11">
-            <span data-old className="absolute top-0 left-0 text-base leading-[44px] whitespace-nowrap text-neutral-500">
+            <span data-old className="absolute top-0 left-0 text-base leading-[44px] whitespace-nowrap text-current/60">
               {row.before}
               <i
                 data-strike

@@ -83,20 +83,21 @@ export default function MapPinDrop({
       ))}
       <div className="absolute -inset-x-5 -bottom-8 h-[90px] -rotate-6 bg-[#bcd3d6]" />
 
-      <div
-        data-ring
-        className="absolute top-[44%] left-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border-2"
-        style={{ borderColor: accent }}
-      />
-      <div
-        data-shadow
-        className="absolute top-[44%] left-1/2 h-[7px] w-[22px] -translate-x-1/2 -translate-y-[3px] rounded-full bg-black/25"
-      />
-      <div data-pin className="absolute top-[44%] left-1/2 h-[52px] w-10 -translate-x-1/2 -translate-y-[52px]">
-        <svg viewBox="0 0 40 52" className="block h-[52px] w-10" aria-hidden="true">
-          <path d="M20 51C20 51 3 31 3 19a17 17 0 0 1 34 0c0 12-17 32-17 32z" fill={accent} />
-          <circle cx="20" cy="19" r="6.5" fill="#ffffff" />
-        </svg>
+      {/* O ponto de pouso fica em top 44%. O posicionamento mora nos invólucros: o GSAP anima só o
+          elemento de dentro, porque o transform dele substitui o translate do próprio elemento. */}
+      <div className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div data-ring className="h-20 w-20 rounded-full border-2" style={{ borderColor: accent }} />
+      </div>
+      <div className="absolute top-[44%] left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div data-shadow className="h-[7px] w-[22px] rounded-full bg-black/25" />
+      </div>
+      <div className="absolute top-[calc(44%+2px)] left-1/2 -translate-x-1/2 -translate-y-full">
+        <div data-pin className="h-[52px] w-10">
+          <svg viewBox="0 0 40 52" className="block h-[52px] w-10" aria-hidden="true">
+            <path d="M20 51C20 51 3 31 3 19a17 17 0 0 1 34 0c0 12-17 32-17 32z" fill={accent} />
+            <circle cx="20" cy="19" r="6.5" fill="#ffffff" />
+          </svg>
+        </div>
       </div>
 
       <div

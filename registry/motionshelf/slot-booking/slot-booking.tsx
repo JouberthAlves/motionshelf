@@ -45,11 +45,13 @@ export default function SlotBooking({
       const pointer = q("[data-pointer]")[0];
       const bar = q("[data-toast]")[0];
 
-      // Centro do horário escolhido, em relação à caixa do componente.
+      // Centro do horário escolhido, em relação à caixa do componente. k desfaz a escala de quem
+      // mostra o componente reduzido: o retângulo medido vem escalado, o left/top do cursor não.
       const aim = () => {
         const a = el.getBoundingClientRect();
         const b = pick.getBoundingClientRect();
-        return { x: b.left - a.left + b.width / 2 - 10, y: b.top - a.top + b.height / 2 - 10 };
+        const k = a.width ? el.offsetWidth / a.width : 1;
+        return { x: (b.left - a.left + b.width / 2) * k - 10, y: (b.top - a.top + b.height / 2) * k - 10 };
       };
 
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.4 });

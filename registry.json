@@ -47,7 +47,7 @@
       "name": "question-typer",
       "type": "registry:component",
       "title": "Question Typer",
-      "description": "The questions visitors type, one after another, with the answer and a call to action.",
+      "description": "Each question is typed out and its answer appears right under it, changing with every question.",
       "dependencies": ["gsap", "@gsap/react"],
       "files": [
         { "path": "registry/motionshelf/question-typer/question-typer.tsx", "type": "registry:component", "target": "components/motionshelf/question-typer.tsx" }

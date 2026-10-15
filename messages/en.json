@@ -23,7 +23,16 @@
   "components": {
     "title": "Components",
     "intro": "Each component has a live preview, the source code, the install command and its props. Copy the file into your project and change whatever you need.",
-    "all": "All components"
+    "all": "All components",
+    "filter": "Filter components…",
+    "searchLabel": "Search components",
+    "category": "Category",
+    "getStarted": "Get started",
+    "introduction": "Introduction",
+    "installation": "Installation",
+    "categories": "Categories",
+    "empty": "No components match your search.",
+    "count": "{count} components"
   },
   "component": {
     "preview": "Preview",

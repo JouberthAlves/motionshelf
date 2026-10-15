@@ -23,7 +23,16 @@
   "components": {
     "title": "Componentes",
     "intro": "Cada componente tem preview ao vivo, o código-fonte, o comando de instalação e as props. Copie o arquivo para o seu projeto e mude o que precisar.",
-    "all": "Todos os componentes"
+    "all": "Todos os componentes",
+    "filter": "Filtrar componentes…",
+    "searchLabel": "Buscar componentes",
+    "category": "Categoria",
+    "getStarted": "Começar",
+    "introduction": "Introdução",
+    "installation": "Instalação",
+    "categories": "Categorias",
+    "empty": "Nenhum componente encontrado.",
+    "count": "{count} componentes"
   },
   "component": {
     "preview": "Preview",
