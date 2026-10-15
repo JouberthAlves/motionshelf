@@ -14,7 +14,7 @@ export function Preview({ slug, replayLabel, className }: { slug: string; replay
       <button
         type="button"
         onClick={() => setRun((n) => n + 1)}
-        className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-md border border-edge bg-ink/70 px-2.5 py-1.5 font-mono text-[11px] text-muted transition-colors hover:text-text"
+        className="absolute right-3 top-3 z-10 flex items-center gap-1.5 rounded-md border border-edge bg-ink/70 px-2.5 py-1.5 font-mono text-xs text-muted transition-colors hover:text-text"
       >
         <ArrowCounterClockwise size={14} />
         {replayLabel}

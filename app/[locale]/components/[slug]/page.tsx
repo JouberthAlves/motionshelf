@@ -9,6 +9,7 @@ import { PropsTable } from "@/components/site/PropsTable";
 import { CodeTabs } from "@/components/site/CodeTabs";
 import { CopyCommand } from "@/components/site/CopyCommand";
 import { Preview } from "@/components/site/Preview";
+import { Link } from "@/i18n/navigation";
 
 type Params = Promise<{ locale: string; slug: string }>;
 
@@ -39,12 +40,15 @@ export default async function ComponentPage({ params }: { params: Params }) {
     <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[200px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)_160px]">
       <Sidebar current={entry.slug} locale={loc} label={tc("all")} />
 
-      <article className="min-w-0 space-y-16">
+      <article className="@container min-w-0 space-y-16">
         <header>
+          <Link href="/components" className="mb-6 inline-block py-1 text-sm text-muted transition-colors hover:text-text md:hidden">
+            ← {tc("all")}
+          </Link>
           <p className="font-mono text-xs text-led-soft">
             {entry.code} · {category}
           </p>
-          <h1 className="display-wide mt-2 text-4xl text-text sm:text-5xl">{entry.name}</h1>
+          <h1 className="display-wide mt-2 text-[clamp(1.75rem,9cqi,3rem)] text-text">{entry.name}</h1>
           <p className="mt-3 max-w-2xl text-muted">{entry.summary[loc]}</p>
         </header>
 
@@ -90,7 +94,7 @@ export default async function ComponentPage({ params }: { params: Params }) {
 
       <aside className="hidden xl:block">
         <nav aria-label={t("onThisPage")} className="sticky top-24 space-y-2 text-sm">
-          <p className="font-mono text-[11px] tracking-[0.12em] text-muted uppercase">{t("onThisPage")}</p>
+          <p className="font-mono text-xs tracking-[0.12em] text-muted uppercase">{t("onThisPage")}</p>
           {(["preview", "install", "props", "dependencies"] as const).map((id) => (
             <a key={id} href={`#${id}`} className="block text-muted transition-colors hover:text-text">
               {t(id)}

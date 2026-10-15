@@ -24,7 +24,7 @@ export function PropsTable({
         <tbody>
           {props.map((prop) => (
             <tr key={prop.name} className="border-t border-edge align-top">
-              <td className="px-4 py-3 font-mono text-led-soft">{prop.name}</td>
+              <td className="px-4 py-3 font-mono text-text">{prop.name}</td>
               <td className="px-4 py-3 font-mono text-xs text-muted">{prop.type}</td>
               <td className="px-4 py-3 font-mono text-xs break-all text-muted">{prop.default}</td>
               <td className="px-4 py-3 text-muted">{prop.description[locale]}</td>

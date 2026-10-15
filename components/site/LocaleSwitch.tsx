@@ -9,15 +9,15 @@ export function LocaleSwitch() {
   const pathname = usePathname();
   const t = useTranslations("nav");
   return (
-    <nav aria-label={t("language")} className="flex items-center gap-1 font-mono text-[11px]">
+    <nav aria-label={t("language")} className="flex items-center font-mono text-xs">
       {(["en", "pt"] as const).map((code, i) => (
-        <span key={code} className="flex items-center gap-1">
+        <span key={code} className="flex items-center">
           {i > 0 && <span className="text-muted">/</span>}
           <Link
             href={pathname}
             locale={code}
             aria-current={code === locale ? "true" : undefined}
-            className={cn("uppercase transition-colors hover:text-text", code === locale ? "text-led-soft" : "text-muted")}
+            className={cn("px-1.5 py-2 uppercase transition-colors hover:text-text", code === locale ? "text-led-soft" : "text-muted")}
           >
             {code}
           </Link>

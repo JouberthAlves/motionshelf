@@ -1,10 +1,10 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { CATEGORIES, inCategory, type Locale } from "@/lib/catalog";
+import type { Locale } from "@/lib/catalog";
 import { installCommand } from "@/lib/code";
 import { TerminalBackground } from "@/components/site/TerminalBackground";
 import { Pedestals } from "@/components/site/Pedestals";
-import { Shelf } from "@/components/site/Shelf";
+import { Shelves } from "@/components/site/Shelf";
 import { CopyCommand } from "@/components/site/CopyCommand";
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
@@ -19,11 +19,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     <>
       <section className="relative isolate overflow-hidden">
         <TerminalBackground />
-        <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-24 pb-24 text-center sm:px-6 sm:pt-32">
+        <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-20 pb-14 text-center sm:px-6 sm:pt-28">
           <h1 className="display-wide max-w-4xl text-[clamp(2.4rem,7vw,5.4rem)] text-balance text-text">
             {hero("title")}
           </h1>
-          <p className="mt-6 max-w-xl text-base text-pretty text-muted sm:text-lg">{hero("subtitle")}</p>
+          <p className="mt-6 max-w-xl text-base text-pretty text-text/80 sm:text-lg">{hero("subtitle")}</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
             <Link
               href="/components"
@@ -33,7 +33,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             </Link>
             <Link
               href="/docs/installation"
-              className="rounded-md border border-led/70 px-6 py-3 text-sm font-semibold text-text transition-colors hover:border-led-soft hover:bg-led/10"
+              className="rounded-md border border-led/70 bg-ink/80 px-6 py-3 text-sm font-semibold text-text transition-colors hover:border-led-soft hover:bg-led/10"
             >
               {hero("install")}
             </Link>
@@ -46,21 +46,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        {CATEGORIES.map((category) => (
-          <Shelf
-            key={category.id}
-            title={category.name[loc]}
-            entries={inCategory(category.id)}
-            locale={loc}
-          />
-        ))}
+        <Shelves locale={loc} />
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
-        <div className="rounded-2xl border border-edge bg-shelf p-8 sm:p-10">
-          <h2 className="display-wide text-3xl text-text">{home("installTitle")}</h2>
+        <div className="rounded-2xl border border-edge bg-shelf p-6 sm:p-10">
+          <h2 className="display-wide text-2xl text-text sm:text-3xl">{home("installTitle")}</h2>
           <p className="mt-3 max-w-2xl text-muted">{home("installText")}</p>
-          <div className="mt-6 max-w-3xl">
+          <div className="mt-6">
             <CopyCommand
               command={installCommand("pix-notification")}
               label={{ copy: component("copy"), copied: component("copied") }}
