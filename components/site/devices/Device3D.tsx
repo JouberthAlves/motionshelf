@@ -73,13 +73,19 @@ export default function Device3D({
     };
   }, []);
 
-  const camera = kind === "phone" ? { fov: 22, position: [0, 0, 40] as [number, number, number] } : { fov: 22, position: [0, 4, 27.5] as [number, number, number] };
+  // Celular com perspectiva. Notebook com câmera ortográfica: com perspectiva, a frente da base (mais
+  // perto da câmera) aparecia ~33% mais larga que a tampa. O zoom deixa margem para o giro com o mouse.
+  const laptop = kind === "laptop";
+  const camera = laptop
+    ? { zoom: 31, position: [0, 10, 40] as [number, number, number], near: 0.1, far: 200 }
+    : { fov: 22, position: [0, 0, 40] as [number, number, number] };
 
   return (
     <div ref={host} className="absolute inset-0">
       <Canvas
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
+        orthographic={laptop}
         camera={camera}
         resize={{ offsetSize: true }}
         frameloop={visible ? "always" : "never"}
@@ -97,7 +103,7 @@ export default function Device3D({
         </Environment>
         <Watchdog onSlow={onSlow} />
         {kind === "laptop" && <LookAt y={0.2} />}
-        <Rig mouse={mouse} yaw={kind === "phone" ? side * -0.24 : 0} pitch={kind === "phone" ? 0.03 : 0.06}>
+        <Rig mouse={mouse} yaw={laptop ? 0 : side * -0.24} pitch={laptop ? 0.04 : 0.03} amount={laptop ? 0.6 : 1}>
           {kind === "phone" ? <Phone screen={screen} /> : <Laptop screen={screen} />}
         </Rig>
       </Canvas>
@@ -131,14 +137,27 @@ function Watchdog({ onSlow }: { onSlow: () => void }) {
 }
 
 /** Inclinação que segue o mouse (suavizada) e flutuação lenta. */
-function Rig({ mouse, yaw, pitch, children }: { mouse: React.RefObject<{ x: number; y: number }>; yaw: number; pitch: number; children: ReactNode }) {
+function Rig({
+  mouse,
+  yaw,
+  pitch,
+  amount,
+  children,
+}: {
+  mouse: React.RefObject<{ x: number; y: number }>;
+  yaw: number;
+  pitch: number;
+  /** Quanto o giro segue o mouse (o notebook gira menos, para as quinas não saírem do quadro). */
+  amount: number;
+  children: ReactNode;
+}) {
   const ref = useRef<Group>(null);
   useFrame((state, delta) => {
     const g = ref.current;
     if (!g) return;
     const k = 1 - Math.exp(-delta * 3);
-    g.rotation.y += (yaw + mouse.current.x * 0.22 - g.rotation.y) * k;
-    g.rotation.x += (pitch + mouse.current.y * 0.1 - g.rotation.x) * k;
+    g.rotation.y += (yaw + mouse.current.x * 0.22 * amount - g.rotation.y) * k;
+    g.rotation.x += (pitch + mouse.current.y * 0.1 * amount - g.rotation.x) * k;
     g.position.y = Math.sin(state.clock.elapsedTime * 1.1) * 0.12;
   });
   return <group ref={ref}>{children}</group>;
