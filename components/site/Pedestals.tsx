@@ -86,8 +86,21 @@ function Pedestal({ href, name, code, width, base }: { href: string; name: strin
       href={href}
       aria-label={`${name}, ${code}`}
       className="group relative hidden max-w-full lg:block"
-      style={{ width: Math.max(width, 256), "--base": `${base}px` } as CSSProperties}
+      style={{ width: Math.max(width, 256) }}
     >
+      <PedestalBlock base={base}>
+        <p className="pt-6 text-center font-mono text-[13px] tracking-wide text-[#c3cbe6]/85 transition-colors group-hover:text-text">
+          {code} · React · GSAP
+        </p>
+      </PedestalBlock>
+    </Link>
+  );
+}
+
+/** O corpo do pedestal (tampo aceso e frente que some no preto), sem link: serve à vitrine fixa também. */
+export function PedestalBlock({ base, children }: { base: number; children?: ReactNode }) {
+  return (
+    <div style={{ "--base": `${base}px` } as CSSProperties}>
       {/* Tampo: trapézio (o fundo é mais estreito que a frente) e a borda da frente acesa. */}
       <div
         className="h-4 bg-gradient-to-b from-[#171d35] to-[#2f3a66]"
@@ -106,10 +119,8 @@ function Pedestal({ href, name, code, width, base }: { href: string; name: strin
         <span aria-hidden="true" className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-black/60 to-transparent" />
         <span aria-hidden="true" className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-led-soft/40 via-white/5 to-transparent" />
         <span aria-hidden="true" className="absolute inset-y-0 right-0 w-px bg-gradient-to-b from-led-soft/40 via-white/5 to-transparent" />
-        <p className="pt-6 text-center font-mono text-[13px] tracking-wide text-[#c3cbe6]/85 transition-colors group-hover:text-text">
-          {code} · React · GSAP
-        </p>
+        {children}
       </div>
-    </Link>
+    </div>
   );
 }

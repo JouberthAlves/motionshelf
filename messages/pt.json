@@ -18,7 +18,10 @@
   },
   "home": {
     "installTitle": "Instale qualquer componente com um comando",
-    "installText": "Cada componente é publicado num registry do shadcn. O arquivo entra no seu projeto, na sua stack."
+    "installText": "Cada componente é publicado num registry do shadcn. O arquivo entra no seu projeto, na sua stack.",
+    "showcaseEyebrow": "Na vitrine",
+    "showcaseTitle": "Um por vez, em tamanho real.",
+    "open": "Ver componente"
   },
   "components": {
     "title": "Componentes",

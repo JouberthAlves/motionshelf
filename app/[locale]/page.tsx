@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/lib/catalog";
+import { CATEGORIES, ENTRIES, type Locale } from "@/lib/catalog";
 import { installCommand } from "@/lib/code";
 import { TerminalBackground } from "@/components/site/TerminalBackground";
 import { Pedestals } from "@/components/site/Pedestals";
-import { Shelves } from "@/components/site/Shelf";
+import { Vitrine } from "@/components/site/Vitrine";
 import { CopyCommand } from "@/components/site/CopyCommand";
 import { pageMetadata } from "@/lib/seo";
 
@@ -54,9 +54,26 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         <Pedestals />
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-        <Shelves locale={loc} />
-      </section>
+      <div className="py-24">
+        <Vitrine
+          items={ENTRIES.map((entry) => ({
+            slug: entry.slug,
+            name: entry.name,
+            code: entry.code,
+            category: entry.category,
+            categoryName: CATEGORIES.find((c) => c.id === entry.category)?.name[loc] ?? "",
+            summary: entry.summary[loc],
+            command: installCommand(entry.slug),
+          }))}
+          labels={{
+            eyebrow: home("showcaseEyebrow"),
+            title: home("showcaseTitle"),
+            open: home("open"),
+            copy: component("copy"),
+            copied: component("copied"),
+          }}
+        />
+      </div>
 
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
         <div className="rounded-2xl border border-edge bg-shelf p-6 sm:p-10">

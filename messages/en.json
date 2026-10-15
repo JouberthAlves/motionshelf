@@ -18,7 +18,10 @@
   },
   "home": {
     "installTitle": "Install any component with one command",
-    "installText": "Every component is published to a shadcn registry. The file lands in your project, on your own stack."
+    "installText": "Every component is published to a shadcn registry. The file lands in your project, on your own stack.",
+    "showcaseEyebrow": "On display",
+    "showcaseTitle": "One at a time, at full size.",
+    "open": "Open component"
   },
   "components": {
     "title": "Components",

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { PREVIEWS } from "./previews";
 
 // Largura natural de cada componente na miniatura (os de largura fluida ganham um palco fixo).
-const STAGE: Record<string, number> = {
+export const STAGE: Record<string, number> = {
   "title-reveal": 440,
   "rotating-word": 520,
   "before-after-text": 380,

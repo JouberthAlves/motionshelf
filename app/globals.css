@@ -44,6 +44,23 @@ body {
   outline-offset: 3px;
 }
 
+/* Entrada da vitrine fixa: o componente da vez chega subindo e ganhando foco. */
+@keyframes vitrine-in {
+  from {
+    opacity: 0;
+    filter: blur(12px);
+    transform: translateY(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+.vitrine-in {
+  animation: vitrine-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
