@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Motionshelf · Componentes React animados para sites que vendem",
+    "description": "Componentes React animados que você instala como código: notificação de pagamento, conversa no WhatsApp, pino no mapa, resultado de busca e mais."
+  },
+  "nav": {
+    "components": "Componentes",
+    "docs": "Docs",
+    "search": "Buscar componentes",
+    "github": "GitHub",
+    "language": "Idioma"
+  },
+  "hero": {
+    "title": "A animação que seu cliente vai pedir.",
+    "subtitle": "Componentes animados para sites que vendem. React, Tailwind e GSAP, instalados como código seu.",
+    "browse": "Ver componentes",
+    "install": "Instalar"
+  },
+  "footer": {
+    "license": "Componentes sob a licença MIT.",
+    "credits": "Fundo: Faulty Terminal, do React Bits (MIT + Commons Clause), usado só como decoração.",
+    "made": "Feito no Brasil."
+  }
+}

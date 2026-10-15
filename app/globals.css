@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+/* Motionshelf: vitrine de loja tech no escuro. Preto, superfícies grafite e um
+   único azul de LED como destaque (design/direcao.md no repo animacoes-hyperframes). */
+@theme {
+  --color-ink: #000000;
+  --color-shelf: #121316;
+  --color-shelf-2: #191b20;
+  --color-edge: #262a33;
+  --color-led: #1f5bff;
+  --color-led-soft: #5b86ff;
+  --color-text: #dfe7ff;
+  --color-muted: #8b93a7;
+
+  --font-display: var(--font-archivo), "Arial Narrow", system-ui, sans-serif;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-martian), ui-monospace, Consolas, monospace;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-ink);
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Título largo da marca: Archivo no eixo de largura máximo. */
+.display-wide {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-led);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

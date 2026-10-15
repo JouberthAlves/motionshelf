@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Motionshelf · Animated React components for sites that sell",
+    "description": "Animated React components you install as code: payment notifications, chat flows, map pins, search results and more."
+  },
+  "nav": {
+    "components": "Components",
+    "docs": "Docs",
+    "search": "Search components",
+    "github": "GitHub",
+    "language": "Language"
+  },
+  "hero": {
+    "title": "Motion your clients will ask for.",
+    "subtitle": "Animated components for sites that sell. React, Tailwind and GSAP, installed as code you own.",
+    "browse": "Browse components",
+    "install": "Install"
+  },
+  "footer": {
+    "license": "Components released under the MIT license.",
+    "credits": "Background: Faulty Terminal from React Bits (MIT + Commons Clause), used as decoration only.",
+    "made": "Made in Brazil."
+  }
+}
