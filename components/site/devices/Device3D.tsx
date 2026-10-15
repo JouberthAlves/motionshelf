@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Html, Lightformer } from "@react-three/drei";
 import { ExtrudeGeometry, Shape, type Group } from "three";
 import type { DeviceKind } from "./screens";
@@ -73,7 +73,7 @@ export default function Device3D({
     };
   }, []);
 
-  const camera = kind === "phone" ? { fov: 22, position: [0, 0, 40] as [number, number, number] } : { fov: 22, position: [0, 2.2, 33] as [number, number, number] };
+  const camera = kind === "phone" ? { fov: 22, position: [0, 0, 40] as [number, number, number] } : { fov: 22, position: [0, 4, 27.5] as [number, number, number] };
 
   return (
     <div ref={host} className="absolute inset-0">
@@ -96,12 +96,23 @@ export default function Device3D({
           <Lightformer form="rect" intensity={3.2} position={[0, -6, 3]} scale={[14, 1, 1]} color="#1f5bff" />
         </Environment>
         <Watchdog onSlow={onSlow} />
+        {kind === "laptop" && <LookAt y={0.2} />}
         <Rig mouse={mouse} yaw={kind === "phone" ? side * -0.24 : 0} pitch={kind === "phone" ? 0.03 : 0.06}>
           {kind === "phone" ? <Phone screen={screen} /> : <Laptop screen={screen} />}
         </Rig>
       </Canvas>
     </div>
   );
+}
+
+/** Aponta a câmera para o centro do notebook (vista de leve de cima, mostrando o teclado). */
+function LookAt({ y }: { y: number }) {
+  const camera = useThree((s) => s.camera);
+  useLayoutEffect(() => {
+    camera.lookAt(0, y, 0);
+    camera.updateProjectionMatrix();
+  }, [camera, y]);
+  return null;
 }
 
 /** Desiste do 3D quando o aparelho não dá conta. */
@@ -172,7 +183,7 @@ function Laptop({ screen }: { screen: ReactNode }) {
   const LW = 548 * K; // tampa
   const LH = 361 * K;
   const LT = 0.22;
-  const BW = 640 * K; // base
+  const BW = LW; // base com a mesma largura da tampa, como num notebook de verdade
   const BL = 9.6; // profundidade da base (de trás para a frente)
   const BT = 0.36;
   const lid = useMemo(() => slab(LW, LH, 18 * K, LT, 0.05), [LW, LH]);

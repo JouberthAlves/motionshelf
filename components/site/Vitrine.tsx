@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
 import { ArrowRight } from "@phosphor-icons/react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
-import { CopyCommand } from "./CopyCommand";
+import { Check, Copy } from "@phosphor-icons/react";
 import { PedestalBlock } from "./Pedestals";
 import { PREVIEWS } from "./previews";
 import { STAGE } from "./Thumb";
@@ -19,7 +19,7 @@ export type VitrineItem = {
   command: string;
 };
 
-type Labels = { eyebrow: string; title: string; open: string; copy: string; copied: string };
+type Labels = { eyebrow: string; title: string; open: string; copyInstall: string; copiedInstall: string };
 
 // Quanto de rolagem cada componente ocupa na vitrine fixa (em altura de tela).
 const STEP_VH = 70;
@@ -126,7 +126,7 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
           </p>
           <h2 className="display-wide mt-2 text-[1.6rem] text-text">{labels.title}</h2>
 
-          <div ref={list} className="relative mt-5 min-h-0 flex-1 overflow-y-auto py-3 pr-2 [mask-image:linear-gradient(to_bottom,transparent,#000_24px,#000_calc(100%-24px),transparent)] [scrollbar-width:none]">
+          <div ref={list} className="relative mt-5 min-h-0 flex-1 overflow-y-auto py-6 pr-2 [mask-image:linear-gradient(to_bottom,transparent,#000_24px,#000_calc(100%-24px),transparent)] [scrollbar-width:none]">
             {items.map((it, i) => {
               const header = it.category !== lastCategory;
               lastCategory = it.category;
@@ -151,7 +151,7 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
                   {on && (
                     <div className="vitrine-in mt-2 mb-3 ml-[22px] space-y-3">
                       <p className="text-sm text-muted">{it.summary}</p>
-                      <CopyCommand command={it.command} label={{ copy: labels.copy, copied: labels.copied }} />
+                      <CopyInstall command={it.command} label={labels.copyInstall} done={labels.copiedInstall} />
                       <Link href={`/components/${it.slug}`} className="inline-flex items-center gap-1.5 text-sm text-led-soft hover:text-white">
                         {labels.open} <ArrowRight size={14} aria-hidden="true" />
                       </Link>
@@ -166,7 +166,7 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
         {/* Palco: o componente da vez em cima do pedestal grande. */}
         <div className="flex min-h-0 flex-col items-center justify-end">
           <div className="relative w-full min-h-0 flex-1">
-            {desktop && <StageFit key={item.slug} slug={item.slug} align="bottom" className="vitrine-in" />}
+            {desktop && <StageFit key={item.slug} slug={item.slug} align="center" className="vitrine-in" />}
           </div>
           <div className="w-[min(70%,560px)]">
             {/* Pedestal alto: o componente fica perto do meio da tela, não colado no rodapé. */}
@@ -207,6 +207,31 @@ function StackedVitrine({ items, labels }: { items: VitrineItem[]; labels: Label
         ))}
       </ul>
     </section>
+  );
+}
+
+/** Botão que copia o comando de instalação inteiro (na coluna estreita da lista o comando não cabe). */
+function CopyInstall({ command, label, done }: { command: string; label: string; done: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      // Sem permissão de área de transferência: o comando segue na página do componente.
+    }
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      title={command}
+      className="inline-flex items-center gap-2 rounded-lg border border-edge bg-shelf px-3 py-2 font-mono text-xs text-text/90 transition-colors hover:border-led/60 hover:text-white"
+    >
+      {copied ? <Check size={14} aria-hidden="true" /> : <Copy size={14} aria-hidden="true" />}
+      {copied ? done : label}
+    </button>
   );
 }
 

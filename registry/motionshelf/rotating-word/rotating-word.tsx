@@ -72,8 +72,9 @@ export default function RotatingWord({
               </span>
             ))}
           </span>
-        </span>{" "}
-        {suffix}
+        </span>
+        {/* Linha própria: com o espaço de largura fixa, a sobra fica no fim da linha e não vira um vão no meio da frase. */}
+        <span className="block">{suffix}</span>
       </p>
     </div>
   );

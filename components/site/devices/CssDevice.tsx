@@ -45,7 +45,7 @@ function Phone({ children }: { children: ReactNode }) {
 
 function Laptop({ children }: { children: ReactNode }) {
   return (
-    <div className="flex flex-col items-center" style={{ width: 640 }}>
+    <div className="flex flex-col items-center" style={{ width: 572 }}>
       <div className="rounded-t-[18px] p-[2px]" style={{ width: 548, height: 361, background: RIM }}>
         <div className="relative h-full w-full rounded-t-[16px] bg-black px-[12px] pt-[14px] pb-[18px]">
           <span aria-hidden="true" className="absolute top-[5px] left-1/2 h-[4px] w-[4px] -translate-x-1/2 rounded-full bg-[#1d2230]" />

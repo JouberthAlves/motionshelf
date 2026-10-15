@@ -69,8 +69,8 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             eyebrow: home("showcaseEyebrow"),
             title: home("showcaseTitle"),
             open: home("open"),
-            copy: component("copy"),
-            copied: component("copied"),
+            copyInstall: home("copyInstall"),
+            copiedInstall: home("copiedInstall"),
           }}
         />
       </div>

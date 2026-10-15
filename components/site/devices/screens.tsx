@@ -14,7 +14,7 @@ export const SCREEN: Record<DeviceKind, { w: number; h: number }> = {
 // Caixa ocupada pelo aparelho no layout (com folga para a inclinação e a flutuação).
 export const BOX: Record<DeviceKind, { w: number; h: number }> = {
   phone: { w: 360, h: 600 },
-  laptop: { w: 700, h: 480 },
+  laptop: { w: 620, h: 440 },
 };
 
 type Screen = ComponentType<{ className?: string }>;

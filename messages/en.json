@@ -21,7 +21,9 @@
     "installText": "Every component is published to a shadcn registry. The file lands in your project, on your own stack.",
     "showcaseEyebrow": "On display",
     "showcaseTitle": "One at a time, at full size.",
-    "open": "Open component"
+    "open": "Open component",
+    "copyInstall": "Copy install command",
+    "copiedInstall": "Command copied"
   },
   "components": {
     "title": "Components",
