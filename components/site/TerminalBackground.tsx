@@ -2,23 +2,10 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { hasGpu } from "@/lib/gpu";
 
 // WebGL só no navegador: sem SSR e com o hero legível enquanto carrega.
 const FaultyTerminal = dynamic(() => import("@/components/backgrounds/FaultyTerminal"), { ssr: false });
-
-/** true quando o WebGL2 roda em GPU de verdade (não em renderização por software, como SwiftShader). */
-function hasGpu() {
-  try {
-    const gl = document.createElement("canvas").getContext("webgl2");
-    if (!gl) return false;
-    const info = gl.getExtension("WEBGL_debug_renderer_info");
-    const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
-    gl.getExtension("WEBGL_lose_context")?.loseContext();
-    return !/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer);
-  } catch {
-    return false;
-  }
-}
 
 /** Fundo do hero: glifos no azul da marca, discretos, com uma área escura no centro que cobre título, texto e botões. */
 export function TerminalBackground() {

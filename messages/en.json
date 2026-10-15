@@ -17,7 +17,7 @@
     "install": "Install"
   },
   "home": {
-    "installTitle": "Install any component with one command",
+    "installTitle": "Install <shine>any</shine> component with <shine>one</shine> command",
     "installText": "Every component is published to a shadcn registry. The file lands in your project, on your own stack.",
     "showcaseEyebrow": "On display",
     "showcaseTitle": "One at a time, at full size.",

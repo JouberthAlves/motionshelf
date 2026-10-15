@@ -44,6 +44,45 @@ body {
   outline-offset: 3px;
 }
 
+/* Brilho que passa pela palavra (como o Shiny Text do React Bits): azul da marca com um reflexo claro. */
+.shiny-text {
+  color: var(--color-led-soft);
+  background: linear-gradient(110deg, var(--color-led) 38%, #dfe7ff 50%, var(--color-led) 62%) 0 0 / 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shiny-text 3.2s linear infinite;
+}
+@keyframes shiny-text {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -150% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shiny-text {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+/* Flutuação lenta da moldura dos aparelhos (reserva do 3D). */
+@keyframes device-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.device-float {
+  animation: device-float 5.5s ease-in-out infinite;
+}
+
 /* Entrada da vitrine fixa: o componente da vez chega subindo e ganhando foco. */
 @keyframes vitrine-in {
   from {

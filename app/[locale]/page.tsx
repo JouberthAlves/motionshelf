@@ -77,7 +77,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
         <div className="rounded-2xl border border-edge bg-shelf p-6 sm:p-10">
-          <h2 className="display-wide text-2xl text-text sm:text-3xl">{home("installTitle")}</h2>
+          <h2 className="display-wide text-2xl text-text sm:text-3xl">{home.rich("installTitle", { shine: (chunks) => <span className="shiny-text">{chunks}</span> })}</h2>
           <p className="mt-3 max-w-2xl text-muted">{home("installText")}</p>
           <div className="mt-6">
             <CopyCommand
