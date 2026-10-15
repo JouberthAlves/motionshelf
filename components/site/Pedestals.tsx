@@ -105,7 +105,7 @@ function Pedestal({ href, name, code, width, base }: { href: string; name: strin
       style={{ width: Math.max(width, 256) }}
     >
       <PedestalBlock base={base}>
-        <p className="pt-6 text-center font-mono text-[13px] tracking-wide text-[#c3cbe6]/85 transition-colors group-hover:text-text">
+        <p className="pt-6 text-center font-mono text-[13px] tracking-wide text-[#c3cbe6]/85 transition-colors duration-500 ease-out-expo group-hover:text-text motion-reduce:transition-none">
           {code} · React · GSAP
         </p>
       </PedestalBlock>
@@ -122,7 +122,8 @@ export function PedestalBlock({ base, children }: { base: number | string; child
         className="h-4 bg-gradient-to-b from-[#171d35] to-[#2f3a66]"
         style={{ clipPath: "polygon(3% 0, 97% 0, 100% 100%, 0 100%)" }}
       />
-      <div className="h-[2px] bg-led shadow-[0_0_14px_2px_rgb(31_91_255/0.55)] transition-colors group-hover:bg-led-soft" />
+      {/* No hover a borda acende mais (cor e brilho), com entrada suave. */}
+      <div className="h-[2px] bg-led shadow-[0_0_14px_2px_rgb(31_91_255/0.55)] transition-[background-color,box-shadow] duration-500 ease-out-expo group-hover:bg-led-soft group-hover:shadow-[0_0_22px_4px_rgb(91_134_255/0.7)] motion-reduce:transition-none" />
 
       {/* Frente: um pouco mais estreita que o tampo, que avança sobre ela. */}
       <div

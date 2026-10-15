@@ -15,6 +15,9 @@
   --font-display: var(--font-archivo), "Arial Narrow", system-ui, sans-serif;
   --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-martian), ui-monospace, Consolas, monospace;
+
+  /* Saída rápida e pouso longo: usada nos hovers da vitrine. */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html {
