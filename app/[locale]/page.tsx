@@ -29,7 +29,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       <section className="relative isolate -mt-16 overflow-hidden pt-16">
         <TerminalBackground />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-20 pb-14 text-center sm:px-6 sm:pt-28">
-          <h1 className="display-wide max-w-4xl text-[clamp(2.4rem,7vw,5.4rem)] text-balance text-text">
+          <h1 className="display-wide max-w-5xl text-[clamp(2.4rem,6.4vw,5rem)] text-balance text-text">
             {hero("title")}
           </h1>
           <p className="mt-6 max-w-xl text-base text-pretty text-text/80 sm:text-lg">{hero("subtitle")}</p>

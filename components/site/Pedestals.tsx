@@ -98,9 +98,9 @@ function Pedestal({ href, name, code, width, base }: { href: string; name: strin
 }
 
 /** O corpo do pedestal (tampo aceso e frente que some no preto), sem link: serve à vitrine fixa também. */
-export function PedestalBlock({ base, children }: { base: number; children?: ReactNode }) {
+export function PedestalBlock({ base, children }: { base: number | string; children?: ReactNode }) {
   return (
-    <div style={{ "--base": `${base}px` } as CSSProperties}>
+    <div style={{ "--base": typeof base === "number" ? `${base}px` : base } as CSSProperties}>
       {/* Tampo: trapézio (o fundo é mais estreito que a frente) e a borda da frente acesa. */}
       <div
         className="h-4 bg-gradient-to-b from-[#171d35] to-[#2f3a66]"

@@ -169,7 +169,8 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
             {desktop && <StageFit key={item.slug} slug={item.slug} align="bottom" className="vitrine-in" />}
           </div>
           <div className="w-[min(70%,560px)]">
-            <PedestalBlock base={120}>
+            {/* Pedestal alto: o componente fica perto do meio da tela, não colado no rodapé. */}
+            <PedestalBlock base="clamp(170px, 31vh, 320px)">
               <p className="pt-7 text-center font-mono text-sm tracking-wide text-[#c3cbe6]/85">
                 {item.code} · React · GSAP
               </p>

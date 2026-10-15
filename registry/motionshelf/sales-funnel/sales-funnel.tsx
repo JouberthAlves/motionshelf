@@ -60,6 +60,10 @@ function depthOf([x, y, z]: Point) {
   const { sinA, cosA, sinE, cosE } = camera(PROJECTION);
   return (x * cosA + y * sinA) * cosE + z * sinE;
 }
+// Objeto fixo para o innerHTML: no React 19, um { __html } novo a cada render faz o React trocar a
+// figura inteira, e as bolinhas ficavam sendo desenhadas numa cópia que já saiu da página.
+const FIGURE_HTML = { __html: FIGURE_SVG };
+
 // Quantos pixels da tela cabe uma unidade do desenho: tamanho das bolinhas.
 const SCALE = (() => {
   const a = toScreen([0, 0, 0]);
@@ -350,7 +354,7 @@ export default function SalesFunnel({ rates = RATES, className = "" }: SalesFunn
         aria-valuenow={2.2}
         className="rounded-md outline-none focus-visible:ring-2 focus-visible:ring-neutral-400"
       >
-        <div ref={host} dangerouslySetInnerHTML={{ __html: FIGURE_SVG }} />
+        <div ref={host} dangerouslySetInnerHTML={FIGURE_HTML} />
       </div>
       <p ref={readout} className="mt-2 text-center font-mono text-xs text-neutral-400" />
     </div>
