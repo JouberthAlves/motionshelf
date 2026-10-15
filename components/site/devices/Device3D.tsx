@@ -73,12 +73,10 @@ export default function Device3D({
     };
   }, []);
 
-  // Celular com perspectiva. Notebook com câmera ortográfica: com perspectiva, a frente da base (mais
-  // perto da câmera) aparecia ~33% mais larga que a tampa. Vista de 24° de cima, para o teclado aparecer
-  // e o conjunto ler como notebook aberto. O zoom deixa margem para o giro com o mouse.
+  // Os dois com câmera de perspectiva. No notebook, a largura da base é corrigida na geometria (ver Laptop).
   const laptop = kind === "laptop";
   const camera = laptop
-    ? { zoom: 32, position: [0, 17.8, 40] as [number, number, number], near: 0.1, far: 200 }
+    ? { fov: 22, position: [0, 4, 27.5] as [number, number, number] }
     : { fov: 22, position: [0, 0, 40] as [number, number, number] };
 
   return (
@@ -86,7 +84,6 @@ export default function Device3D({
       <Canvas
         dpr={[1, 1.75]}
         gl={{ antialias: true, alpha: true }}
-        orthographic={laptop}
         camera={camera}
         resize={{ offsetSize: true }}
         frameloop={visible ? "always" : "never"}
@@ -103,8 +100,7 @@ export default function Device3D({
           <Lightformer form="rect" intensity={3.2} position={[0, -6, 3]} scale={[14, 1, 1]} color="#1f5bff" />
         </Environment>
         <Watchdog onSlow={onSlow} />
-        {/* Alvo acima do centro: o notebook desce no quadro e assenta perto do pedestal. */}
-        {kind === "laptop" && <LookAt y={1} />}
+        {kind === "laptop" && <LookAt y={0.2} />}
         <Rig mouse={mouse} yaw={laptop ? 0 : side * -0.24} pitch={laptop ? 0.04 : 0.03} amount={laptop ? 0.5 : 1}>
           {kind === "phone" ? <Phone screen={screen} /> : <Laptop screen={screen} />}
         </Rig>
@@ -204,7 +200,9 @@ function Laptop({ screen }: { screen: ReactNode }) {
   const LW = 548 * K; // tampa
   const LH = 361 * K;
   const LT = 0.22;
-  const BW = LW; // base com a mesma largura da tampa, como num notebook de verdade
+  // Base mais estreita que a tampa na geometria: com a perspectiva, a borda da frente (mais perto da
+  // câmera) aparece maior; com 10,6 ela sai na mesma largura da tampa (medido na projeção a 1440×900).
+  const BW = 10.6;
   const BL = 9.6; // profundidade da base (de trás para a frente)
   const BT = 0.36;
   const lid = useMemo(() => slab(LW, LH, 18 * K, LT, 0.05), [LW, LH]);
@@ -214,7 +212,8 @@ function Laptop({ screen }: { screen: ReactNode }) {
   const pad = useMemo(() => slab(BW * 0.3, BL * 0.28, 0.2, 0.01, 0), [BW]);
 
   return (
-    <group position={[0, -4.2, 0]}>
+    // 80% do tamanho e um pouco mais alto: cabe inteiro no quadro, parado e com o mouse nos cantos.
+    <group position={[0, -3.3, 0]} scale={0.8}>
       {/* base deitada: a forma é desenhada em XY e girada para o chão */}
       <group rotation-x={-Math.PI / 2}>
         <mesh geometry={base}>
