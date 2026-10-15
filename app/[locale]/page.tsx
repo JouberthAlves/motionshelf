@@ -64,7 +64,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <p className="mt-3 max-w-2xl text-muted">{home("installText")}</p>
           <div className="mt-6">
             <CopyCommand
-              command={installCommand("pix-notification")}
+              command={installCommand("payment-notification")}
               label={{ copy: component("copy"), copied: component("copied") }}
             />
           </div>

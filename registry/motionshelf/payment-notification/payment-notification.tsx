@@ -6,7 +6,7 @@ import { useGSAP } from "@gsap/react";
 
 gsap.registerPlugin(useGSAP);
 
-export type PixNotificationProps = {
+export type PaymentNotificationProps = {
   /** Amount the counter climbs to. */
   amount?: number;
   /** ISO 4217 currency code. */
@@ -32,7 +32,7 @@ export type PixNotificationProps = {
   className?: string;
 };
 
-export default function PixNotification({
+export default function PaymentNotification({
   amount = 150,
   currency = "USD",
   locale = "en-US",
@@ -45,7 +45,7 @@ export default function PixNotification({
   accent = "#1f5bff",
   loop = true,
   className = "",
-}: PixNotificationProps) {
+}: PaymentNotificationProps) {
   const root = useRef<HTMLDivElement>(null);
   const amountText = useRef<HTMLDivElement>(null);
   const money = new Intl.NumberFormat(locale, { style: "currency", currency });

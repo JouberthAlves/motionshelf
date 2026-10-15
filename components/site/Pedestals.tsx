@@ -13,7 +13,7 @@ import { PREVIEWS } from "./previews";
 const SHOWCASE = [
   { slug: "chat-flow", name: "Chat Flow", code: "MSG-01", scale: 0.6, width: 290, height: 520, base: 120, wide: false },
   { slug: "map-pin-drop", name: "Map Pin Drop", code: "MAP-01", scale: 0.68, width: 520, height: 290, base: 255, wide: true },
-  { slug: "pix-notification", name: "Pix Notification", code: "PAY-01", scale: 0.6, width: 290, height: 520, base: 130, wide: false },
+  { slug: "payment-notification", name: "Payment Notification", code: "PAY-01", scale: 0.6, width: 290, height: 520, base: 130, wide: false },
 ];
 
 export function Pedestals() {

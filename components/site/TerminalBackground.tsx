@@ -54,7 +54,8 @@ export function TerminalBackground() {
             flickerAmount={0.8}
             noiseAmp={1}
             curvature={0.1}
-            brightness={0.75}
+            brightness={1}
+            glow={0.7}
             mouseReact
             mouseStrength={0.25}
             pageLoadAnimation
@@ -64,8 +65,9 @@ export function TerminalBackground() {
           />
         )}
       </div>
-      <div className="absolute inset-0 bg-black/55 sm:bg-black/25" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_62%_58%_at_50%_52%,rgb(0_0_0/0.92),rgb(0_0_0/0.6)_55%,transparent_85%)]" />
+      {/* Escuro só atrás do texto: no celular a camada geral é leve para os glifos manterem a cor. */}
+      <div className="absolute inset-0 bg-black/15 sm:bg-black/10" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_42%_at_50%_50%,rgb(0_0_0/0.88),rgb(0_0_0/0.45)_60%,transparent_90%)] sm:bg-[radial-gradient(ellipse_55%_50%_at_50%_52%,rgb(0_0_0/0.9),rgb(0_0_0/0.5)_55%,transparent_85%)]" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-ink" />
     </div>
   );

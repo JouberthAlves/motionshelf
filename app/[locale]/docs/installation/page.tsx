@@ -6,10 +6,10 @@ import { CopyCommand } from "@/components/site/CopyCommand";
 import type { Locale } from "@/lib/catalog";
 import { pageMetadata } from "@/lib/seo";
 
-const USAGE = `import PixNotification from "@/components/motionshelf/pix-notification";
+const USAGE = `import PaymentNotification from "@/components/motionshelf/payment-notification";
 
 export default function Page() {
-  return <PixNotification amount={150} sender="Alex M." />;
+  return <PaymentNotification amount={150} sender="Alex M." />;
 }`;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -47,7 +47,7 @@ export default async function InstallationPage({ params }: { params: Promise<{ l
       <h2 className="display-wide mt-12 text-xl text-text">{t("addTitle")}</h2>
       <p className="mt-3 text-muted">{t("addText")}</p>
       <div className="mt-3">
-        <CopyCommand command={installCommand("pix-notification")} label={labels} />
+        <CopyCommand command={installCommand("payment-notification")} label={labels} />
       </div>
 
       <h2 className="display-wide mt-12 text-xl text-text">{t("useTitle")}</h2>

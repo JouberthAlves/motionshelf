@@ -37,14 +37,15 @@ export default function TitleReveal({
       // O texto herda a cor da página; a palavra destacada parte dessa cor e vira branca sobre o marcador.
       const ink = root.current ? getComputedStyle(root.current).color : "currentColor";
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.6 });
-      tl.set(q("[data-word]"), { yPercent: 110 })
+      // Cada palavra sobe com um leve desfoque de movimento que some ao chegar.
+      tl.set(q("[data-word]"), { yPercent: 110, filter: "blur(8px)" })
         .set(q("[data-mark]"), { scaleX: 0 })
         .set(q("[data-hl]"), { color: ink })
-        .set(q("[data-sub]"), { autoAlpha: 0, y: 8 })
-        .to(q("[data-word]"), { yPercent: 0, duration: 0.6, ease: "power3.out", stagger: 0.09 }, 0.2)
-        .to(q("[data-mark]"), { scaleX: 1, duration: 0.5, ease: "power2.inOut" }, 1.0)
-        .to(q("[data-hl]"), { color: "#ffffff", duration: 0.2 }, 1.25)
-        .to(q("[data-sub]"), { autoAlpha: 1, y: 0, duration: 0.4 }, 1.4)
+        .set(q("[data-sub]"), { autoAlpha: 0, y: 10, filter: "blur(6px)" })
+        .to(q("[data-word]"), { yPercent: 0, filter: "blur(0px)", duration: 0.85, ease: "expo.out", stagger: 0.08 }, 0.2)
+        .to(q("[data-mark]"), { scaleX: 1, duration: 0.65, ease: "expo.inOut" }, 1.0)
+        .to(q("[data-hl]"), { color: "#ffffff", duration: 0.25, ease: "power2.out" }, 1.3)
+        .to(q("[data-sub]"), { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 1.4)
         .to({}, { duration: 2 });
 
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) tl.progress(1).pause();

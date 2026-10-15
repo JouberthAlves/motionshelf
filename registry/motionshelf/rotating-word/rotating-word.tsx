@@ -40,10 +40,14 @@ export default function RotatingWord({
       const size = parseFloat(getComputedStyle(slot).fontSize) || 16;
       const widths = (q("[data-word]") as HTMLElement[]).map((el) => `${el.offsetWidth / size}em`);
       const tl = gsap.timeline({ repeat: loop ? -1 : 0 });
-      tl.set(track, { yPercent: 0 }).set(slot, { width: widths[0] });
+      tl.set(track, { yPercent: 0, filter: "blur(0px)" }).set(slot, { width: widths[0] });
       for (let i = 1; i <= n; i++) {
-        tl.to(track, { yPercent: -(100 / (n + 1)) * i, duration: 0.45, ease: "power3.inOut" }, i * 1.3);
-        tl.to(slot, { width: widths[i], duration: 0.45, ease: "power3.inOut" }, i * 1.3);
+        const at = i * 1.3;
+        tl.to(track, { yPercent: -(100 / (n + 1)) * i, duration: 0.55, ease: "expo.inOut" }, at);
+        tl.to(slot, { width: widths[i], duration: 0.55, ease: "expo.inOut" }, at);
+        // Desfoque de movimento só no meio da troca.
+        tl.to(track, { filter: "blur(3px)", duration: 0.22, ease: "power2.in" }, at + 0.05);
+        tl.to(track, { filter: "blur(0px)", duration: 0.28, ease: "power2.out" }, at + 0.27);
       }
       tl.set(track, { yPercent: 0 }, n * 1.3 + 0.5).to({}, { duration: 1.2 });
 

@@ -10,12 +10,12 @@ const OG_IMAGE = {
   url: "/og.jpg",
   width: 1200,
   height: 630,
-  alt: "Motionshelf: animated React components on showroom pedestals, a chat flow, a map pin and a Pix payment notification.",
+  alt: "Motionshelf: animated React components on showroom pedestals, a chat flow, a map pin and a payment notification.",
 };
 
 /**
  * Metadata de uma página: título, descrição, canônico e a mesma página no outro idioma
- * (path sem o prefixo do idioma, ex. "/components/pix-notification"; "" é a home).
+ * (path sem o prefixo do idioma, ex. "/components/payment-notification"; "" é a home).
  */
 export function pageMetadata({
   locale,

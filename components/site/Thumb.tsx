@@ -11,7 +11,7 @@ const STAGE: Record<string, number> = {
   "chat-flow": 290,
   "question-typer": 480,
   "appointment-reminder": 290,
-  "pix-notification": 290,
+  "payment-notification": 290,
   "search-ad": 480,
   "map-pin-drop": 520,
   "slot-booking": 520,

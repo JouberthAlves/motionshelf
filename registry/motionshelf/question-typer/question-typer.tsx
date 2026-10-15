@@ -61,7 +61,7 @@ export default function QuestionTyper({
       };
 
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 0.4 });
-      tl.set(answerBox, { autoAlpha: 0, y: 6 }).add(() => {
+      tl.set(answerBox, { autoAlpha: 0, y: 8, filter: "blur(6px)" }).add(() => {
         questionEl.textContent = "";
         answerEl.textContent = "";
       }, 0);
@@ -76,14 +76,14 @@ export default function QuestionTyper({
         tl.add(() => {
           answerEl.textContent = "";
         }, t);
-        tl.to(answerBox, { autoAlpha: 1, y: 0, duration: 0.25 }, t);
+        tl.to(answerBox, { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.5, ease: "expo.out" }, t);
         typeInto(tl, answerEl, answer, 0, answer.length, WRITE, t + 0.15);
         t += 0.15 + answer.length * WRITE;
         if (i === 0) firstDone = t;
         t += 1.6;
 
         // Apaga para a próxima (na última, o loop recomeça do zero).
-        tl.to(answerBox, { autoAlpha: 0, y: -6, duration: 0.25 }, t);
+        tl.to(answerBox, { autoAlpha: 0, y: -8, filter: "blur(6px)", duration: 0.3, ease: "power2.in" }, t);
         typeInto(tl, questionEl, question, question.length, 0, 0.012, t);
         t += Math.max(0.3, question.length * 0.012) + 0.25;
       });

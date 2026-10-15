@@ -166,8 +166,8 @@ export const ENTRIES: Entry[] = [
     ],
   },
   {
-    slug: "pix-notification",
-    name: "Pix Notification",
+    slug: "payment-notification",
+    name: "Payment Notification",
     category: "commerce",
     code: "PAY-01",
     summary: {

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="72" fill="#000"/>
+  <!-- traços de movimento -->
+  <path d="M84 300 L100 196" stroke="#c9ced8" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+  <path d="M97 334 L127 140" stroke="#c9ced8" stroke-width="11" stroke-linecap="round"/>
+  <path d="M262 214 L306 140" stroke="#c9ced8" stroke-width="8" stroke-linecap="round"/>
+  <!-- M largo com as pernas abertas -->
+  <path fill="#fff" d="M142 132 H196 L262 243 L328 132 H382 L399 334 H341 L333 216 L275 314 H243 L186 216 L171 334 H112 Z"/>
+  <!-- prateleira com dois pés -->
+  <rect x="78" y="350" width="340" height="18" rx="5" fill="#fff"/>
+  <path fill="#fff" d="M112 368 H132 L128 392 H116 Z M365 368 H385 L381 392 H369 Z"/>
+</svg>

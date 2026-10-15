@@ -38,15 +38,20 @@ export default function BeforeAfterText({
       const q = gsap.utils.selector(root);
       const tl = gsap.timeline({ repeat: loop ? -1 : 0, repeatDelay: 1.4 });
       tl.set(q("[data-strike]"), { scaleX: 0 })
-        .set(q("[data-new]"), { autoAlpha: 0, y: 18 })
-        .fromTo(q("[data-title]"), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, 0)
-        .fromTo(q("[data-old]"), { autoAlpha: 0, x: -12 }, { autoAlpha: 1, x: 0, duration: 0.4, stagger: 0.15 }, 0.1);
+        .set(q("[data-new]"), { autoAlpha: 0, y: 18, filter: "blur(8px)" })
+        .fromTo(q("[data-title]"), { autoAlpha: 0, filter: "blur(4px)" }, { autoAlpha: 1, filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, 0)
+        .fromTo(
+          q("[data-old]"),
+          { autoAlpha: 0, x: -14, y: 0, filter: "blur(6px)" },
+          { autoAlpha: 1, x: 0, filter: "blur(0px)", duration: 0.6, ease: "expo.out", stagger: 0.12 },
+          0.1,
+        );
 
       q("[data-row]").forEach((row: Element, i: number) => {
         const at = 1.2 + i * 0.9;
-        tl.to(row.querySelector("[data-strike]"), { scaleX: 1, duration: 0.35, ease: "power2.inOut" }, at)
-          .to(row.querySelector("[data-old]"), { autoAlpha: 0, y: -16, duration: 0.3 }, at + 0.45)
-          .to(row.querySelector("[data-new]"), { autoAlpha: 1, y: 0, duration: 0.4, ease: "back.out(1.6)" }, at + 0.55);
+        tl.to(row.querySelector("[data-strike]"), { scaleX: 1, duration: 0.45, ease: "expo.inOut" }, at)
+          .to(row.querySelector("[data-old]"), { autoAlpha: 0, y: -16, filter: "blur(5px)", duration: 0.4, ease: "power2.in" }, at + 0.45)
+          .to(row.querySelector("[data-new]"), { autoAlpha: 1, y: 0, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, at + 0.6);
       });
       tl.to({}, { duration: 1.8 });
 

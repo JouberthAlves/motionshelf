@@ -64,13 +64,13 @@
       ]
     },
     {
-      "name": "pix-notification",
+      "name": "payment-notification",
       "type": "registry:component",
-      "title": "Pix Notification",
+      "title": "Payment Notification",
       "description": "A payment lands on the lock screen, the app opens and the amount counts up.",
       "dependencies": ["gsap", "@gsap/react"],
       "files": [
-        { "path": "registry/motionshelf/pix-notification/pix-notification.tsx", "type": "registry:component", "target": "components/motionshelf/pix-notification.tsx" }
+        { "path": "registry/motionshelf/payment-notification/payment-notification.tsx", "type": "registry:component", "target": "components/motionshelf/payment-notification.tsx" }
       ]
     },
     {
