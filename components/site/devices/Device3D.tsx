@@ -74,10 +74,11 @@ export default function Device3D({
   }, []);
 
   // Celular com perspectiva. Notebook com câmera ortográfica: com perspectiva, a frente da base (mais
-  // perto da câmera) aparecia ~33% mais larga que a tampa. O zoom deixa margem para o giro com o mouse.
+  // perto da câmera) aparecia ~33% mais larga que a tampa. Vista de 24° de cima, para o teclado aparecer
+  // e o conjunto ler como notebook aberto. O zoom deixa margem para o giro com o mouse.
   const laptop = kind === "laptop";
   const camera = laptop
-    ? { zoom: 31, position: [0, 10, 40] as [number, number, number], near: 0.1, far: 200 }
+    ? { zoom: 32, position: [0, 17.8, 40] as [number, number, number], near: 0.1, far: 200 }
     : { fov: 22, position: [0, 0, 40] as [number, number, number] };
 
   return (
@@ -102,8 +103,9 @@ export default function Device3D({
           <Lightformer form="rect" intensity={3.2} position={[0, -6, 3]} scale={[14, 1, 1]} color="#1f5bff" />
         </Environment>
         <Watchdog onSlow={onSlow} />
-        {kind === "laptop" && <LookAt y={0.2} />}
-        <Rig mouse={mouse} yaw={laptop ? 0 : side * -0.24} pitch={laptop ? 0.04 : 0.03} amount={laptop ? 0.6 : 1}>
+        {/* Alvo acima do centro: o notebook desce no quadro e assenta perto do pedestal. */}
+        {kind === "laptop" && <LookAt y={1} />}
+        <Rig mouse={mouse} yaw={laptop ? 0 : side * -0.24} pitch={laptop ? 0.04 : 0.03} amount={laptop ? 0.5 : 1}>
           {kind === "phone" ? <Phone screen={screen} /> : <Laptop screen={screen} />}
         </Rig>
       </Canvas>

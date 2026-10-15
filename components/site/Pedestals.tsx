@@ -11,10 +11,23 @@ import { BOX, type DeviceKind } from "./devices/screens";
 // mapa na largura toda. Um só conjunto de componentes ao vivo serve aos dois layouts.
 // Cada componente aparece dentro de um aparelho (celular ou notebook em 3D, com moldura CSS de reserva).
 // scale: escala máxima do aparelho (a do desktop). base: altura da frente do pedestal.
-const SHOWCASE: { slug: string; name: string; code: string; device: DeviceKind; side: -1 | 0 | 1; scale: number; base: number; wide: boolean }[] = [
-  { slug: "chat-flow", name: "Chat Flow", code: "MSG-01", device: "phone", side: -1, scale: 0.55, base: 120, wide: false },
-  { slug: "map-pin-drop", name: "Map Pin Drop", code: "MAP-01", device: "laptop", side: 0, scale: 0.6, base: 190, wide: true },
-  { slug: "payment-notification", name: "Payment Notification", code: "PAY-01", device: "phone", side: 1, scale: 0.55, base: 130, wide: false },
+// plinth: largura do pedestal em relação à caixa do aparelho. sink: quanto a caixa desce sobre o tampo do
+// pedestal, para o notebook assentar (a caixa dele tem margem embaixo para o giro com o mouse).
+const SHOWCASE: {
+  slug: string;
+  name: string;
+  code: string;
+  device: DeviceKind;
+  side: -1 | 0 | 1;
+  scale: number;
+  base: number;
+  plinth: number;
+  sink: number;
+  wide: boolean;
+}[] = [
+  { slug: "chat-flow", name: "Chat Flow", code: "MSG-01", device: "phone", side: -1, scale: 0.55, base: 120, plinth: 0.9, sink: 0, wide: false },
+  { slug: "map-pin-drop", name: "Map Pin Drop", code: "MAP-01", device: "laptop", side: 0, scale: 0.65, base: 150, plinth: 0.8, sink: 12, wide: true },
+  { slug: "payment-notification", name: "Payment Notification", code: "PAY-01", device: "phone", side: 1, scale: 0.55, base: 130, plinth: 0.9, sink: 0, wide: false },
 ];
 
 export function Pedestals() {
@@ -30,11 +43,13 @@ export function Pedestals() {
               item.wide ? "order-last col-span-2 lg:order-none lg:col-span-1" : ""
             }`}
           >
-            <FitScale width={box.w} height={box.h} max={item.scale}>
-              <Device kind={item.device} slug={item.slug} side={item.side} />
-            </FitScale>
+            <div className="relative z-10 w-full lg:mb-[calc(var(--sink)*-1px)]" style={{ "--sink": item.sink } as CSSProperties}>
+              <FitScale width={box.w} height={box.h} max={item.scale}>
+                <Device kind={item.device} slug={item.slug} side={item.side} />
+              </FitScale>
+            </div>
 
-            <Pedestal href={href} name={item.name} code={item.code} width={box.w * item.scale * (item.device === "phone" ? 0.9 : 0.95)} base={item.base} />
+            <Pedestal href={href} name={item.name} code={item.code} width={box.w * item.scale * item.plinth} base={item.base} />
 
             {/* Etiqueta do card no celular; o link cobre o card inteiro. */}
             <Link href={href} className="mt-3 flex flex-col gap-0.5 after:absolute after:inset-0 after:rounded-xl lg:hidden">
