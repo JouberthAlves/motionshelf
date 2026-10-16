@@ -76,13 +76,16 @@ export default function PlanToggle({
     () => {
       const q = gsap.utils.selector(root);
       const cols = q("[data-col]") as HTMLElement[];
-      const to = (side: "m" | "y") => (i: number) => -(Number(cols[i].dataset[side]) * 100) / COLUMN.length;
+      // Deslocamento em px inteiros (altura medida de um dígito): em porcentagem, alguns dígitos paravam
+      // em meio pixel e ficavam desalinhados dos vizinhos.
+      const to = (side: "m" | "y") => (i: number) =>
+        -Number(cols[i].dataset[side]) * (cols[i].firstElementChild as HTMLElement).offsetHeight;
       const flip = (tl: gsap.core.Timeline, side: "m" | "y", at: number) => {
         const yearly = side === "y";
         tl.to(q("[data-thumb]"), { xPercent: yearly ? 100 : 0, duration: 0.45, ease: "power3.inOut" }, at)
           .to(q("[data-label='m']"), { color: yearly ? "#525252" : "#ffffff", duration: 0.3 }, at + 0.1)
           .to(q("[data-label='y']"), { color: yearly ? "#ffffff" : "#525252", duration: 0.3 }, at + 0.1)
-          .to(cols, { yPercent: to(side), duration: 0.7, ease: "power3.inOut", stagger: 0.04 }, at + 0.1)
+          .to(cols, { y: to(side), duration: 0.7, ease: "power3.inOut" }, at + 0.1)
           .to(q("[data-bill='m']"), { autoAlpha: yearly ? 0 : 1, duration: 0.3 }, at + 0.25)
           .to(q("[data-bill='y']"), { autoAlpha: yearly ? 1 : 0, duration: 0.3 }, at + 0.25)
           .to(q("[data-badge]"), yearly ? { scale: 1, autoAlpha: 1, duration: 0.4, ease: "back.out(2.4)" } : { scale: 0.6, autoAlpha: 0, duration: 0.25 }, at + (yearly ? 0.35 : 0));
@@ -93,7 +96,7 @@ export default function PlanToggle({
       tl.set(q("[data-thumb]"), { xPercent: 0 })
         .set(q("[data-label='m']"), { color: "#ffffff" })
         .set(q("[data-label='y']"), { color: "#525252" })
-        .set(cols, { yPercent: to("m") })
+        .set(cols, { y: to("m") })
         .set(q("[data-bill='m']"), { autoAlpha: 1 })
         .set(q("[data-bill='y']"), { autoAlpha: 0 })
         .set(q("[data-badge]"), { scale: 0.6, autoAlpha: 0 })
@@ -155,11 +158,11 @@ export default function PlanToggle({
               <p className="text-[13px] font-semibold text-neutral-600">{plan.name}</p>
               <p className="mt-1.5 flex items-baseline gap-0.5" aria-label={`${currency}${plan.monthly}${period}`}>
                 <span className="text-[13px] font-semibold @[460px]:text-[16px]">{currency}</span>
-                <span aria-hidden="true" className="flex h-[1.15em] items-start overflow-hidden text-[22px] leading-[1.15] @[460px]:text-[30px] font-bold tabular-nums tracking-tight">
+                <span aria-hidden="true" className="flex h-[26px] items-start overflow-hidden text-[22px] leading-[26px] font-bold tabular-nums tracking-tight @[460px]:h-[34px] @[460px]:text-[30px] @[460px]:leading-[34px]">
                   {m.map((d, k) => (
                     <span key={k} data-col data-m={d} data-y={y[k]} className="flex flex-col">
                       {COLUMN.map((c, j) => (
-                        <span key={j} className="block h-[1.15em] text-center">
+                        <span key={j} className="block h-[26px] text-center @[460px]:h-[34px]">
                           {c || " "}
                         </span>
                       ))}
