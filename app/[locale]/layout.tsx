@@ -50,7 +50,7 @@ export default async function LocaleLayout({
   }));
 
   return (
-    <html lang={locale === "pt" ? "pt-BR" : "en"} className={`${archivo.variable} ${hanken.variable} ${martian.variable}`}>
+    <html lang="en" className={`${archivo.variable} ${hanken.variable} ${martian.variable}`}>
       <body className="min-h-dvh">
         <NextIntlClientProvider>
           <SiteHeader />

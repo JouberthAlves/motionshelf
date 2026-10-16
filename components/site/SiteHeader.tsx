@@ -2,7 +2,6 @@ import { useTranslations } from "next-intl";
 import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "./Logo";
-import { LocaleSwitch } from "./LocaleSwitch";
 import { SearchButton } from "./SearchButton";
 import { HeaderShell } from "./HeaderShell";
 
@@ -29,7 +28,6 @@ export function SiteHeader() {
           <a href={GITHUB_URL} target="_blank" rel="noreferrer" aria-label={t("github")} className="text-text/90 transition-colors hover:text-white">
             <GithubLogo size={20} weight="regular" />
           </a>
-          <LocaleSwitch />
         </div>
       </div>
     </HeaderShell>

@@ -14,16 +14,15 @@ const OG_IMAGE = {
 };
 
 /**
- * Metadata de uma página: título, descrição, canônico e a mesma página no outro idioma
- * (path sem o prefixo do idioma, ex. "/components/payment-notification"; "" é a home).
+ * Metadata de uma página: título, descrição e canônico (path ex. "/components/payment-notification";
+ * "" é a home).
  */
 export function pageMetadata({
-  locale,
   path,
   title,
   description,
 }: {
-  locale: Locale;
+  locale?: Locale;
   path: string;
   title?: string;
   description: string;
@@ -31,15 +30,12 @@ export function pageMetadata({
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: {
-      canonical: `/${locale}${path}`,
-      languages: { en: `/en${path}`, "pt-BR": `/pt${path}`, "x-default": `/en${path}` },
-    },
+    alternates: { canonical: path || "/" },
     openGraph: {
       type: "website",
       siteName: "Motionshelf",
-      locale: locale === "pt" ? "pt_BR" : "en_US",
-      url: `/${locale}${path}`,
+      locale: "en_US",
+      url: path || "/",
       ...(title ? { title: `${title} · Motionshelf` } : {}),
       description,
       images: [OG_IMAGE],
