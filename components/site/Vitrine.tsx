@@ -12,7 +12,7 @@ import { STAGE } from "./Thumb";
 export type VitrineItem = {
   slug: string;
   name: string;
-  code: string;
+  stack: string;
   category: string;
   categoryName: string;
   summary: string;
@@ -170,22 +170,58 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
           </div>
         </div>
 
-        {/* Palco: o componente da vez em cima do pedestal grande. */}
-        <div className="flex min-h-0 flex-col items-center justify-end">
-          <div className="relative w-full min-h-0 flex-1">
-            {desktop && <StageFit key={item.slug} slug={item.slug} align="center" className="vitrine-in" />}
-          </div>
-          <div className="w-[min(70%,560px)]">
-            {/* Pedestal alto: o componente fica perto do meio da tela, não colado no rodapé. */}
-            <PedestalBlock base="clamp(170px, 31vh, 320px)">
-              <p className="pt-7 text-center font-mono text-sm tracking-wide text-[#c3cbe6]/85">
-                {item.code} · React · GSAP
-              </p>
-            </PedestalBlock>
-          </div>
-        </div>
+        {/* Palco: o componente da vez apoiado em cima da coluna grande. */}
+        <StageWithColumn item={item} desktop={desktop} />
       </div>
     </section>
+  );
+}
+
+// Partes fixas da coluna (tampo, LED, capitel e os dois degraus), fora o fuste.
+const COLUMN_FIXED = 46;
+// Espaço entre o componente e o tampo da coluna.
+const COLUMN_GAP = 14;
+
+/**
+ * O componente fica apoiado no tampo e a coluna cresce para ocupar o que sobra embaixo: um componente
+ * baixo (um título) ganha uma coluna alta, sem o vão preto entre ele e o pedestal.
+ */
+function StageWithColumn({ item, desktop }: { item: VitrineItem; desktop: boolean }) {
+  const col = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ w: 0, h: 0 });
+  const [natural, setNaturalState] = useState<{ w: number; h: number } | null>(null);
+  const setNatural = useCallback(
+    (next: { w: number; h: number }) => setNaturalState((prev) => (prev && prev.w === next.w && prev.h === next.h ? prev : next)),
+    [],
+  );
+
+  useEffect(() => {
+    const el = col.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setSize({ w: el.clientWidth, h: el.clientHeight }));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const minBase = 140;
+  const maxBase = size.h * 0.55;
+  const room = size.h - COLUMN_FIXED - minBase - COLUMN_GAP;
+  const scale = natural ? Math.min(1, (size.w * 0.92) / natural.w, (room * 0.96) / natural.h) : 1;
+  const compH = natural ? natural.h * scale : 0;
+  const base = Math.round(Math.min(maxBase, Math.max(minBase, size.h - COLUMN_FIXED - compH - COLUMN_GAP)));
+  const stageH = Math.max(0, size.h - COLUMN_FIXED - base);
+
+  return (
+    <div ref={col} className="relative min-h-0">
+      <div className="absolute inset-x-0 top-0" style={{ height: stageH }}>
+        {desktop && size.h > 0 && (
+          <StageFit key={item.slug} slug={item.slug} align="bottom" gap={COLUMN_GAP} onNatural={setNatural} className="vitrine-in" />
+        )}
+      </div>
+      <div className="absolute bottom-0 left-1/2 w-[min(70%,560px)] -translate-x-1/2">
+        <PedestalBlock base={base} name={item.name} stack={item.stack} large />
+      </div>
+    </div>
   );
 }
 
@@ -201,9 +237,7 @@ function StackedVitrine({ items, labels }: { items: VitrineItem[]; labels: Label
               <StageFit slug={it.slug} align="center" />
             </LazyMount>
             <div className="px-1.5 pt-3 pb-1">
-              <p className="font-mono text-xs text-muted">
-                {it.code} · {it.categoryName}
-              </p>
+              <p className="font-mono text-xs tracking-[0.12em] text-muted uppercase">{it.categoryName}</p>
               <p className="mt-0.5 font-semibold text-text">{it.name}</p>
               <p className="mt-1 text-sm text-muted">{it.summary}</p>
               <div className="mt-3 flex flex-wrap gap-x-5">
@@ -274,12 +308,28 @@ function LazyMount({ className, height, children }: { className?: string; height
 }
 
 /** Componente ao vivo escalado para caber na caixa (sem passar do tamanho natural). */
-function StageFit({ slug, align, className }: { slug: string; align: "bottom" | "center"; className?: string }) {
+function StageFit({
+  slug,
+  align,
+  gap = 0,
+  onNatural,
+  className,
+}: {
+  slug: string;
+  align: "bottom" | "center";
+  /** Espaço deixado embaixo quando alinhado em baixo. */
+  gap?: number;
+  /** Avisa o tamanho natural do componente, para quem precisa ajustar o espaço em volta. */
+  onNatural?: (size: { w: number; h: number }) => void;
+  className?: string;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const inner = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ s: 0, x: 0, y: 0 });
   const Component = PREVIEWS[slug];
   const stage = STAGE[slug] ?? 480;
+  const onNaturalRef = useRef(onNatural);
+  onNaturalRef.current = onNatural;
 
   useEffect(() => {
     const b = box.current;
@@ -290,16 +340,18 @@ function StageFit({ slug, align, className }: { slug: string; align: "bottom" | 
       const bh = b.clientHeight;
       const iw = i.offsetWidth;
       const ih = i.offsetHeight;
-      if (!iw || !ih || !bw || !bh) return;
-      const s = Math.min((bw * 0.92) / iw, (bh * 0.94) / ih, 1);
-      setFit({ s, x: (bw - iw * s) / 2, y: align === "bottom" ? bh - ih * s : (bh - ih * s) / 2 });
+      if (!iw || !ih) return;
+      onNaturalRef.current?.({ w: iw, h: ih });
+      if (!bw || !bh) return;
+      const s = Math.min((bw * 0.92) / iw, ((bh - gap) * 0.96) / ih, 1);
+      setFit({ s, x: (bw - iw * s) / 2, y: align === "bottom" ? bh - gap - ih * s : (bh - ih * s) / 2 });
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(b);
     ro.observe(i);
     return () => ro.disconnect();
-  }, [align]);
+  }, [align, gap]);
 
   return (
     <div ref={box} className={cn("absolute inset-0", className)}>

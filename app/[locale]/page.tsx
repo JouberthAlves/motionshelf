@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { CATEGORIES, ENTRIES, type Locale } from "@/lib/catalog";
+import { CATEGORIES, ENTRIES, stackOf, type Locale } from "@/lib/catalog";
 import { installCommand } from "@/lib/code";
 import { TerminalBackground } from "@/components/site/TerminalBackground";
 import { Pedestals } from "@/components/site/Pedestals";
@@ -59,7 +59,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           items={ENTRIES.map((entry) => ({
             slug: entry.slug,
             name: entry.name,
-            code: entry.code,
+            stack: stackOf(entry),
             category: entry.category,
             categoryName: CATEGORIES.find((c) => c.id === entry.category)?.name[loc] ?? "",
             summary: entry.summary[loc],

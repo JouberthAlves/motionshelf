@@ -6,7 +6,8 @@ import { PREVIEWS } from "./previews";
 // Largura natural de cada componente na miniatura (os de largura fluida ganham um palco fixo).
 export const STAGE: Record<string, number> = {
   "title-reveal": 440,
-  "rotating-word": 520,
+  // Largo o bastante para "Build your next landing page" caber numa linha só.
+  "rotating-word": 700,
   "before-after-text": 380,
   "chat-flow": 290,
   "question-typer": 480,

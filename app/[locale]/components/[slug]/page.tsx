@@ -75,9 +75,7 @@ export default async function ComponentPage({ params }: { params: Params }) {
           <Link href="/components" className="mb-6 inline-block py-1 text-sm text-muted transition-colors hover:text-text md:hidden">
             ← {tc("all")}
           </Link>
-          <p className="font-mono text-xs text-led-soft">
-            {entry.code} · {category}
-          </p>
+          <p className="font-mono text-xs tracking-[0.12em] text-led-soft uppercase">{category}</p>
           <h1 className="display-wide mt-2 text-[clamp(1.75rem,9cqi,3rem)] text-text">{entry.name}</h1>
           <p className="mt-3 max-w-2xl text-muted">{entry.summary[loc]}</p>
         </header>

@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Logo } from "./Logo";
+import { FooterWordmark } from "./FooterWordmark";
 
 export function SiteFooter() {
   const t = useTranslations("footer");
@@ -18,6 +19,7 @@ export function SiteFooter() {
           <p>{t("made")}</p>
         </div>
       </div>
+      <FooterWordmark />
     </footer>
   );
 }

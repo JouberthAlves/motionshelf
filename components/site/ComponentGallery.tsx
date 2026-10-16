@@ -143,9 +143,6 @@ export function ComponentGallery({ items, categories, labels }: { items: Gallery
                 >
                   <div className="relative">
                     <Thumb slug={item.slug} />
-                    <span className="absolute top-2.5 left-2.5 rounded-md bg-ink/70 px-2 py-0.5 font-mono text-xs text-text/90 backdrop-blur-sm">
-                      {item.code}
-                    </span>
                   </div>
                   <div className="px-2 pt-3 pb-2">
                     <p className="font-semibold text-text transition-colors group-hover:text-white">{item.name}</p>

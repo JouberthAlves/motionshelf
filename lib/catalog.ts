@@ -263,7 +263,7 @@ export const ENTRIES: Entry[] = [
       en: "A sales funnel as a sieve: people drop out at each stage and only the booked ones reach the bin.",
       pt: "Um funil de vendas como peneira: cada etapa deixa gente de fora, e só os agendados chegam ao recipiente.",
     },
-    dependencies: deps,
+    dependencies: [],
     props: [
       p("rates", "[number, number, number]", "[0.3, 0.35, 0.4]", "Chance that someone who reaches each stage moves on.", "Chance de quem chega a cada etapa avançar."),
       CLASS,
@@ -305,4 +305,6 @@ export const ENTRIES: Entry[] = [
 ];
 
 export const bySlug = (slug: string) => ENTRIES.find((e) => e.slug === slug);
+/** A stack que o componente usa de verdade, para a placa do pedestal. */
+export const stackOf = (entry: Entry) => (entry.dependencies.includes("gsap") ? "React · GSAP" : "React");
 export const inCategory = (id: CategoryId) => ENTRIES.filter((e) => e.category === id);

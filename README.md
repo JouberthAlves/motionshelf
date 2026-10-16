@@ -31,63 +31,63 @@ Payment notifications, chat flows, map pins, search results, booking slots, and 
   <tr>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/payment-notification"><img src=".github/readme/payment-notification.webp" alt="Payment Notification" width="100%"></a><br>
-      <b>Payment Notification</b><br><sub>Commerce · PAY-01</sub>
+      <b>Payment Notification</b><br><sub>Commerce</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/chat-flow"><img src=".github/readme/chat-flow.webp" alt="Chat Flow" width="100%"></a><br>
-      <b>Chat Flow</b><br><sub>Messages · MSG-01</sub>
+      <b>Chat Flow</b><br><sub>Messages</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/map-pin-drop"><img src=".github/readme/map-pin-drop.webp" alt="Map Pin Drop" width="100%"></a><br>
-      <b>Map Pin Drop</b><br><sub>Location · MAP-01</sub>
+      <b>Map Pin Drop</b><br><sub>Location</sub>
     </td>
   </tr>
   <tr>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/title-reveal"><img src=".github/readme/title-reveal.webp" alt="Title Reveal" width="100%"></a><br>
-      <b>Title Reveal</b><br><sub>Text · TXT-01</sub>
+      <b>Title Reveal</b><br><sub>Text</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/rotating-word"><img src=".github/readme/rotating-word.webp" alt="Rotating Word" width="100%"></a><br>
-      <b>Rotating Word</b><br><sub>Text · TXT-02</sub>
+      <b>Rotating Word</b><br><sub>Text</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/before-after-text"><img src=".github/readme/before-after-text.webp" alt="Before and After Text" width="100%"></a><br>
-      <b>Before and After Text</b><br><sub>Text · TXT-03</sub>
+      <b>Before and After Text</b><br><sub>Text</sub>
     </td>
   </tr>
   <tr>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/question-typer"><img src=".github/readme/question-typer.webp" alt="Question Typer" width="100%"></a><br>
-      <b>Question Typer</b><br><sub>Messages · MSG-02</sub>
+      <b>Question Typer</b><br><sub>Messages</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/appointment-reminder"><img src=".github/readme/appointment-reminder.webp" alt="Appointment Reminder" width="100%"></a><br>
-      <b>Appointment Reminder</b><br><sub>Messages · MSG-03</sub>
+      <b>Appointment Reminder</b><br><sub>Messages</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/search-ad"><img src=".github/readme/search-ad.webp" alt="Search Ad" width="100%"></a><br>
-      <b>Search Ad</b><br><sub>Commerce · PAY-02</sub>
+      <b>Search Ad</b><br><sub>Commerce</sub>
     </td>
   </tr>
   <tr>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/slot-booking"><img src=".github/readme/slot-booking.webp" alt="Slot Booking" width="100%"></a><br>
-      <b>Slot Booking</b><br><sub>Scheduling · SLT-01</sub>
+      <b>Slot Booking</b><br><sub>Scheduling</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/sales-funnel"><img src=".github/readme/sales-funnel.webp" alt="Sales Funnel" width="100%"></a><br>
-      <b>Sales Funnel</b><br><sub>Anatomy · FNL-01</sub>
+      <b>Sales Funnel</b><br><sub>Anatomy</sub>
     </td>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/roi-balance"><img src=".github/readme/roi-balance.webp" alt="ROI Balance" width="100%"></a><br>
-      <b>ROI Balance</b><br><sub>Anatomy · ROI-01</sub>
+      <b>ROI Balance</b><br><sub>Anatomy</sub>
     </td>
   </tr>
   <tr>
     <td width="33%" align="center" valign="top">
       <a href="https://motionshelf-pi.vercel.app/en/components/page-speed-gauge"><img src=".github/readme/page-speed-gauge.webp" alt="Page Speed Gauge" width="100%"></a><br>
-      <b>Page Speed Gauge</b><br><sub>Anatomy · SPD-01</sub>
+      <b>Page Speed Gauge</b><br><sub>Anatomy</sub>
     </td>
     <td width="33%"></td>
     <td width="33%"></td>

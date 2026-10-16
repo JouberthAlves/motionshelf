@@ -107,8 +107,7 @@
       "name": "sales-funnel",
       "type": "registry:component",
       "title": "Sales Funnel",
-      "description": "A sales funnel as a sieve: people drop out at each stage and only the booked ones reach the bin.",
-      "dependencies": ["gsap", "@gsap/react"],
+      "description": "A sales funnel as a sieve: people drop out at each stage and only the booked ones reach the bin.",
       "files": [
         { "path": "registry/motionshelf/sales-funnel/sales-funnel.tsx", "type": "registry:component", "target": "components/motionshelf/sales-funnel.tsx" },
         { "path": "registry/motionshelf/sales-funnel/sales-funnel-figure.ts", "type": "registry:lib", "target": "components/motionshelf/sales-funnel-figure.ts" }

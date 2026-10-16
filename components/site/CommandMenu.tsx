@@ -60,10 +60,7 @@ export function CommandMenu({ items }: { items: SearchItem[] }) {
               }}
               className="flex cursor-pointer flex-col gap-0.5 rounded-lg px-3 py-2 data-[selected=true]:bg-shelf-2"
             >
-              <span className="flex items-center justify-between text-sm font-medium">
-                {item.name}
-                <span className="font-mono text-[10px] text-muted">{item.code}</span>
-              </span>
+              <span className="text-sm font-medium">{item.name}</span>
               <span className="text-xs text-muted">
                 {item.group} · {item.summary}
               </span>
