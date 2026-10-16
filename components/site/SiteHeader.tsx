@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { GithubLogo } from "@phosphor-icons/react/dist/ssr";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "./Logo";
+import { LogoAchievement } from "./LogoAchievement";
 import { SearchButton } from "./SearchButton";
 import { HeaderShell } from "./HeaderShell";
 
@@ -13,7 +14,9 @@ export function SiteHeader() {
     <HeaderShell>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
         <Link href="/" aria-label="Motionshelf" className="shrink-0">
-          <Logo />
+          <LogoAchievement>
+            <Logo />
+          </LogoAchievement>
         </Link>
         <nav className="ml-auto hidden items-center gap-6 text-sm text-text/90 md:flex">
           <Link href="/components" className="transition-colors hover:text-white">
