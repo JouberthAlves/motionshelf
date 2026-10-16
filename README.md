@@ -15,7 +15,7 @@
 **Motion your clients will ask for.**<br>
 Animated React components for sites that sell, installed as code you own.
 
-<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-13-1f5bff?style=flat-square" alt="13 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
+<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-18-1f5bff?style=flat-square" alt="18 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
 
 [Website](https://motionshelf-pi.vercel.app) · [Components](https://motionshelf-pi.vercel.app/en/components) · [Installation](https://motionshelf-pi.vercel.app/en/docs/installation) · [Make it with your agent](https://motionshelf-pi.vercel.app/en/docs/agents)
 
@@ -89,8 +89,28 @@ Payment notifications, chat flows, map pins, search results, booking slots, and 
       <a href="https://motionshelf-pi.vercel.app/en/components/page-speed-gauge"><img src=".github/readme/page-speed-gauge.webp" alt="Page Speed Gauge" width="100%"></a><br>
       <b>Page Speed Gauge</b><br><sub>Anatomy</sub>
     </td>
-    <td width="33%"></td>
-    <td width="33%"></td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/en/components/add-to-cart"><img src=".github/readme/add-to-cart.webp" alt="Add to Cart" width="100%"></a><br>
+      <b>Add to Cart</b><br><sub>Commerce</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/en/components/plan-toggle"><img src=".github/readme/plan-toggle.webp" alt="Plan Toggle" width="100%"></a><br>
+      <b>Plan Toggle</b><br><sub>Commerce</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/en/components/offer-countdown"><img src=".github/readme/offer-countdown.webp" alt="Offer Countdown" width="100%"></a><br>
+      <b>Offer Countdown</b><br><sub>Commerce</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/en/components/review-card"><img src=".github/readme/review-card.webp" alt="Review Card" width="100%"></a><br>
+      <b>Review Card</b><br><sub>Social proof</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/en/components/order-tracker"><img src=".github/readme/order-tracker.webp" alt="Order Tracker" width="100%"></a><br>
+      <b>Order Tracker</b><br><sub>Location</sub>
+    </td>
   </tr>
 </table>
 

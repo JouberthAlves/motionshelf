@@ -235,6 +235,105 @@ const RECIPES: Record<string, Recipe> = {
       t("the confirmation label and the accent color", "o rótulo de confirmação e a cor de destaque"),
     ],
   },
+  "add-to-cart": {
+    technique: "gsap",
+    look: t(
+      "A small store mockup: a top bar with the store name, the cart total and a round cart icon with a count badge; below it a product card with a square product tile, name, one detail line, price and a full-width \"Add to cart\" button. A round pointer rests near the bottom left.",
+      "Uma loja em miniatura: uma barra no topo com o nome da loja, o total do carrinho e um ícone redondo de carrinho com contador; embaixo, um card de produto com uma imagem quadrada, nome, uma linha de detalhe, preço e um botão \"Adicionar ao carrinho\" na largura toda. Um ponteiro redondo descansa perto do canto de baixo à esquerda.",
+    ),
+    beats: [
+      t("At 0.4 s the pointer travels to the measured center of the button (0.8 s, power2.inOut) and presses it at 1.25 s (pointer scale 0.7 and button scale 0.96, yoyo).", "Aos 0,4 s o ponteiro vai até o centro medido do botão (0,8 s, power2.inOut) e aperta aos 1,25 s (ponteiro em scale 0,7 e botão em 0,96, yoyo)."),
+      t("At 1.4 s the button text slides up and out and \"Added\" with a check slides in (back.out(2)); the pointer fades.", "Aos 1,4 s o texto do botão sobe e sai, e \"Adicionado\" com um check entra (back.out(2)); o ponteiro some."),
+      t("At 1.45 s a small copy of the product tile flies to the cart in 0.75 s: x with power1.in, y with back.in(2.2) so it arcs up before dropping in, and it shrinks to 35%. Start and end are measured from the tile and the cart icon.", "Aos 1,45 s uma cópia pequena da imagem do produto voa até o carrinho em 0,75 s: x com power1.in, y com back.in(2.2) para subir num arco antes de cair, e encolhe para 35%. Início e fim são medidos da imagem e do ícone do carrinho."),
+      t("At 2.2 s the cart wobbles (rotation -8°, yoyo), the badge number goes up by one and pops from scale 1.6 to 1 (back.out(3)), and the total counts up by the price in 0.6 s, formatted with Intl.NumberFormat.", "Aos 2,2 s o carrinho balança (rotation -8°, yoyo), o número do contador sobe um e pula de scale 1,6 para 1 (back.out(3)), e o total sobe o valor do produto em 0,6 s, formatado com Intl.NumberFormat."),
+    ],
+    adapt: [
+      t("the store name, the product (name, detail, price, photo) and the currency", "o nome da loja, o produto (nome, detalhe, preço, foto) e a moeda"),
+      t("how many items and what total the cart has before the click", "quantos itens e qual total o carrinho tem antes do clique"),
+      t("the button texts and the accent color", "os textos do botão e a cor de destaque"),
+    ],
+    extra: [t("The flying copy is a separate absolutely positioned element; never move the real product tile.", "A cópia que voa é um elemento separado com posição absoluta; nunca mova a imagem real do produto.")],
+  },
+  "plan-toggle": {
+    technique: "gsap",
+    look: t(
+      "A pricing block: a pill switch with \"Monthly\" and \"Yearly\" (a colored thumb behind the active side) and a small discount badge; below it three plan cards side by side, the middle one highlighted with a colored border and a \"Popular\" tag. Each card has the name, a big price with \"/mo\", a billing line and three features with check marks.",
+      "Um bloco de preços: uma chave em pílula com \"Mensal\" e \"Anual\" (um fundo colorido atrás do lado ativo) e um selo pequeno de desconto; embaixo, três cards de plano lado a lado, o do meio em destaque com borda colorida e etiqueta \"Popular\". Cada card tem o nome, um preço grande com \"/mês\", uma linha de cobrança e três itens com check.",
+    ),
+    beats: [
+      t("Each price digit is a vertical column of 0–9 plus an empty slot (for prices with fewer digits) inside an overflow-hidden box one line tall; the column moves with yPercent to show a digit.", "Cada dígito do preço é uma coluna vertical de 0 a 9 mais uma posição vazia (para preços com menos dígitos) dentro de uma caixa da altura de uma linha com overflow escondido; a coluna anda com yPercent para mostrar o dígito."),
+      t("At 0.9 s the thumb gets a quick press (scale 0.94, yoyo); at 1.0 s it slides to Yearly (xPercent 100, 0.45 s, power3.inOut) and the label colors swap.", "Aos 0,9 s o fundo da chave leva um toque (scale 0,94, yoyo); aos 1,0 s ele desliza para Anual (xPercent 100, 0,45 s, power3.inOut) e as cores dos textos trocam."),
+      t("At 1.1 s every digit column rolls to the yearly price (0.7 s, power3.inOut, stagger 0.04 s), the billing line cross-fades, and at 1.35 s the discount badge pops in (scale 0.6 → 1, back.out(2.4)).", "Aos 1,1 s todas as colunas rolam até o preço anual (0,7 s, power3.inOut, stagger 0,04 s), a linha de cobrança troca com fade, e aos 1,35 s o selo de desconto aparece (scale 0,6 → 1, back.out(2.4))."),
+      t("At 4.2 s the same moves run back to Monthly, so the loop starts and ends on the same frame; pause 1.2 s.", "Aos 4,2 s os mesmos movimentos voltam para Mensal, então o loop começa e termina no mesmo quadro; pausa de 1,2 s."),
+    ],
+    adapt: [
+      t("the plans: names, monthly and yearly price per month, features, and which one is highlighted", "os planos: nomes, preço por mês no mensal e no anual, itens e qual fica em destaque"),
+      t("the currency symbol, the period text and the discount badge", "o símbolo da moeda, o texto do período e o selo de desconto"),
+      t("the accent color", "a cor de destaque"),
+    ],
+    extra: [t("Prices are whole numbers so the odometer only rolls digits; give the price an aria-label, since the columns are hidden from screen readers.", "Os preços são inteiros, para o hodômetro só rolar dígitos; dê ao preço um aria-label, porque as colunas ficam escondidas dos leitores de tela.")],
+  },
+  "offer-countdown": {
+    technique: "gsap",
+    look: t(
+      "A dark card: a small label with a pulsing colored dot, the line \"Ends in\", a flip clock with hours, minutes and seconds (two dark tiles per group, colons between groups, small labels below), and a stock line with a thin progress bar.",
+      "Um card escuro: uma etiqueta pequena com um ponto colorido pulsando, a linha \"Termina em\", um relógio de placas com horas, minutos e segundos (duas placas escuras por grupo, dois-pontos entre os grupos, textos pequenos embaixo) e uma linha de estoque com uma barra fina.",
+    ),
+    beats: [
+      t("The time is real: compute the deadline once in the browser (never during server render) and check it every 250 ms; when a digit changes, flip only that tile.", "O tempo é real: calcule o prazo uma vez no navegador (nunca no render do servidor) e confira a cada 250 ms; quando um dígito muda, vire só aquela placa."),
+      t("Each tile has four halves: static top (new digit), static bottom (old digit), a top flap (old digit) that falls to rotationX -90 in 0.22 s (power2.in), and a bottom flap (new digit) that comes from rotationX 90 to 0 in 0.26 s (power2.out); then all halves show the new digit. Use perspective on the tile and backface-visibility hidden.", "Cada placa tem quatro metades: a de cima parada (dígito novo), a de baixo parada (dígito velho), uma aba de cima (dígito velho) que cai até rotationX -90 em 0,22 s (power2.in) e uma aba de baixo (dígito novo) que vem de rotationX 90 até 0 em 0,26 s (power2.out); no fim, todas mostram o dígito novo. Use perspective na placa e backface-visibility hidden."),
+      t("On mount the tiles rise in (y 12 → 0, stagger 0.05 s) and the stock bar fills to stock ÷ total (0.9 s, power3.out). Every 2.6 s a light streak crosses the bar and the dot pulses.", "Ao montar, as placas sobem (y 12 → 0, stagger 0,05 s) e a barra de estoque enche até estoque ÷ total (0,9 s, power3.out). A cada 2,6 s um brilho passa pela barra e o ponto pulsa."),
+      t("At zero the timer stops, the \"Ends in\" line is replaced by \"This offer has ended\" and the stock line dims.", "No zero o relógio para, a linha \"Termina em\" vira \"Esta oferta terminou\" e a linha de estoque fica apagada."),
+    ],
+    adapt: [
+      t("the real end date and time of the offer (and the time zone)", "a data e a hora reais do fim da oferta (e o fuso)"),
+      t("the real stock left and the starting stock, or whether to hide the stock line", "o estoque que realmente resta e o estoque inicial, ou se a linha de estoque some"),
+      t("the texts and the accent color", "os textos e a cor de destaque"),
+    ],
+    extra: [
+      t("Never fake urgency: no timer that restarts on reload and no stock that drops on its own. If the offer has no real deadline, do not use this component.", "Nunca invente urgência: nada de relógio que recomeça ao recarregar nem de estoque que cai sozinho. Se a oferta não tem prazo real, não use este componente."),
+      t("This one is not a looping timeline: the clock runs on real time and stops at zero; clear the interval on unmount.", "Este não é uma timeline em loop: o relógio anda no tempo real e para no zero; limpe o intervalo ao desmontar."),
+    ],
+  },
+  "review-card": {
+    technique: "gsap",
+    look: t(
+      "A white review card: a small heading, a big average rating next to five stars and the review count, a divider, then one review with a round initial avatar, the name, when it was written and the text.",
+      "Um card branco de avaliações: um título pequeno, a nota média grande ao lado de cinco estrelas e do número de avaliações, uma linha divisória e uma avaliação com avatar redondo de inicial, o nome, quando foi escrita e o texto.",
+    ),
+    beats: [
+      t("At 0.2 s the card rises in (y 14 → 0, 0.5 s, power3.out).", "Aos 0,2 s o card sobe (y 14 → 0, 0,5 s, power3.out)."),
+      t("At 0.5 s the stars pop one by one (scale 0 → 1, back.out(2.6), stagger 0.09 s) and their color fills from the left; the last star fills only by the decimal (4.9 → 90%). At the same time the rating counts from 0 to 4.9 and the review count from 0 to 312 in 1.2 s, formatted with Intl.NumberFormat.", "Aos 0,5 s as estrelas pulam uma a uma (scale 0 → 1, back.out(2.6), stagger 0,09 s) e a cor enche a partir da esquerda; a última enche só a parte decimal (4,9 → 90%). Ao mesmo tempo a nota conta de 0 a 4,9 e o número de avaliações de 0 a 312 em 1,2 s, formatados com Intl.NumberFormat."),
+      t("From 1.5 s each review takes 3.4 s: its words come in one after another (autoAlpha, y 8 → 0, blur 4px → 0, stagger 0.035 s), then it fades up and out 0.35 s before the next. The last review stays.", "A partir de 1,5 s cada avaliação ocupa 3,4 s: as palavras entram uma depois da outra (autoAlpha, y 8 → 0, blur 4px → 0, stagger 0,035 s) e ela sobe e some 0,35 s antes da próxima. A última fica."),
+    ],
+    adapt: [
+      t("the real rating, the real review count and real reviews (name, text, when)", "a nota real, o número real de avaliações e avaliações reais (nome, texto, quando)"),
+      t("the heading and the language of the numbers", "o título e o idioma dos números"),
+      t("the star color", "a cor das estrelas"),
+    ],
+    extra: [
+      t("Stack all the reviews in the same grid cell so the card keeps the height of the longest one and nothing jumps.", "Empilhe todas as avaliações na mesma célula da grade, para o card ficar com a altura da maior e nada pular."),
+      t("Use only real reviews, with permission. Do not copy the logo of a review platform.", "Use só avaliações reais, com permissão. Não copie o logo de uma plataforma de avaliações."),
+    ],
+  },
+  "order-tracker": {
+    technique: "gsap",
+    look: t(
+      "A white card: on top a small light map with blocks, a gray road from a store dot to a home pin and a round courier marker; below it the order number, \"Arrives in 12 min\" and four stages in a vertical list (round markers joined by a line, stage name and time).",
+      "Um card branco: no topo um mapinha claro com quarteirões, uma rua cinza de um ponto da loja até um pino de casa e um marcador redondo do entregador; embaixo, o número do pedido, \"Chega em 12 min\" e quatro etapas numa lista vertical (marcadores redondos ligados por uma linha, nome da etapa e horário).",
+    ),
+    beats: [
+      t("Stages check off at 0.3 s, 1.3 s, 2.3 s and 5.9 s: the marker fills with color (scale 0 → 1, back.out(2.4)), the check draws itself (stroke-dashoffset to 0) and the label goes from 55% to full opacity. Between them the vertical line grows a third at a time (scaleY, 0.5 s).", "As etapas ganham check aos 0,3 s, 1,3 s, 2,3 s e 5,9 s: o marcador enche de cor (scale 0 → 1, back.out(2.4)), o check se desenha (stroke-dashoffset até 0) e o texto vai de 55% para opacidade total. Entre elas a linha vertical cresce um terço por vez (scaleY, 0,5 s)."),
+      t("From 2.5 s to 5.5 s the courier follows the road with MotionPathPlugin (align to the path, power1.inOut), the colored route draws behind it (stroke-dashoffset) and the minutes count down from 12 to 0.", "De 2,5 s a 5,5 s o entregador segue a rua com o MotionPathPlugin (alinhado ao caminho, power1.inOut), a rota colorida se desenha atrás dele (stroke-dashoffset) e os minutos contam de 12 até 0."),
+      t("At 5.9 s \"Arrives in\" is replaced by \"Delivered\" (back.out(1.8)) and eight small confetti pieces burst from it to fixed offsets, then fall a little and fade by 7.3 s.", "Aos 5,9 s \"Chega em\" vira \"Entregue\" (back.out(1.8)) e oito confetes pequenos saem dele para posições fixas, depois caem um pouco e somem até 7,3 s."),
+    ],
+    adapt: [
+      t("the four stages and their times (it can also show a service process, not only a delivery)", "as quatro etapas e os horários (também serve para mostrar um processo de atendimento, não só entrega)"),
+      t("the order label, the minutes and the texts", "o texto do pedido, os minutos e as frases"),
+      t("the accent color", "a cor de destaque"),
+    ],
+    extra: [t("Register MotionPathPlugin with gsap.registerPlugin. Confetti offsets are a fixed list, not random, so every loop looks the same.", "Registre o MotionPathPlugin com gsap.registerPlugin. As posições dos confetes são uma lista fixa, não aleatória, para toda volta ficar igual.")],
+  },
   "sales-funnel": {
     technique: "anatomy",
     look: t(

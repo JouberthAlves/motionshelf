@@ -84,6 +84,46 @@
       ]
     },
     {
+      "name": "add-to-cart",
+      "type": "registry:component",
+      "title": "Add to Cart",
+      "description": "A click on the button sends the product flying into the cart; the badge bumps and the total climbs.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/add-to-cart/add-to-cart.tsx", "type": "registry:component", "target": "components/motionshelf/add-to-cart.tsx" }
+      ]
+    },
+    {
+      "name": "plan-toggle",
+      "type": "registry:component",
+      "title": "Plan Toggle",
+      "description": "The switch slides from monthly to yearly, the prices roll like an odometer and the discount badge pops in.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/plan-toggle/plan-toggle.tsx", "type": "registry:component", "target": "components/motionshelf/plan-toggle.tsx" }
+      ]
+    },
+    {
+      "name": "offer-countdown",
+      "type": "registry:component",
+      "title": "Offer Countdown",
+      "description": "A flip clock counts down to the real end of the offer, next to the real stock left.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/offer-countdown/offer-countdown.tsx", "type": "registry:component", "target": "components/motionshelf/offer-countdown.tsx" }
+      ]
+    },
+    {
+      "name": "review-card",
+      "type": "registry:component",
+      "title": "Review Card",
+      "description": "The stars light up one by one, the rating and the review count climb, and the reviews take turns.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/review-card/review-card.tsx", "type": "registry:component", "target": "components/motionshelf/review-card.tsx" }
+      ]
+    },
+    {
       "name": "map-pin-drop",
       "type": "registry:component",
       "title": "Map Pin Drop",
@@ -91,6 +131,16 @@
       "dependencies": ["gsap", "@gsap/react"],
       "files": [
         { "path": "registry/motionshelf/map-pin-drop/map-pin-drop.tsx", "type": "registry:component", "target": "components/motionshelf/map-pin-drop.tsx" }
+      ]
+    },
+    {
+      "name": "order-tracker",
+      "type": "registry:component",
+      "title": "Order Tracker",
+      "description": "Each stage checks off, the courier rides the route on the map and the time left counts down to delivered.",
+      "dependencies": ["gsap", "@gsap/react"],
+      "files": [
+        { "path": "registry/motionshelf/order-tracker/order-tracker.tsx", "type": "registry:component", "target": "components/motionshelf/order-tracker.tsx" }
       ]
     },
     {
