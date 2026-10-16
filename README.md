@@ -4,9 +4,9 @@
 
 <a href="https://motionshelf-pi.vercel.app">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/footer-dark.webp">
-    <source media="(prefers-color-scheme: light)" srcset=".github/readme/footer-light.webp">
-    <img src=".github/readme/footer-dark.webp" alt="MOTIONSHELF, animated: a wave of light passes over the letters" width="520">
+    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset=".github/readme/logo-light.png">
+    <img src=".github/readme/logo-dark.png" alt="Motionshelf" width="420">
   </picture>
 </a>
 
