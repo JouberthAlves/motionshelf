@@ -27,6 +27,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <>
+      <PerformanceNotice />
       <section className="relative isolate -mt-16 overflow-hidden pt-16">
         <TerminalBackground />
         <div className="relative mx-auto flex max-w-5xl flex-col items-center px-4 pt-20 pb-14 text-center sm:px-6 sm:pt-28">

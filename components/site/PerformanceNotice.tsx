@@ -9,12 +9,12 @@ const KEY = "motionshelf-notice-seen";
 // Tempo até o botão aparecer, para a pessoa ler antes de poder fechar.
 const BUTTON_DELAY = 2000;
 
-type Kind = "mobile" | "gpu";
+type Kind = "mobile" | "motion" | "gpu";
 
 /**
- * Aviso de tela cheia na home para quem não vê os modelos 3D: celular (a vitrine usa só a moldura CSS) e
- * computador sem GPU de verdade. Escurece a página, mostra o texto e, depois de 2 s, o botão aparece.
- * Quem tem movimento reduzido fica de fora: não é desempenho, e o 3D também não aparece para essa pessoa.
+ * Aviso de tela cheia na home para quem não vê os modelos 3D: celular (a vitrine usa só a moldura CSS),
+ * movimento reduzido ligado (o 3D fica desligado) e computador sem GPU de verdade. Escurece a página,
+ * mostra o texto e, depois de 2 s, o botão aparece.
  */
 export function PerformanceNotice() {
   const t = useTranslations("notice");
@@ -30,7 +30,8 @@ export function PerformanceNotice() {
     const mobile = window.matchMedia("(max-width: 1023px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (mobile) setKind("mobile");
-    else if (!reduced && !hasGpu()) setKind("gpu");
+    else if (reduced) setKind("motion");
+    else if (!hasGpu()) setKind("gpu");
   }, []);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export function PerformanceNotice() {
     >
       <div className="max-w-lg text-center">
         <p id="performance-notice-text" className="text-lg leading-relaxed text-text">
-          {kind === "mobile" ? t("mobile") : t("gpu")}
+          {kind === "mobile" ? t("mobile") : kind === "motion" ? t("motion") : t("gpu")}
         </p>
         <button
           type="button"
