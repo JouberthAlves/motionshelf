@@ -9,19 +9,22 @@ import { BOX, DeviceScreen, type DeviceKind } from "./screens";
 const Device3D = dynamic(() => import("./Device3D"), { ssr: false });
 
 /**
- * Aparelho com o componente ao vivo na tela. Começa na moldura em CSS; no desktop, com GPU de verdade e
- * sem movimento reduzido, troca pelo modelo em three.js depois que a página fica ociosa.
+ * Aparelho com o componente ao vivo na tela. Começa na moldura em CSS, parada; com GPU de verdade e sem
+ * movimento reduzido ela passa a flutuar e, no desktop, troca pelo modelo em three.js depois que a
+ * página fica ociosa. Sem GPU (computador de empresa com aceleração bloqueada) a moldura fica parada.
  */
 export function Device({ kind, slug, side = 0 }: { kind: DeviceKind; slug: string; side?: -1 | 0 | 1 }) {
   const [mode, setMode] = useState<"css" | "3d">("css");
+  const [float, setFloat] = useState(false);
 
   useEffect(() => {
     const desktop = window.matchMedia("(min-width: 1024px)").matches;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!desktop || reduced) return;
+    if (reduced || !hasGpu()) return;
+    setFloat(true);
+    if (!desktop) return;
     let cancelled = false;
     const start = () => {
-      if (!hasGpu()) return;
       // Baixa o three.js antes de trocar, para a moldura não sumir enquanto ele carrega.
       import("./Device3D").then(() => {
         if (!cancelled) setMode("3d");
@@ -42,7 +45,7 @@ export function Device({ kind, slug, side = 0 }: { kind: DeviceKind; slug: strin
       {mode === "3d" ? (
         <Device3D kind={kind} side={side} screen={screen} onSlow={() => setMode("css")} />
       ) : (
-        <CssDevice kind={kind} side={side}>
+        <CssDevice kind={kind} side={side} float={float}>
           {screen}
         </CssDevice>
       )}

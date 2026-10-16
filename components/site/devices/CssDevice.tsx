@@ -8,16 +8,27 @@ const GLARE = "linear-gradient(115deg,rgb(255 255 255/0.10) 0%,transparent 34%)"
 
 /**
  * Moldura do aparelho em CSS: a reserva do modelo 3D (celular, sem GPU, movimento reduzido) e o que
- * aparece enquanto o three.js carrega. Inclinação leve com perspectiva e uma flutuação lenta.
+ * aparece enquanto o three.js carrega. Inclinação leve com perspectiva e, com `float`, uma flutuação
+ * lenta. Sem GPU a flutuação fica desligada: a CPU desenha o movimento de 1 em 1 px e ele dá trancos.
  */
-export function CssDevice({ kind, side = 0, children }: { kind: DeviceKind; side?: -1 | 0 | 1; children: ReactNode }) {
+export function CssDevice({
+  kind,
+  side = 0,
+  float = false,
+  children,
+}: {
+  kind: DeviceKind;
+  side?: -1 | 0 | 1;
+  float?: boolean;
+  children: ReactNode;
+}) {
   const tilt: CSSProperties =
     kind === "phone"
       ? { transform: `perspective(1400px) rotateY(${side * -12}deg) rotateX(3deg)` }
       : { transform: "perspective(1600px) rotateX(5deg)" };
 
   return (
-    <div className="device-float flex h-full w-full items-end justify-center pb-[3%]">
+    <div className={`${float ? "device-float " : ""}flex h-full w-full items-end justify-center pb-[3%]`}>
       <div style={tilt}>{kind === "phone" ? <Phone>{children}</Phone> : <Laptop>{children}</Laptop>}</div>
     </div>
   );
