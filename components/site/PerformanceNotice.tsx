@@ -62,8 +62,8 @@ export function PerformanceNotice() {
       aria-labelledby="performance-notice-text"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 px-6"
     >
-      <div className="max-w-lg text-center">
-        <p id="performance-notice-text" className="text-lg leading-relaxed text-text">
+      <div className="max-w-2xl text-center">
+        <p id="performance-notice-text" className="font-display text-2xl leading-snug font-extrabold text-white sm:text-4xl">
           {kind === "mobile" ? t("mobile") : kind === "motion" ? t("motion") : t("gpu")}
         </p>
         <button
@@ -71,7 +71,7 @@ export function PerformanceNotice() {
           onClick={close}
           disabled={!ready}
           autoFocus={ready}
-          className={`mt-8 rounded-md bg-led px-6 py-3 text-sm font-semibold text-white transition-opacity duration-700 hover:bg-led-soft ${
+          className={`mt-10 rounded-md bg-led px-8 py-4 text-base font-semibold text-white transition-opacity duration-700 hover:bg-led-soft ${
             ready ? "opacity-100" : "pointer-events-none opacity-0"
           }`}
         >

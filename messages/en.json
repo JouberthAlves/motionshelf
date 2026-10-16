@@ -125,6 +125,6 @@
     "gpu": "This site may stutter on your device. Its 3D models need a dedicated graphics card, and yours can't use one right now. For a smoother experience, open it on a more powerful computer.",
     "mobile": "This site works best on a computer. Open it on your PC for the full experience.",
     "button": "Got it",
-    "motion": "This site works best with reduced motion turned off!"
+    "motion": "This site does not work properly with reduced motion enabled. Turn it off to see it as intended."
   }
 }
