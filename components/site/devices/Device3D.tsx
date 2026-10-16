@@ -215,21 +215,23 @@ function Laptop({ screen }: { screen: ReactNode }) {
     <group position={[0, -3.3, 0]} scale={0.8}>
       {/* base deitada: a forma é desenhada em XY e girada para o chão */}
       <group rotation-x={-Math.PI / 2}>
+        {/* Mesmo titânio dos celulares. A base é uma superfície grande virada para cima e reflete em cheio
+            a luz branca de cima; com o reflexo menor ela não estoura e fica da mesma família dos celulares. */}
         <mesh geometry={base}>
-          <meshPhysicalMaterial {...TITANIUM} color="#9aa2b2" />
+          <meshPhysicalMaterial {...TITANIUM} envMapIntensity={0.55} />
         </mesh>
         <mesh geometry={keyboard} position={[0, BL * 0.14, BT / 2 + 0.006]}>
           <meshStandardMaterial color="#0b0d12" roughness={0.6} />
         </mesh>
         <mesh geometry={pad} position={[0, -BL * 0.27, BT / 2 + 0.006]}>
-          <meshPhysicalMaterial {...TITANIUM} color="#aab2c2" roughness={0.4} />
+          <meshPhysicalMaterial {...TITANIUM} color="#6a7284" roughness={0.42} envMapIntensity={0.55} />
         </mesh>
       </group>
       {/* tampa presa na dobradiça do fundo, aberta um pouco além de 90° */}
       <group position={[0, BT / 2, -BL / 2 + 0.25]} rotation-x={-0.14}>
         <group position={[0, LH / 2, 0]}>
           <mesh geometry={lid}>
-            <meshPhysicalMaterial {...TITANIUM} color="#9aa2b2" />
+            <meshPhysicalMaterial {...TITANIUM} />
           </mesh>
           <mesh geometry={lidGlass} position={[0, 0, LT / 2 + 0.004]}>
             <meshPhysicalMaterial {...GLASS} />
