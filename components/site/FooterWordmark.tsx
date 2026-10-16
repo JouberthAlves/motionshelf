@@ -6,12 +6,12 @@ const WORD = "MOTIONSHELF";
 // Eixo de largura da Archivo: 62 (estreita) a 125 (expandida, a da logo).
 const NARROW = 78;
 const WIDE = 125;
-// Até onde o mouse alcança, em larguras de letra.
+// Até onde a onda alcança, em larguras de letra.
 const REACH = 2.2;
 
 /**
- * A logo gigante do rodapé: as letras perto do mouse alargam (eixo de largura da fonte) e acendem.
- * Sem mouse, uma onda lenta passa sozinha; com movimento reduzido, fica parada.
+ * A logo gigante do rodapé: uma onda lenta passa pelas letras, alargando e acendendo cada uma por vez
+ * (eixo de largura da fonte). Só animação, sem interação: com movimento reduzido, fica parada.
  */
 export function FooterWordmark() {
   const box = useRef<HTMLDivElement>(null);
@@ -25,7 +25,7 @@ export function FooterWordmark() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     // Tamanho da fonte para a palavra, com as letras em repouso (estreitas), ocupar quase toda a largura
-    // do rodapé; sobra um pouco para as letras que alargam perto do mouse.
+    // do rodapé; sobra um pouco para as letras que alargam quando a onda passa.
     const fit = () => {
       letters.forEach((el) => (el.style.fontVariationSettings = `'wdth' ${NARROW}`));
       line.style.fontSize = "100px";
@@ -38,8 +38,6 @@ export function FooterWordmark() {
     ro.observe(root);
     if (reduced) return () => ro.disconnect();
 
-    let pointer: number | null = null;
-    let lastMove = 0;
     let frame = 0;
     let visible = false;
     let t = 0;
@@ -51,9 +49,7 @@ export function FooterWordmark() {
       last = now;
       t += dt;
       const r = root.getBoundingClientRect();
-      // Sem mouse por 2,5 s, a onda anda sozinha de um lado ao outro.
-      const idle = pointer === null || now - lastMove > 2500;
-      const x = idle ? (Math.sin(t * 0.55) * 0.5 + 0.5) * r.width : (pointer as number);
+      const x = (Math.sin(t * 0.55) * 0.5 + 0.5) * r.width;
       letters.forEach((el, i) => {
         const b = el.getBoundingClientRect();
         const center = b.left + b.width / 2 - r.left;
@@ -74,15 +70,6 @@ export function FooterWordmark() {
       }
     };
 
-    const onMove = (event: PointerEvent) => {
-      pointer = event.clientX - root.getBoundingClientRect().left;
-      lastMove = performance.now();
-    };
-    const onLeave = () => {
-      pointer = null;
-    };
-    root.addEventListener("pointermove", onMove);
-    root.addEventListener("pointerleave", onLeave);
     const io = new IntersectionObserver((entries) => {
       visible = entries.some((e) => e.isIntersecting);
       run();
@@ -93,8 +80,6 @@ export function FooterWordmark() {
       cancelAnimationFrame(frame);
       ro.disconnect();
       io.disconnect();
-      root.removeEventListener("pointermove", onMove);
-      root.removeEventListener("pointerleave", onLeave);
     };
   }, []);
 
