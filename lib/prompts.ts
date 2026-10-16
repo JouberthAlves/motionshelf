@@ -257,6 +257,54 @@ const RECIPES: Record<string, Recipe> = {
       t("In React, inject the SVG once with a constant object (not a new { __html } on every render), or the balls get drawn into a detached copy.", "Em React, injete o SVG uma vez com um objeto constante (não um { __html } novo a cada render), senão as bolinhas são desenhadas numa cópia solta."),
     ],
   },
+  "roi-balance": {
+    technique: "anatomy",
+    look: t(
+      "An isometric bench balance: a base plate on feet, a column with a pivot yoke, an equal-arm beam, two pans hanging on three rods each, stacked weights on the pans, a pointer swinging over a small fan-shaped scale on the column, and a counter box that shows the return.",
+      "Uma balança de bancada em isométrico: base com pés, coluna com o garfo do gume, braço de braços iguais, dois pratos pendurados por três hastes cada, pesos empilhados nos pratos, um ponteiro que balança sobre uma escala em leque na coluna e um contador que mostra o retorno.",
+    ),
+    beats: [
+      t("Left pan: the monthly ad budget, one weight per 2,000. Right pan: the revenue it brought in, in lit weights.", "Prato da esquerda: a verba mensal do anúncio, um peso a cada 2.000. Prato da direita: o faturamento que ela trouxe, em pesos acesos."),
+      t("The model (example numbers): each click costs more as the budget grows, CPC = 1 × (1 + budget/3,000)^0.6; 3% of clicks buy at 150 each; revenue = clicks × 3% × 150; ROAS = revenue / budget (about 4.1× at 500, 2.7× at 4,000, 1.3× at 20,000).", "O modelo (números de exemplo): cada clique fica mais caro conforme a verba cresce, CPC = 1 × (1 + verba/3.000)^0,6; 3% dos cliques compram, a 150 cada; faturamento = cliques × 3% × 150; ROAS = faturamento / verba (cerca de 4,1× com 500, 2,7× com 4.000, 1,3× com 20.000)."),
+      t("The beam tilts toward the heavier pan by 30° × (ROAS − 1)/(ROAS + 1): level means break-even. It moves on a damped spring, so it overshoots a little and settles. The pans stay level and follow the beam ends.", "O braço pende para o prato mais pesado em 30° × (ROAS − 1)/(ROAS + 1): nivelado é o empate. Ele se move numa mola amortecida, passa um pouco do ponto e assenta. Os pratos ficam nivelados e acompanham as pontas do braço."),
+      t("The pointer hangs from the pivot and reads the return on the scale, with a stronger mark at 1×. The counter and a readout under the figure say \"Budget → revenue · ROAS\".", "O ponteiro pende do gume e marca o retorno na escala, com uma marca mais forte em 1×. O contador e uma linha embaixo da figura dizem \"Verba → faturamento · ROAS\"."),
+      t("Moving the pointer left or right (or the arrow keys) sets the budget on a log scale from 500 to 20,000; with no input it drifts slowly on its own.", "Mover o mouse para a esquerda ou direita (ou as setas) define a verba em escala logarítmica de 500 a 20.000; sem interação, ela varia devagar sozinha."),
+    ],
+    adapt: [
+      t("the conversion rate, the average order value and the currency", "a taxa de conversão, o valor médio da venda e a moeda"),
+      t("the budget range", "a faixa de verba"),
+      t("the theme (dark or light) and the accent color of the revenue weights and the pointer", "o tema (escuro ou claro) e a cor dos pesos do faturamento e do ponteiro"),
+    ],
+    extra: [
+      t("Follow the anatomy skill's workflow: draw every static part with its kit, keep the model in one place, and let the readout come from the same numbers that move the beam.", "Siga o fluxo da skill anatomy: desenhe todas as peças paradas com o kit dela, deixe o modelo num lugar só e faça a leitura sair dos mesmos números que movem o braço."),
+      t("A rotation can't be a screen transform: redraw the beam each frame as a box rotated about the pivot (visible faces by depth, outline by the convex hull), and move the pans with translateAlong.", "Rotação não se faz com transformação de tela: redesenhe o braço a cada quadro como uma caixa girada no gume (faces visíveis pela profundidade, contorno pelo fecho convexo) e mova os pratos com translateAlong."),
+      t("Only one part is lit: the revenue weights (and the pointer). Stop the loop when offscreen; with reduced motion, jump straight to the resting tilt.", "Só uma parte é acesa: os pesos do faturamento (e o ponteiro). Pare o loop fora da tela; com movimento reduzido, vá direto à inclinação de repouso."),
+    ],
+  },
+  "page-speed-gauge": {
+    technique: "anatomy",
+    look: t(
+      "An isometric bench rig: a stack of plates on a load cell (the page weight), wired to a round bench stopwatch with a 0–10 s dial; a conveyor belt carries small visitor figures toward a door frame (the website); a pneumatic pusher behind the belt and a tray in front of it.",
+      "Uma bancada em isométrico: uma pilha de chapas sobre uma célula de carga (o peso da página), ligada por fio a um cronômetro redondo com mostrador de 0 a 10 s; uma esteira leva bonequinhos de visitante até uma porta (o site); um empurrador pneumático atrás da esteira e uma bandeja na frente dela.",
+    ),
+    beats: [
+      t("One plate per MB on the load cell. Load time = 0.6 s + MB ÷ connection speed (1 MB/s by default); the stopwatch needle (the lit part) shows it.", "Uma chapa por MB na célula de carga. Tempo de carga = 0,6 s + MB ÷ velocidade da conexão (1 MB/s por padrão); o ponteiro do cronômetro (a parte acesa) mostra esse tempo."),
+      t("Visitors ride the belt toward the door, one every 0.55 s. Each one decides at the start whether it will leave, with the bounce chance for the current load time.", "Os visitantes andam na esteira até a porta, um a cada 0,55 s. Cada um decide no início se vai desistir, com a chance de abandono do tempo de carga atual."),
+      t("Bounce follows Google's published curve (Think with Google, 2017), starting from 20% at 1 s: 1→3 s +32%, 1→5 s +90%, 1→6 s +106%, 1→10 s +123%, interpolated in between.", "O abandono segue a curva publicada pelo Google (Think with Google, 2017), partindo de 20% em 1 s: 1→3 s +32%, 1→5 s +90%, 1→6 s +106%, 1→10 s +123%, interpolando entre os pontos."),
+      t("At the pusher, a visitor who leaves stops, the ram plate shoots across the belt, the visitor slides off the front edge, drops into the tray and fades. The others go through the door and fade. A readout says \"MB · loads in s · % leave\".", "No empurrador, quem desiste para, a placa avança sobre a esteira, o visitante escorrega pela borda da frente, cai na bandeja e some. Os outros passam pela porta e somem. Uma linha diz \"MB · carrega em s · % saem\"."),
+      t("Moving the pointer left or right (or the arrow keys) sets the page weight from 0.5 to 8 MB; with no input it drifts slowly on its own.", "Mover o mouse para a esquerda ou direita (ou as setas) define o peso da página de 0,5 a 8 MB; sem interação, ele varia devagar sozinho."),
+    ],
+    adapt: [
+      t("the bounce rate at 1 s and the connection speed", "a taxa de abandono em 1 s e a velocidade da conexão"),
+      t("the page weight range", "a faixa de peso da página"),
+      t("the theme (dark or light) and the accent color of the needle", "o tema (escuro ou claro) e a cor do ponteiro"),
+    ],
+    extra: [
+      t("Follow the anatomy skill's workflow: draw every static part with its kit, draw one visitor once and clone it, and move clones, the ram and the plates with translateAlong; sort the visitors by depth every frame.", "Siga o fluxo da skill anatomy: desenhe todas as peças paradas com o kit dela, desenhe um visitante uma vez e clone, e mova os clones, a placa e as chapas com translateAlong; ordene os visitantes pela profundidade a cada quadro."),
+      t("Paint order: back door post before the visitors, front belt rail, front post and lintel after them. Cite the source of the bounce curve in the caption.", "Ordem de pintura: o batente de trás antes dos visitantes; a lateral da frente da esteira, o batente da frente e a verga depois. Cite a fonte da curva de abandono na legenda."),
+      t("Use a seeded random; stop the loop when offscreen; with reduced motion show one still frame with a few visitors on the belt and one in the tray.", "Use um aleatório com semente; pare o loop fora da tela; com movimento reduzido mostre um quadro parado com alguns visitantes na esteira e um na bandeja."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";

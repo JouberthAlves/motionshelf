@@ -269,6 +269,39 @@ export const ENTRIES: Entry[] = [
       CLASS,
     ],
   },
+  {
+    slug: "roi-balance",
+    name: "ROI Balance",
+    category: "anatomy",
+    code: "ROI-01",
+    summary: {
+      en: "A bench balance weighs ad budget against the revenue it brings in; the pointer reads the return, and more budget brings it back toward break-even.",
+      pt: "Uma balança de bancada pesa a verba do anúncio contra o faturamento que ela traz; o ponteiro marca o retorno, e mais verba o aproxima do empate.",
+    },
+    dependencies: [],
+    props: [
+      p("conversion", "number", "0.03", "Share of clicks that buy (0.03 = 3%).", "Parcela dos cliques que compram (0,03 = 3%)."),
+      p("ticket", "number", "150", "Average order value.", "Valor médio de cada venda."),
+      p("currency", "string", '"$"', "Currency symbol used in the readout.", "Símbolo da moeda na leitura."),
+      CLASS,
+    ],
+  },
+  {
+    slug: "page-speed-gauge",
+    name: "Page Speed Gauge",
+    category: "anatomy",
+    code: "SPD-01",
+    summary: {
+      en: "The heavier the page, the longer the stopwatch runs and the more visitors a pusher takes off the belt before they reach the door.",
+      pt: "Quanto mais pesada a página, mais o cronômetro corre e mais visitantes um empurrador tira da esteira antes de chegarem à porta.",
+    },
+    dependencies: [],
+    props: [
+      p("bounceAt1s", "number", "0.2", "Share of visitors who leave when the page loads in 1 s.", "Parcela dos visitantes que sai quando a página carrega em 1 s."),
+      p("speed", "number", "1", "Connection speed in MB per second.", "Velocidade da conexão, em MB por segundo."),
+      CLASS,
+    ],
+  },
 ];
 
 export const bySlug = (slug: string) => ENTRIES.find((e) => e.slug === slug);

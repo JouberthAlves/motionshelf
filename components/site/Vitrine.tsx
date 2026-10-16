@@ -37,6 +37,8 @@ const MOBILE_H: Record<string, number> = {
   "map-pin-drop": 230,
   "slot-booking": 260,
   "sales-funnel": 270,
+  "roi-balance": 270,
+  "page-speed-gauge": 250,
 };
 
 /**

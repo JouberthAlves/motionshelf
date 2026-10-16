@@ -29,4 +29,6 @@ export const PREVIEWS: Record<string, ComponentType> = {
   "map-pin-drop": load(() => import("@/registry/motionshelf/map-pin-drop/map-pin-drop")),
   "slot-booking": load(() => import("@/registry/motionshelf/slot-booking/slot-booking")),
   "sales-funnel": load(() => import("@/registry/motionshelf/sales-funnel/sales-funnel")),
+  "roi-balance": load(() => import("@/registry/motionshelf/roi-balance/roi-balance")),
+  "page-speed-gauge": load(() => import("@/registry/motionshelf/page-speed-gauge/page-speed-gauge")),
 };

@@ -113,6 +113,26 @@
         { "path": "registry/motionshelf/sales-funnel/sales-funnel.tsx", "type": "registry:component", "target": "components/motionshelf/sales-funnel.tsx" },
         { "path": "registry/motionshelf/sales-funnel/sales-funnel-figure.ts", "type": "registry:lib", "target": "components/motionshelf/sales-funnel-figure.ts" }
       ]
+    },
+    {
+      "name": "roi-balance",
+      "type": "registry:component",
+      "title": "ROI Balance",
+      "description": "A bench balance weighs ad budget against the revenue it brings in; the pointer reads the return on ad spend.",
+      "files": [
+        { "path": "registry/motionshelf/roi-balance/roi-balance.tsx", "type": "registry:component", "target": "components/motionshelf/roi-balance.tsx" },
+        { "path": "registry/motionshelf/roi-balance/roi-balance-figure.ts", "type": "registry:lib", "target": "components/motionshelf/roi-balance-figure.ts" }
+      ]
+    },
+    {
+      "name": "page-speed-gauge",
+      "type": "registry:component",
+      "title": "Page Speed Gauge",
+      "description": "A stopwatch reads the page load time from its weight; the slower it loads, the more visitors leave before the door.",
+      "files": [
+        { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge.tsx", "type": "registry:component", "target": "components/motionshelf/page-speed-gauge.tsx" },
+        { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge-figure.ts", "type": "registry:lib", "target": "components/motionshelf/page-speed-gauge-figure.ts" }
+      ]
     }
   ]
 }

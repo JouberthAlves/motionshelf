@@ -16,6 +16,8 @@ export const STAGE: Record<string, number> = {
   "map-pin-drop": 520,
   "slot-booking": 520,
   "sales-funnel": 600,
+  "roi-balance": 600,
+  "page-speed-gauge": 600,
 };
 
 /**
