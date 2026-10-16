@@ -8,6 +8,7 @@ import { Pedestals } from "@/components/site/Pedestals";
 import { Vitrine } from "@/components/site/Vitrine";
 import { CopyCommand } from "@/components/site/CopyCommand";
 import { pageMetadata } from "@/lib/seo";
+import { PerformanceNotice } from "@/components/site/PerformanceNotice";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
