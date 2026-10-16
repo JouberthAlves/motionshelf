@@ -71,9 +71,7 @@ export function PerformanceNotice() {
           onClick={close}
           disabled={!ready}
           autoFocus={ready}
-          className={`mt-10 rounded-md bg-led px-8 py-4 text-base font-semibold text-white transition-opacity duration-700 hover:bg-led-soft ${
-            ready ? "opacity-100" : "pointer-events-none opacity-0"
-          }`}
+          className={`notice-btn mt-10 rounded-md bg-led px-8 py-4 text-base font-semibold text-white hover:bg-led-soft`}
         >
           {t("button")}
         </button>
