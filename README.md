@@ -1,21 +1,21 @@
-<a href="https://motionshelf-pi.vercel.app">
-  <img src=".github/readme/hero.webp" alt="Motionshelf: Motion your clients will ask for. Live animated components on 3D phones and a laptop, over a blue glyph background." width="100%">
-</a>
-
 <div align="center">
 
-# Motionshelf
+<br>
+
+<a href="https://motionshelf-pi.vercel.app">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/readme/logo-dark.png">
+    <source media="(prefers-color-scheme: light)" srcset=".github/readme/logo-light.png">
+    <img src=".github/readme/logo-dark.png" alt="Motionshelf" width="420">
+  </picture>
+</a>
+
+<br><br>
 
 **Motion your clients will ask for.**<br>
 Animated React components for sites that sell, installed as code you own.
 
-<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a>
-<img src="https://img.shields.io/badge/components-13-1f5bff?style=flat-square" alt="13 components">
-<img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19">
-<img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4">
-<img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3">
-<img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry">
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
+<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-13-1f5bff?style=flat-square" alt="13 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
 
 [Website](https://motionshelf-pi.vercel.app) · [Components](https://motionshelf-pi.vercel.app/en/components) · [Installation](https://motionshelf-pi.vercel.app/en/docs/installation) · [Make it with your agent](https://motionshelf-pi.vercel.app/en/docs/agents)
 
