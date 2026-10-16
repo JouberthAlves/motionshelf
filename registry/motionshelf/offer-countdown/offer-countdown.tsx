@@ -120,10 +120,13 @@ export default function OfferCountdown({
         .set(tiles, { y: 12, autoAlpha: 0 })
         .to(tiles, { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.05 }, 0.1)
         .to(q("[data-bar]"), { scaleX: ratio, duration: 0.9, ease: "power3.out" }, 0.5);
+      // O brilho tem 1/4 da barra: sai de antes da borda esquerda (-120%) e vai até depois da direita
+      // (420%), então nunca fica parado à vista durante a pausa. Começa fora já no 1º quadro.
+      gsap.set(q("[data-shine]"), { xPercent: -120 });
       const shine = gsap.timeline({ repeat: -1, repeatDelay: 2.6, delay: 1.6 });
       shine
         .set(q("[data-shine]"), { xPercent: -120 })
-        .to(q("[data-shine]"), { xPercent: 320, duration: 1.1, ease: "power2.inOut" })
+        .to(q("[data-shine]"), { xPercent: 420, duration: 1.2, ease: "power2.inOut" })
         .to(q("[data-dot]"), { scale: 1.8, autoAlpha: 0, duration: 0.9, ease: "power1.out" }, 0);
       if (reduced) {
         intro.progress(1).pause();
@@ -180,7 +183,7 @@ export default function OfferCountdown({
         <p className="text-[13px] text-white/80">{left}</p>
         <div className="relative mt-2 h-2 overflow-hidden rounded-full bg-white/10" role="meter" aria-valuemin={0} aria-valuemax={total} aria-valuenow={stock} aria-label={left}>
           <div data-bar className="absolute inset-y-0 left-0 w-full origin-left rounded-full" style={{ backgroundColor: accent, transform: `scaleX(${ratio})` }} />
-          <div data-shine aria-hidden="true" className="absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-white/45 to-transparent" style={{ transform: "translateX(-120%)" }} />
+          <div data-shine aria-hidden="true" className="absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-transparent via-white/45 to-transparent" />
         </div>
       </div>
     </div>
