@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CATEGORIES, ENTRIES, bySlug, type Locale } from "@/lib/catalog";
 import { routing } from "@/i18n/routing";
-import { highlightedSource, installCommand } from "@/lib/code";
+import { highlightedSource, installCommand, registryBase } from "@/lib/code";
+import { buildPrompt, hasPrompt, techniqueOf } from "@/lib/prompts";
+import { PromptPanel } from "@/components/site/PromptPanel";
 import { Sidebar } from "@/components/site/Sidebar";
 import { PropsTable } from "@/components/site/PropsTable";
 import { CodeTabs } from "@/components/site/CodeTabs";
@@ -41,6 +43,28 @@ export default async function ComponentPage({ params }: { params: Params }) {
   const tc = await getTranslations("components");
   const code = await highlightedSource(entry.slug);
   const category = CATEGORIES.find((c) => c.id === entry.category)?.name[loc] ?? "";
+  const tp = await getTranslations("prompt");
+  const promptArgs = { entry, locale: loc, site: registryBase, install: installCommand(entry.slug) };
+  const prompt = hasPrompt(entry.slug) ? (
+    <PromptPanel
+      claude={buildPrompt({ ...promptArgs, agent: "claude" })}
+      other={buildPrompt({ ...promptArgs, agent: "other" })}
+      technique={techniqueOf(entry.slug)}
+      labels={{
+        intro: tp("intro"),
+        needs: tp("needs"),
+        optional: tp("optional"),
+        claudeTitle: tp("claudeTitle"),
+        otherTitle: tp("otherTitle"),
+        otherIntro: tp("otherIntro"),
+        learnMore: tp("learnMore"),
+        copy: t("copy"),
+        copied: t("copied"),
+        showAll: tp("showAll"),
+        showLess: tp("showLess"),
+      }}
+    />
+  ) : undefined;
 
   return (
     <div className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[200px_minmax(0,1fr)] xl:grid-cols-[200px_minmax(0,1fr)_160px]">
@@ -62,7 +86,8 @@ export default async function ComponentPage({ params }: { params: Params }) {
           <CodeTabs
             preview={<Preview slug={entry.slug} replayLabel={t("replay")} />}
             codeHtml={code}
-            labels={{ preview: t("preview"), code: t("code") }}
+            prompt={prompt}
+            labels={{ preview: t("preview"), code: t("code"), prompt: tp("tab") }}
           />
         </section>
 
@@ -101,11 +126,13 @@ export default async function ComponentPage({ params }: { params: Params }) {
       <aside className="hidden xl:block">
         <nav aria-label={t("onThisPage")} className="sticky top-24 space-y-2 text-sm">
           <p className="font-mono text-xs tracking-[0.12em] text-muted uppercase">{t("onThisPage")}</p>
-          {(["preview", "install", "props", "dependencies"] as const).map((id) => (
-            <a key={id} href={`#${id}`} className="block text-muted transition-colors hover:text-text">
-              {t(id)}
-            </a>
-          ))}
+          {(["preview", "prompt", "install", "props", "dependencies"] as const).map((id) =>
+            id === "prompt" && !prompt ? null : (
+              <a key={id} href={`#${id}`} className="block text-muted transition-colors hover:text-text">
+                {id === "prompt" ? tp("tab") : t(id)}
+              </a>
+            ),
+          )}
         </nav>
       </aside>
     </div>

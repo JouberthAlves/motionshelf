@@ -19,7 +19,7 @@ export type VitrineItem = {
   command: string;
 };
 
-type Labels = { eyebrow: string; title: string; open: string; copyInstall: string; copiedInstall: string };
+type Labels = { eyebrow: string; title: string; open: string; copyInstall: string; copiedInstall: string; prompt: string };
 
 // Quanto de rolagem cada componente ocupa na vitrine fixa (em altura de tela).
 const STEP_VH = 70;
@@ -152,9 +152,14 @@ function PinnedVitrine({ items, labels }: { items: VitrineItem[]; labels: Labels
                     <div className="vitrine-in mt-2 mb-3 ml-[22px] space-y-3">
                       <p className="text-sm text-muted">{it.summary}</p>
                       <CopyInstall command={it.command} label={labels.copyInstall} done={labels.copiedInstall} />
-                      <Link href={`/components/${it.slug}`} className="inline-flex items-center gap-1.5 text-sm text-led-soft hover:text-white">
-                        {labels.open} <ArrowRight size={14} aria-hidden="true" />
-                      </Link>
+                      <div className="flex flex-wrap gap-x-5 gap-y-1">
+                        <Link href={`/components/${it.slug}`} className="inline-flex items-center gap-1.5 text-sm text-led-soft hover:text-white">
+                          {labels.open} <ArrowRight size={14} aria-hidden="true" />
+                        </Link>
+                        <Link href={`/components/${it.slug}#prompt`} className="inline-flex items-center gap-1.5 text-sm text-text/80 hover:text-white">
+                          {labels.prompt} <ArrowRight size={14} aria-hidden="true" />
+                        </Link>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -199,9 +204,14 @@ function StackedVitrine({ items, labels }: { items: VitrineItem[]; labels: Label
               </p>
               <p className="mt-0.5 font-semibold text-text">{it.name}</p>
               <p className="mt-1 text-sm text-muted">{it.summary}</p>
-              <Link href={`/components/${it.slug}`} className="mt-3 inline-flex items-center gap-1.5 py-1 text-sm text-led-soft">
-                {labels.open} <ArrowRight size={14} aria-hidden="true" />
-              </Link>
+              <div className="mt-3 flex flex-wrap gap-x-5">
+                <Link href={`/components/${it.slug}`} className="inline-flex items-center gap-1.5 py-1 text-sm text-led-soft">
+                  {labels.open} <ArrowRight size={14} aria-hidden="true" />
+                </Link>
+                <Link href={`/components/${it.slug}#prompt`} className="inline-flex items-center gap-1.5 py-1 text-sm text-text/80">
+                  {labels.prompt} <ArrowRight size={14} aria-hidden="true" />
+                </Link>
+              </div>
             </div>
           </li>
         ))}

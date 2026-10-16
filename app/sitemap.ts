@@ -3,7 +3,7 @@ import { ENTRIES } from "@/lib/catalog";
 import { siteUrl } from "@/lib/seo";
 
 // Cada página nos dois idiomas, com a outra versão declarada em alternates.
-const PATHS = ["", "/components", "/docs/installation", ...ENTRIES.map((e) => `/components/${e.slug}`)];
+const PATHS = ["", "/components", "/docs/installation", "/docs/agents", ...ENTRIES.map((e) => `/components/${e.slug}`)];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return PATHS.flatMap((path) =>

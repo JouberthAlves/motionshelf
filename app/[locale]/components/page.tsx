@@ -15,6 +15,7 @@ export default async function ComponentsPage({ params }: { params: Promise<{ loc
   setRequestLocale(locale);
   const loc = locale as Locale;
   const t = await getTranslations("components");
+  const a = await getTranslations("agents");
 
   const items = ENTRIES.map((entry) => ({
     slug: entry.slug,
@@ -40,6 +41,7 @@ export default async function ComponentsPage({ params }: { params: Promise<{ loc
         getStarted: t("getStarted"),
         introduction: t("introduction"),
         installation: t("installation"),
+        agents: a("title"),
         categories: t("categories"),
         empty: t("empty"),
         count: t("count", { count: "{count}" }),

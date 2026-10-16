@@ -71,6 +71,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             open: home("open"),
             copyInstall: home("copyInstall"),
             copiedInstall: home("copiedInstall"),
+            prompt: home("prompt"),
           }}
         />
       </div>

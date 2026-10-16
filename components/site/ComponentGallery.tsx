@@ -19,6 +19,7 @@ type Labels = {
   getStarted: string;
   introduction: string;
   installation: string;
+  agents: string;
   categories: string;
   empty: string;
   count: string;
@@ -54,6 +55,11 @@ export function ComponentGallery({ items, categories, labels }: { items: Gallery
               <li>
                 <Link href="/docs/installation" className="block rounded-md px-2.5 py-1.5 text-text/85 transition-colors hover:text-text">
                   {labels.installation}
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs/agents" className="block rounded-md px-2.5 py-1.5 text-text/85 transition-colors hover:text-text">
+                  {labels.agents}
                 </Link>
               </li>
             </ul>

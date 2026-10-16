@@ -23,6 +23,7 @@ export default async function InstallationPage({ params }: { params: Promise<{ l
   setRequestLocale(locale);
   const t = await getTranslations("docs");
   const c = await getTranslations("component");
+  const a = await getTranslations("agents");
   const labels = { copy: c("copy"), copied: c("copied") };
 
   return (
@@ -55,6 +56,12 @@ export default async function InstallationPage({ params }: { params: Promise<{ l
       <pre className="mt-3 overflow-x-auto rounded-xl border border-edge bg-shelf p-4 font-mono text-[12.5px] leading-relaxed text-text">
         {USAGE}
       </pre>
+
+      <p className="mt-8 text-muted">
+        <Link href="/docs/agents" className="text-led-soft transition-colors hover:text-text">
+          {a("title")} →
+        </Link>
+      </p>
 
       <h2 className="display-wide mt-12 text-xl text-text">{t("licenseTitle")}</h2>
       <p className="mt-3 text-muted">{t("licenseText")}</p>
