@@ -264,9 +264,12 @@ export const hasPrompt = (slug: string) => slug in RECIPES;
 
 // Cuidados que valem para todo componente em GSAP.
 const GSAP_RULES: Text[] = [
-  t("Use one GSAP timeline that loops forever with a short pause between runs (repeat: -1, repeatDelay about 1.4 s).", "Use uma timeline do GSAP em loop, com uma pausa curta entre as voltas (repeat: -1, repeatDelay perto de 1,4 s)."),
+  t("Use one GSAP timeline that loops forever with a short pause between runs (repeat: -1). If the step by step gives the pause, use that value; otherwise repeatDelay about 1.4 s.", "Use uma timeline do GSAP em loop, com uma pausa curta entre as voltas (repeat: -1). Se o passo a passo der a pausa, use esse valor; senão, repeatDelay perto de 1,4 s."),
   t("Set every starting state with set() at the start of the timeline, never with from(): on the second loop from() starts from the wrong place.", "Defina todo estado inicial com set() no começo da timeline, nunca com from(): na segunda volta o from() começa do lugar errado."),
-  t("Elements that appear later stay display:none until their turn, so they do not take space.", "Elementos que aparecem depois ficam com display:none até a vez deles, para não ocupar espaço."),
+  t(
+    "Elements that appear later and would push the layout (new chat bubbles, new rows) stay display:none until their turn; elements that already have their place in the layout (a subtitle, a button) start hidden with autoAlpha 0, so nothing jumps.",
+    "Elementos que aparecem depois e empurrariam o layout (balões novos de chat, linhas novas) ficam com display:none até a vez deles; elementos que já têm o lugar reservado (um subtítulo, um botão) começam escondidos com autoAlpha 0, para nada pular.",
+  ),
   t("If there is a cursor or pointer, it aims at the measured center of its target (getBoundingClientRect), never at fixed pixel coordinates; if the component is scaled, divide by the scale.", "Se houver cursor ou ponteiro, ele mira o centro medido do alvo (getBoundingClientRect), nunca coordenadas fixas; se o componente estiver em escala, divida pela escala."),
   t("Blur only in the middle of a movement and always end at blur(0).", "Desfoque só no meio de um movimento e sempre terminando em blur(0)."),
   t("With prefers-reduced-motion, jump to the final frame and stop (tl.progress(1).pause()).", "Com prefers-reduced-motion, vá para o quadro final e pare (tl.progress(1).pause())."),
