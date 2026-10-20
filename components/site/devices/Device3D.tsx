@@ -168,6 +168,9 @@ function Phone({ screen }: { screen: ReactNode }) {
   const body = useMemo(() => slab(W, H, 46 * K, D, 0.16), [W, H]);
   const glass = useMemo(() => slab(W - 0.14, H - 0.14, 44 * K, 0.04, 0), [W, H]);
   const button = useMemo(() => slab(0.14, 1, 0.06, 0.34, 0.03), []);
+  // O chanfro do corpo (0,16) põe as laterais para fora do contorno W; o botão (0,1 de meia largura com
+  // o chanfro) fica 0,05 para fora dela. Antes ele ficava inteiro dentro do corpo e não aparecia.
+  const bx = W / 2 + 0.16 + 0.05 - 0.1;
   return (
     <group>
       <mesh geometry={body}>
@@ -177,16 +180,16 @@ function Phone({ screen }: { screen: ReactNode }) {
         <meshPhysicalMaterial {...GLASS} />
       </mesh>
       {/* botões: ação e volume à esquerda, power à direita */}
-      <mesh geometry={button} position={[-W / 2 - 0.02, 3.9, 0]} scale={[1, 0.75, 1]}>
+      <mesh geometry={button} position={[-bx, 3.9, 0]} scale={[1, 0.75, 1]}>
         <meshPhysicalMaterial {...TITANIUM} />
       </mesh>
-      <mesh geometry={button} position={[-W / 2 - 0.02, 2.5, 0]} scale={[1, 1.3, 1]}>
+      <mesh geometry={button} position={[-bx, 2.5, 0]} scale={[1, 1.3, 1]}>
         <meshPhysicalMaterial {...TITANIUM} />
       </mesh>
-      <mesh geometry={button} position={[-W / 2 - 0.02, 0.95, 0]} scale={[1, 1.3, 1]}>
+      <mesh geometry={button} position={[-bx, 0.95, 0]} scale={[1, 1.3, 1]}>
         <meshPhysicalMaterial {...TITANIUM} />
       </mesh>
-      <mesh geometry={button} position={[W / 2 + 0.02, 2.1, 0]} scale={[1, 2.05, 1]}>
+      <mesh geometry={button} position={[bx, 2.1, 0]} scale={[1, 2.05, 1]}>
         <meshPhysicalMaterial {...TITANIUM} />
       </mesh>
       <Html transform position={[0, 0, D / 2 + 0.03]} pointerEvents="none" zIndexRange={[10, 0]}>
