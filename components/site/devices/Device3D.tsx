@@ -287,8 +287,8 @@ const KEYS = (() => {
   return keys;
 })();
 
-/** As teclas numa malha instanciada só (uma chamada de desenho para todas). */
-function Keys({ z }: { z: number }) {
+/** As teclas numa malha instanciada só (uma chamada de desenho para todas), com o centro do teclado em (0, y). */
+function Keys({ y, z }: { y: number; z: number }) {
   const ref = useRef<InstancedMesh>(null);
   const key = useMemo(() => slab(1, 1, 0.14, KEY_H, KEY_BEVEL, 3), []);
   useLayoutEffect(() => {
@@ -299,11 +299,11 @@ function Keys({ z }: { z: number }) {
     const m = new Matrix4();
     KEYS.forEach((k, i) => {
       m.makeScale(k.w / unit, k.h / unit, 1);
-      m.setPosition(k.x, k.y, z);
+      m.setPosition(k.x, y + k.y, z);
       mesh.setMatrixAt(i, m);
     });
     mesh.instanceMatrix.needsUpdate = true;
-  }, [z]);
+  }, [y, z]);
   return (
     <instancedMesh ref={ref} args={[key, undefined, KEYS.length]} frustumCulled={false}>
       {/* Teclas pretas, um pouco mais claras que o fundo do teclado para a grade aparecer. */}
@@ -397,7 +397,7 @@ function Laptop({ screen }: { screen: ReactNode }) {
         <mesh geometry={well} position={[0, kbY, top + 0.006]}>
           <meshStandardMaterial color="#040506" roughness={0.85} />
         </mesh>
-        <Keys z={top + 0.012 + KEY_H / 2} />
+        <Keys y={kbY} z={top + 0.012 + KEY_H / 2} />
         {/* grades do alto-falante dos dois lados do teclado */}
         {[-1, 1].map((side) => (
           <mesh key={side} position={[side * (KW / 2 + 0.67), kbY, top + 0.004]}>
