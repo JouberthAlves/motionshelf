@@ -3,8 +3,8 @@ import type { DeviceKind } from "./screens";
 
 // Aro de titânio: o mesmo degradê nos dois aparelhos.
 const RIM = "linear-gradient(145deg,#4f5668 0%,#1b1e25 38%,#2c313c 66%,#596173 100%)";
-// Reflexo no vidro, por cima da tela.
-const GLARE = "linear-gradient(115deg,rgb(255 255 255/0.10) 0%,transparent 34%)";
+// Reflexo no vidro, por cima da tela (também usado no modelo 3D).
+export const GLARE = "linear-gradient(115deg,rgb(255 255 255/0.10) 0%,transparent 34%)";
 
 /**
  * Moldura do aparelho em CSS: a reserva do modelo 3D (celular, sem GPU, movimento reduzido) e o que
