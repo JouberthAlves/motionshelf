@@ -36,4 +36,5 @@ export const PREVIEWS: Record<string, ComponentType> = {
   "sales-funnel": load(() => import("@/registry/motionshelf/sales-funnel/sales-funnel")),
   "roi-balance": load(() => import("@/registry/motionshelf/roi-balance/roi-balance")),
   "page-speed-gauge": load(() => import("@/registry/motionshelf/page-speed-gauge/page-speed-gauge")),
+  "langendorff-heart": load(() => import("@/registry/motionshelf/langendorff-heart/langendorff-heart")),
 };
