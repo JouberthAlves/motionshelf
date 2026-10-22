@@ -182,6 +182,16 @@
         { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge.tsx", "type": "registry:component", "target": "components/motionshelf/page-speed-gauge.tsx" },
         { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge-figure.ts", "type": "registry:lib", "target": "components/motionshelf/page-speed-gauge-figure.ts" }
       ]
+    },
+    {
+      "name": "langendorff-heart",
+      "type": "registry:component",
+      "title": "Langendorff Heart",
+      "description": "An isolated human heart beating on a Langendorff perfusion rig; every gauge reads from one physiological model.",
+      "files": [
+        { "path": "registry/motionshelf/langendorff-heart/langendorff-heart.tsx", "type": "registry:component", "target": "components/motionshelf/langendorff-heart.tsx" },
+        { "path": "registry/motionshelf/langendorff-heart/langendorff-heart-figure.ts", "type": "registry:lib", "target": "components/motionshelf/langendorff-heart-figure.ts" }
+      ]
     }
   ]
 }
