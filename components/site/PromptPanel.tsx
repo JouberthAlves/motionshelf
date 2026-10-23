@@ -23,7 +23,7 @@ type Labels = {
  */
 export function PromptPanel({ claude, other, technique, labels }: { claude: string; other: string; technique: Technique; labels: Labels }) {
   const block = { copy: labels.copy, copied: labels.copied, showAll: labels.showAll, showLess: labels.showLess };
-  const skill = technique === "anatomy" ? "anatomy" : "GSAP skills";
+  const skill = technique === "anatomy" ? "anatomy" : technique === "physics" ? "React · requestAnimationFrame" : "GSAP skills";
 
   return (
     <div className="space-y-6">

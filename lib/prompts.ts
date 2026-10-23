@@ -10,7 +10,7 @@
 import type { Entry, Locale, Text } from "./catalog";
 
 export type Agent = "claude" | "other";
-export type Technique = "gsap" | "anatomy";
+export type Technique = "gsap" | "anatomy" | "physics";
 
 type Recipe = {
   technique: Technique;
@@ -386,6 +386,32 @@ const RECIPES: Record<string, Recipe> = {
       t("Use a seeded random; stop the loop when offscreen; with reduced motion show one still frame with a few visitors on the belt and one in the tray."),
     ],
   },
+  "drone-button": {
+    technique: "physics",
+    look: t(
+      "A dark rounded button carried by a small quadcopter seen from the side: one arm across the top of the button with a motor at each end (a blue LED ring on each motor, a red navigation light on the left one and a green one on the right), a two-blade propeller on each motor seen slightly from above (dark curved blades with blue tips), and two landing skids under the button. It rests on the floor of its container.",
+    ),
+    beats: [
+      t("The button fills a flight area (the nearest positioned ancestor) and rests on its skids at the bottom center. When the pointer enters the area, the motors spool up first (thrust follows the command with about 0.09 s of lag), so the drone only lifts off when the thrust passes its weight."),
+      t("Physics in px and seconds, y down: gravity 900, maximum thrust 2.1 × gravity. The drone only pushes along its own up axis: to move sideways it banks (up to 24°, following the wanted angle with about 0.07 s of lag), and to brake it banks the other way. Light gusts and air drag keep it alive; near the floor the rotor wash adds a little lift (ground effect)."),
+      t("The autopilot flies the button's center to the pointer. Close to the target it acts as a spring (stiffness 38, damping ratio 0.8); far away it asks for the highest speed it can still brake from with the allowed bank, so long moves arrive without overshooting more than about 10 px."),
+      t("When the pointer leaves the area (or a touch ends), the drone comes straight down from where it is, aiming a few px below the floor so it settles instead of hovering, then the rotors spin down and stop with the blades on the diagonal."),
+      t("Propellers: each blade sweeps around a flattened ellipse (0.36 of its width), the front blade drawn over the hub and the back one under it; the two rotors spin in opposite directions. As they speed up the blades fade into a blurred disc with a blue ring at the tips. The navigation lights blink while the motors are armed."),
+      t("Rotor wash: faint air particles leave each rotor along the drone's down axis; the ones that still have energy when they reach the floor turn into dust that runs sideways along it and fades. Draw them on a 2D canvas behind the drone."),
+    ],
+    adapt: [
+      t("the button label and what it does"),
+      t("the size of the flight area"),
+      t("the maximum bank and how agile it should feel"),
+      t("whether to kick up dust"),
+      t("the accent color of the LEDs and blade tips"),
+    ],
+    extra: [
+      t("Write the flight loop with requestAnimationFrame and refs, setting transforms directly; no React state per frame. Stop the loop once it has landed, the rotors stopped and the dust settled."),
+      t("Map the pointer into layout pixels even when the component is shown scaled (multiply by offsetWidth / getBoundingClientRect().width)."),
+      t("Keep it a real button: keyboard focus, focus ring, click and disabled all work while it flies. With reduced motion or disabled, it stays parked and nothing animates."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";
@@ -415,6 +441,9 @@ const VIDEO: Record<Agent, Text> = {
 };
 
 function toolsStep(technique: Technique, agent: Agent): string {
+  if (technique === "physics") {
+    return "No animation skill is needed: this one is plain React (or plain JavaScript) with a small physics loop on requestAnimationFrame. Do not install GSAP for it.";
+  }
   const s = SKILLS[technique];
   if (agent === "claude") {
     return technique === "gsap"
@@ -435,6 +464,8 @@ const L = {
       gsap: "Look at my project: framework (Next.js, Vite, plain HTML…), TypeScript or JavaScript, Tailwind or plain CSS. Build it as one component that fits this stack. In React use gsap and @gsap/react; in plain HTML use GSAP from npm or a CDN.",
       anatomy:
         "Look at my project: framework (Next.js, Vite, plain HTML…), TypeScript or JavaScript. The anatomy skill builds the figure as plain HTML/SVG or as React (18+); pick the one that fits my stack.",
+      physics:
+        "Look at my project: framework (Next.js, Vite, plain HTML…), TypeScript or JavaScript, Tailwind or plain CSS. Build it as one component that fits this stack, with no animation library: the motion comes from the physics loop.",
     },
     ask: "Ask me before coding",
     askText: "Ask me these in a single message, showing the example values as defaults:",
@@ -458,7 +489,8 @@ export function buildPrompt({ entry, locale, agent, site, install }: { entry: En
   if (!r) return "";
   const l = L[locale];
   const bullet = (x: Text) => `   - ${x[locale]}`;
-  // O funil anima com requestAnimationFrame, não com timeline: só a regra de conteúdo genérico vale.
+  // Funil, anatomia e drone animam com requestAnimationFrame, não com timeline: só a regra de conteúdo
+  // genérico vale.
   const rules = [...(r.technique === "gsap" ? GSAP_RULES : GSAP_RULES.slice(-1)), ...(r.extra ?? [])];
   return [
     l.intro(entry.name, site),

@@ -182,6 +182,15 @@
         { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge.tsx", "type": "registry:component", "target": "components/motionshelf/page-speed-gauge.tsx" },
         { "path": "registry/motionshelf/page-speed-gauge/page-speed-gauge-figure.ts", "type": "registry:lib", "target": "components/motionshelf/page-speed-gauge-figure.ts" }
       ]
+    },
+    {
+      "name": "drone-button",
+      "type": "registry:component",
+      "title": "Drone Button",
+      "description": "A button carried by a quadcopter: it takes off when the pointer comes in, flies to it banking, kicks up dust and lands when the pointer leaves.",
+      "files": [
+        { "path": "registry/motionshelf/drone-button/drone-button.tsx", "type": "registry:component", "target": "components/motionshelf/drone-button.tsx" }
+      ]
     }
   ]
 }

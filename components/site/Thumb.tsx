@@ -24,6 +24,7 @@ export const STAGE: Record<string, number> = {
   "sales-funnel": 600,
   "roi-balance": 600,
   "page-speed-gauge": 600,
+  "drone-button": 520,
 };
 
 /**
