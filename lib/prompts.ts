@@ -386,29 +386,6 @@ const RECIPES: Record<string, Recipe> = {
       t("Use a seeded random; stop the loop when offscreen; with reduced motion show one still frame with a few visitors on the belt and one in the tray."),
     ],
   },
-  "langendorff-heart": {
-    technique: "anatomy",
-    look: t(
-      "An isometric Langendorff rig on a bench plate: a ring stand with clamps holds a water-jacketed glass heating coil and a bubble trap with a dial gauge on top; below it a steel cannula is tied into the aorta of an isolated human heart that hangs and beats. On the plate: a flask of blue buffer with a gas bubbler, a peristaltic pump with three rollers and an rpm display, a funnel catching the effluent from the apex, a paper chart recorder with a pen arm, and a small stimulator wired to the cannula.",
-    ),
-    beats: [
-      t("The heart is real anatomy (ventricles, atria and auricles, cut aorta, pulmonary trunk, venae cavae and pulmonary veins, coronary arteries in their grooves, epicardial fat), ray-marched in WebGL as a signed distance field in the same isometric camera, and shaded in the kit's own five tones with one outline, so it looks like the other parts. Only the vessels are blue."),
-      t("Each beat: the atria contract 0.16 s before the ventricles (9% smaller); then the ventricles shorten 8% toward the base, twist about 10° at the apex and relax with a 45 ms time constant."),
-      t("The model (adult human heart, 310 g): perfusion pressure held at 70 mmHg; LV balloon pressure from 8 mmHg (end-diastolic) to 8 + 102 mmHg at 72 bpm, rising about 12% toward 150 bpm (Bowditch effect); systole 0.3 s × sqrt(60/bpm); coronary flow 250 mL/min at 72 bpm, scaled by (bpm × developed pressure)^0.7."),
-      t("The pump turns at flow ÷ 2.5 mL per turn (about 100 rpm at 72 bpm), the gauge needle sits at 70 mmHg with a small ripple from the rollers, the chart pen traces the LV pressure on paper moving at 10 mm/s, bubbles rise in the flask, and a thin stream runs off the apex, thicker in systole, narrowing as it falls."),
-      t("Moving the pointer left or right (or the arrow keys) sets the heart rate from 50 to 150 bpm; with no input it tours between rest, faster and slower. A readout says \"bpm · LV systolic/diastolic · coronary flow\"."),
-    ],
-    adapt: [
-      t("the resting heart rate"),
-      t("the theme (dark or light): the heart reads its tones from the same CSS variables as the rest of the figure"),
-      t("the accent color of the buffer, the tubes and the coronary vessels"),
-    ],
-    extra: [
-      t("Follow the anatomy skill's WebGL rules: back SVG, canvas, front SVG in one stage with the same viewBox; the canvas only draws the heart; the tie collar on the aorta and the effluent stream go in the front SVG."),
-      t("Write the anatomy once as a list of primitives and generate both the GLSL and a JS evaluator from it, so the coronary paths can be found on the surface (the groove where the two ventricles meet) at build time."),
-      t("Without a real GPU (software WebGL), skip the shader and show a simple SVG heart; stop the loop when offscreen; with reduced motion show one still frame in systole."),
-    ],
-  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";

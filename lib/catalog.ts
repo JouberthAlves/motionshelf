@@ -404,20 +404,6 @@ export const ENTRIES: Entry[] = [
       CLASS,
     ],
   },
-  {
-    slug: "langendorff-heart",
-    name: "Langendorff Heart",
-    category: "anatomy",
-    code: "HRT-01",
-    summary: {
-      en: "An isolated human heart beats on a Langendorff rig: a pump pushes blue buffer into the coronaries, a gauge holds 70 mmHg and a chart recorder traces the left ventricle.",
-    },
-    dependencies: [],
-    props: [
-      p("bpm", "number", "72", "Resting heart rate in beats per minute; the idle tour swings around it."),
-      CLASS,
-    ],
-  },
 ];
 
 export const bySlug = (slug: string) => ENTRIES.find((e) => e.slug === slug);
