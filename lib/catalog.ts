@@ -24,15 +24,16 @@ export type Entry = {
   props: PropDoc[];
 };
 
+// Em ordem alfabética: é a ordem da lateral e do filtro da galeria. A vitrine da home segue a ordem de ENTRIES.
 export const CATEGORIES: { id: CategoryId; name: Text }[] = [
-  { id: "text", name: { en: "Text" } },
-  { id: "messages", name: { en: "Messages" } },
-  { id: "commerce", name: { en: "Commerce" } },
-  { id: "proof", name: { en: "Social proof" } },
-  { id: "location", name: { en: "Location" } },
-  { id: "scheduling", name: { en: "Scheduling" } },
   { id: "anatomy", name: { en: "Anatomy" } },
   { id: "buttons", name: { en: "Buttons" } },
+  { id: "commerce", name: { en: "Commerce" } },
+  { id: "location", name: { en: "Location" } },
+  { id: "messages", name: { en: "Messages" } },
+  { id: "scheduling", name: { en: "Scheduling" } },
+  { id: "proof", name: { en: "Social proof" } },
+  { id: "text", name: { en: "Text" } },
 ];
 
 const p = (name: string, type: string, def: string, en: string): PropDoc => ({
