@@ -15,8 +15,17 @@ export type RocketButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 // O botão vai entre dois propulsores, na plataforma do chão. No clique: contagem 3-2-1, ignição com fumaça
 // na plataforma, decolagem acelerando até sair por cima, e a volta descendo de paraquedas. px e segundos.
 const PAD_H = 6;
-const COUNT_STEP = 0.42; // s por número da contagem
-const THRUST = 1500; // aceleração para cima na decolagem
+// Tempo e física de um Falcon 9 de verdade, em tempo real. A contagem anda 1 s por número: a ignição começa
+// em T-3, os motores chegam à potência máxima em T-1 e as garras soltam em T-0.
+const COUNT_STEP = 1;
+// Empuxo/peso na decolagem: 7.607 kN para 549 t, ~1,4. A aceleração é g × (empuxo/peso − 1), e o empuxo/peso
+// sobe conforme o combustível queima: a massa cai ~2,75 t/s, então ela acabaria em MASS_TIME segundos.
+const TWR_LIFTOFF = 1.4;
+const MASS_TIME = 200;
+const G = 9.81; // m/s²
+// Escala: o foguete (a altura do botão com os propulsores) tem os 70 m de um Falcon 9. Assim ele leva ~6 s
+// para subir a própria altura e ~16 s para sair de uma área de 360 px.
+const ROCKET_M = 70;
 const SINK = 95; // velocidade de descida com o paraquedas
 const SMOKE_TINT: [number, number, number] = [0.72, 0.76, 0.86]; // cinza-azulado, puxado para o tom do site
 // Propulsor: 16 px de largura, 13 px para fora da borda do botão, então o bocal fica 5 px fora dela.
@@ -162,21 +171,26 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       }
       if (phase === "count") {
         const n = 3 - Math.floor(timer / COUNT_STEP);
-        say(n > 0 ? String(n) : "Liftoff");
-        // No "1" os motores acendem: a fumaça cresce na plataforma antes de sair do chão.
-        throttle = timer > COUNT_STEP * 2 ? Math.min(0.6, (timer - COUNT_STEP * 2) * 1.8) : 0;
+        say(n > 0 ? String(n) : "");
+        // Em T-3 os motores acendem e sobem até a potência máxima em T-1; daí até T-0 o foguete fica preso à
+        // plataforma em potência máxima, só tremendo, enquanto a nuvem se espalha.
+        throttle = Math.min(1, timer / (COUNT_STEP * 2));
+        x = throttle >= 1 ? (Math.random() - 0.5) * 0.8 : 0;
         if (timer >= COUNT_STEP * 3) {
           phase = "lift";
           timer = 0;
+          x = 0;
           settings.current.onLaunch?.();
         }
       } else if (phase === "lift") {
-        if (timer > 0.5) say("");
-        throttle = Math.min(1, throttle + dt * 3);
-        vy -= THRUST * throttle * dt;
+        say(timer < 2 ? "Liftoff" : "");
+        throttle = 1;
+        const twr = TWR_LIFTOFF / (1 - timer / MASS_TIME);
+        vy -= G * (twr - 1) * (ch / ROCKET_M) * dt;
         y += vy * dt;
-        tilt = Math.sin(clock * 9) * 1.2;
-        x = Math.sin(clock * 3.1) * 3;
+        // Sobe reto: só um balanço mínimo do controle de direção.
+        tilt = Math.sin(clock * 5) * 0.3;
+        x = Math.sin(clock * 2.1) * 0.6;
         if (height - PAD_H + y < -ch - 30) {
           phase = "away";
           timer = 0;
