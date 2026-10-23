@@ -47,7 +47,9 @@ const MAX_STEPS = 4; // por quadro
 const ITERATIONS = 10;
 const GRAVITY = 900; // px/s²
 const DAMPING = 0.992; // da velocidade, por passo
-const DRAG = 0.03; // arrasto do ar por triângulo
+// Arrasto do ar por triângulo, na direção da normal: o pano é leve, então de chapa ele cai devagar (~80 px/s)
+// e só as bordas de lado despencam mais rápido, o que faz o pano ondular na queda.
+const DRAG = 0.45;
 const MAX_MOVE = 40; // deslocamento máximo por passo, px
 const SHEAR = 0.8;
 // O pano é maior que o domo: ao murchar ele se abre até GROW a mais, em GROW_TIME s, e alcança os propulsores.
