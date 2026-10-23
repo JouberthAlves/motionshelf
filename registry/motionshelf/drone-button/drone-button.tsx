@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useRef, type ButtonHTMLAttributes } from "react";
+import { forwardRef, useEffect, useId, useRef, type ButtonHTMLAttributes } from "react";
 
 export type DroneButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   /** Maximum bank in degrees while the drone flies sideways. */
@@ -27,9 +27,47 @@ const GROUND = 36; // px: altura em que o efeito solo começa a ajudar a sustent
 const SKID = 7; // altura do trem de pouso
 const ARM = 22; // quanto cada braço passa da lateral do botão
 const PROP = 17; // meia largura do disco da hélice
-const FRAME_TOP = 14; // altura da armação acima do botão (motor e hélice)
+const FRAME_TOP = 20; // altura da armação acima do botão (motor e hélice)
 const WALL_GAP = 2;
 const MAX_PARTICLES = 320;
+
+// Hélice vista de leve por cima: o disco é uma elipse achatada e cada pá gira dando a volta nele.
+const TILT = 0.36; // achatamento da elipse
+const CX = 20; // centro da hélice no SVG de 40 × 16
+const CY = 8;
+
+// Ângulo de repouso: pousadas, as pás ficam na diagonal (alinhadas ao braço, de lado, viravam um palito).
+const REST = 0.75;
+/** Ângulos da pá de trás e da da frente do motor i (o da direita gira ao contrário). */
+function bladeAngles(phase: number, i: number) {
+  const dir = i === 0 ? 1 : -1;
+  const a = phase * dir + i * 0.9;
+  // A pá com o seno positivo está do lado de baixo da elipse, mais perto de quem olha: vai na frente.
+  const front = Math.sin(a) > 0 ? a : a + Math.PI;
+  return { dir, back: front + Math.PI, front };
+}
+
+/**
+ * Contorno de uma pá no ângulo a: raiz larga, ponta estreita e arredondada, com uma leve curva para trás
+ * no sentido do giro (dir), como a hélice de um drone. r e off são o raio e o desvio lateral no plano.
+ */
+function bladePath(a: number, dir: number) {
+  const pt = (r: number, off: number, sweep: number) => {
+    const ang = a - sweep * dir;
+    const x = Math.cos(ang) * r - Math.sin(ang) * off * dir;
+    const y = Math.sin(ang) * r + Math.cos(ang) * off * dir;
+    return `${(CX + x).toFixed(2)} ${(CY + y * TILT).toFixed(2)}`;
+  };
+  return `M${pt(2, -2, 0)}L${pt(9.5, -3, 0.07)}L${pt(15.6, -1.6, 0.15)}Q${pt(17.4, 0, 0.17)} ${pt(15.6, 1.4, 0.15)}L${pt(9.5, 1.7, 0.09)}L${pt(2, 2, 0)}Z`;
+}
+/** Ponta azul da pá (a faixa colorida que marca a hélice). */
+function tipPath(a: number, dir: number) {
+  const at = (r: number, sweep: number) => {
+    const ang = a - sweep * dir;
+    return `${(CX + Math.cos(ang) * r).toFixed(2)} ${(CY + Math.sin(ang) * r * TILT).toFixed(2)}`;
+  };
+  return `M${at(13.6, 0.13)}L${at(16.4, 0.16)}`;
+}
 
 type Particle = { x: number; y: number; vx: number; vy: number; life: number; energy: number; dust: boolean };
 
@@ -45,9 +83,14 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
   const playgroundRef = useRef<HTMLDivElement>(null);
   const craftRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const bladeRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const discRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  // Por motor: pá de trás e da frente (com a ponta azul), disco borrado, anel da ponta e LED do motor.
+  const bladeRefs = useRef<(SVGPathElement | null)[]>([]);
+  const tipRefs = useRef<(SVGPathElement | null)[]>([]);
+  const discRefs = useRef<(SVGEllipseElement | null)[]>([]);
+  const ringRefs = useRef<(SVGEllipseElement | null)[]>([]);
+  const ledRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const lightRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const uid = useId().replace(/:/g, "");
 
   // Lidos ao vivo pelo laço de voo: mudar as props no meio do voo não reinicia nada.
   const settings = useRef({ maxTilt, agility, dust });
@@ -68,7 +111,7 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
     let mode: "landed" | "flying" | "landing" = "landed";
     let bank = 0; // rad, positivo inclina para a direita
     let thrust = 0;
-    let phase = 0;
+    let phase = REST;
     let clock = 0;
     let frame = 0;
     let last = 0;
@@ -111,20 +154,30 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
       const jx = (Math.random() - 0.5) * jitter;
       const jy = (Math.random() - 0.5) * jitter;
       craft.style.transform = `translate(calc(-50% + ${pos.x + jx}px), ${Math.min(0, pos.y + jy)}px) rotate(${(bank * 180) / Math.PI}deg)`;
-      // Hélice vista de lado: a pá encolhe e estica enquanto gira; rápida, vira um disco borrado.
-      const bladeOpacity = Math.min(1, Math.max(0.06, 1 - (rpm - 0.2) * 2.4));
-      const discOpacity = Math.min(0.6, Math.max(0, (rpm - 0.15) * 1.5));
-      bladeRefs.current.forEach((blade, i) => {
-        if (!blade) return;
-        const turn = Math.abs(Math.cos(phase + i * 1.3));
-        blade.style.transform = `translateX(-50%) scaleX(${0.12 + 0.88 * turn})`;
-        blade.style.opacity = String(bladeOpacity);
-      });
-      discRefs.current.forEach((disc) => {
-        if (disc) disc.style.opacity = String(discOpacity);
-      });
-      // Luzes de navegação: acesas e piscando com os motores armados.
+      // Hélices: as pás dão a volta no disco (a da frente passa por cima do eixo, a de trás por baixo) e
+      // giram em sentidos opostos, como num drone de verdade. Rápidas, viram um disco borrado com o anel
+      // azul das pontas.
+      const bladeOpacity = Math.min(1, Math.max(0.24, 1 - (rpm - 0.35) * 1.8));
+      const discOpacity = Math.min(0.55, Math.max(0, (rpm - 0.2) * 1.2));
+      const ringOpacity = Math.min(0.75, Math.max(0, (rpm - 0.3) * 1.4));
+      for (let i = 0; i < 2; i++) {
+        const { dir, back, front } = bladeAngles(phase, i);
+        const set = (k: number, angle: number, shade: number) => {
+          bladeRefs.current[k]?.setAttribute("d", bladePath(angle, dir));
+          tipRefs.current[k]?.setAttribute("d", tipPath(angle, dir));
+          bladeRefs.current[k]?.setAttribute("opacity", String(bladeOpacity * shade));
+          tipRefs.current[k]?.setAttribute("opacity", String(bladeOpacity * shade));
+        };
+        set(i * 2, back, 0.7);
+        set(i * 2 + 1, front, 1);
+        discRefs.current[i]?.setAttribute("opacity", String(discOpacity));
+        ringRefs.current[i]?.setAttribute("opacity", String(ringOpacity));
+      }
+      // Luzes de navegação e LED dos motores: acesos com os motores armados; as de navegação piscam.
       const armed = rpm > 0.05;
+      ledRefs.current.forEach((led) => {
+        if (led) led.style.opacity = armed ? String(0.45 + 0.55 * Math.min(1, rpm * 1.4)) : "0.2";
+      });
       const blink = Math.sin(clock * 7) > 0.2 ? 1 : 0.35;
       lightRefs.current.forEach((light) => {
         if (light) light.style.opacity = armed ? String(blink) : "0.25";
@@ -145,7 +198,7 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
         emitDebt -= 1;
         const side = Math.random() < 0.5 ? -1 : 1;
         const ox = side * (halfW + ARM) + (Math.random() - 0.5) * PROP * 1.6;
-        const oy = -(halfH + 10);
+        const oy = -(halfH + 14);
         const speed = (240 + 300 * rpm) * (0.8 + Math.random() * 0.4);
         particles.push({
           x: cx + ox * cos - oy * sin,
@@ -360,31 +413,93 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
       className="absolute bottom-[2px] h-0 w-0"
       style={{ left: i === 0 ? -ARM : `calc(100% + ${ARM}px)` }}
     >
-      <span className="absolute bottom-0 left-0 h-[7px] w-[8px] -translate-x-1/2 rounded-t-[3px] bg-[linear-gradient(90deg,#3a4360,#5b6687_45%,#262d44)]" />
+      {/* motor: corpo de metal com o anel de LED azul em cima, e o eixo até a hélice */}
+      <span className="absolute bottom-0 left-0 h-[7px] w-[9px] -translate-x-1/2 rounded-t-[3px] bg-[linear-gradient(90deg,#262d44,#6a76a0_42%,#3a4360_70%,#1b2033)]" />
+      <span
+        ref={(el) => {
+          ledRefs.current[i] = el;
+        }}
+        className="absolute bottom-[6px] left-0 h-[1.5px] w-[9px] -translate-x-1/2 rounded-full bg-[#5b86ff] shadow-[0_0_6px_1px_rgb(91_134_255/0.8)]"
+        style={{ opacity: 0.2 }}
+      />
+      <span className="absolute bottom-[7px] left-0 h-[5px] w-[2px] -translate-x-1/2 bg-[linear-gradient(90deg,#5b6687,#c9d2ea,#5b6687)]" />
       <span
         ref={(el) => {
           lightRefs.current[i] = el;
         }}
         className={`absolute bottom-[1px] h-[3px] w-[3px] -translate-x-1/2 rounded-full ${
-          i === 0 ? "left-[-5px] bg-[#ff4d4d] shadow-[0_0_6px_1px_#ff4d4d]" : "left-[5px] bg-[#3ddc84] shadow-[0_0_6px_1px_#3ddc84]"
+          i === 0 ? "left-[-6px] bg-[#ff4d4d] shadow-[0_0_6px_1px_#ff4d4d]" : "left-[6px] bg-[#3ddc84] shadow-[0_0_6px_1px_#3ddc84]"
         }`}
         style={{ opacity: 0.25 }}
       />
-      <span className="absolute bottom-[7px] left-0 h-[3px] w-[3px] -translate-x-1/2 rounded-full bg-[#8b93a7]" />
-      <span
-        ref={(el) => {
-          discRefs.current[i] = el;
-        }}
-        className="absolute bottom-[8px] left-0 h-[5px] w-[34px] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgb(223_231_255/0.55),rgb(223_231_255/0.12)_60%,transparent_72%)]"
-        style={{ opacity: 0 }}
-      />
-      <span
-        ref={(el) => {
-          bladeRefs.current[i] = el;
-        }}
-        className="absolute bottom-[9px] left-0 h-[2px] w-[30px] rounded-full bg-[#c9d2ea]"
-        style={{ transform: "translateX(-50%)" }}
-      />
+      <svg viewBox="0 0 40 16" width={40} height={16} className="absolute bottom-[4px] left-0 -translate-x-1/2 overflow-visible">
+        <defs>
+          <radialGradient id={`${uid}-disc-${i}`}>
+            <stop offset="0" stopColor="#dfe7ff" stopOpacity="0.05" />
+            <stop offset="0.55" stopColor="#9fb4ff" stopOpacity="0.28" />
+            <stop offset="0.9" stopColor="#5b86ff" stopOpacity="0.4" />
+            <stop offset="1" stopColor="#5b86ff" stopOpacity="0" />
+          </radialGradient>
+          <linearGradient id={`${uid}-blade-${i}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#4a5574" />
+            <stop offset="1" stopColor="#161b2b" />
+          </linearGradient>
+        </defs>
+        <ellipse
+          ref={(el) => {
+            discRefs.current[i] = el;
+          }}
+          cx={CX}
+          cy={CY}
+          rx={PROP}
+          ry={PROP * TILT}
+          fill={`url(#${uid}-disc-${i})`}
+          opacity={0}
+        />
+        <ellipse
+          ref={(el) => {
+            ringRefs.current[i] = el;
+          }}
+          cx={CX}
+          cy={CY}
+          rx={PROP - 1}
+          ry={(PROP - 1) * TILT}
+          fill="none"
+          stroke="#7d9bff"
+          strokeWidth={0.7}
+          opacity={0}
+        />
+        {[0, 1].map((k) => {
+          const rest = bladeAngles(REST, i);
+          const angle = k === 0 ? rest.back : rest.front;
+          return (
+          <g key={k}>
+            <path
+              ref={(el) => {
+                bladeRefs.current[i * 2 + k] = el;
+              }}
+              d={bladePath(angle, rest.dir)}
+              fill={`url(#${uid}-blade-${i})`}
+              stroke="#6a76a0"
+              strokeWidth={0.35}
+              strokeLinejoin="round"
+            />
+            <path
+              ref={(el) => {
+                tipRefs.current[i * 2 + k] = el;
+              }}
+              d={tipPath(angle, rest.dir)}
+              stroke="#5b86ff"
+              strokeWidth={1.7}
+              strokeLinecap="round"
+            />
+          </g>
+          );
+        })}
+        {/* porca do eixo, por cima das raízes das pás */}
+        <ellipse cx={CX} cy={CY} rx={2.4} ry={1.3} fill="#3a4360" />
+        <ellipse cx={CX} cy={CY - 0.4} rx={1.3} ry={0.7} fill="#c9d2ea" />
+      </svg>
     </span>
   );
 
