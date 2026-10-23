@@ -1,15 +1,16 @@
 // Pano do paraquedas do Rocket Launch: um tecido 3D em Verlet (x para a direita, y para baixo, z para o
 // espectador, px de tela) desenhado num canvas 2D. A malha é polar, como um paraquedas redondo de verdade:
-// um ponto no ápice e 9 anéis de 24 pontos. A forma inicial é o domo inflado, e o domo é o tamanho real do
+// um ponto no ápice e 12 anéis de 30 pontos. A forma inicial é o domo inflado, e o domo é o tamanho real do
 // tecido: quando ele murcha sobra pano, e é isso que faz as dobras.
 //
-// Quando o foguete pousa, o domo é solto na mesma forma do SVG, cai com gravidade e arrasto do ar, cobre o
-// botão e os propulsores e escorrega até o chão. Depois de um instante uma rajada vinda da esquerda arranca o
+// Na descida o domo vai inflado, preso pelas cordas ao botão (carry). Quando o foguete pousa as cordas soltam
+// (drop): o domo cai com gravidade e arrasto do ar, cobre o botão e os propulsores e escorrega até o chão. Depois de um instante uma rajada vinda da esquerda arranca o
 // pano, que cai amassado no chão, à direita da plataforma, e fica parado (simulação dormindo). No próximo
 // lançamento o jato dos motores sopra o pano para fora da tela.
 //
 // O desenho ordena os triângulos de trás para a frente e pinta cada um com a cor do gomo, iluminada nos dois
-// lados (o lado de dentro é mais escuro). Sem alocação no laço quente: tudo em Float32Array já criado.
+// lados (o lado de dentro é mais escuro). São dois canvas: o de trás fica atrás do foguete e recebe o pano com
+// z < 0; o da frente fica na frente dele. Assim o pano passa por trás do botão em vez de por cima. Sem alocação no laço quente: tudo em Float32Array já criado.
 
 export type ClothBody = {
   /** chão (topo da plataforma) em px de tela, y para baixo */
@@ -21,8 +22,13 @@ export type ClothBody = {
 };
 
 export type Cloth = {
-  /** Solta o paraquedas aberto: aro em (cx, rimY), raios rx (largura) e ry (altura do domo), descendo a vy px/s. */
-  drop: (cx: number, rimY: number, rx: number, ry: number, vy: number) => void;
+  /**
+   * Paraquedas inflado na descida: aro em (cx, rimY), raios rx (largura) e ry (altura do domo), girado tilt graus
+   * em volta de (px, py). anchors: as 4 pontas das cordas no botão, [x, y] × 4, da esquerda para a direita.
+   */
+  carry: (cx: number, rimY: number, rx: number, ry: number, tilt: number, px: number, py: number, anchors: number[]) => void;
+  /** Solta as cordas: o domo carregado começa a cair, descendo a vy px/s. */
+  drop: (vy: number) => void;
   /** Avança dt s. blast: centro do jato no chão e força 0–1 (null sem motor). */
   step: (dt: number, body: ClothBody, blast: { x: number; power: number } | null) => void;
   /** true enquanto ainda se mexe (o laço do botão não pode parar). */
@@ -45,10 +51,9 @@ const DRAG = 0.03; // arrasto do ar por triângulo
 const MAX_MOVE = 40; // deslocamento máximo por passo, px
 const SHEAR = 0.8;
 // O pano é maior que o domo: ao murchar ele se abre até GROW a mais, em GROW_TIME s, e alcança os propulsores.
-const GROW = 0.55;
-const GROW_TIME = 0.5;
+const GROW = 0.2;
+const GROW_TIME = 0.4;
 const BEND = 0.15; // dobrar custa pouco, e só resiste a esticar
-const COMPRESS = 0.2; // quanto o pano resiste a encolher, perto de esticar (1)
 const MARGIN = 1.5; // folga entre o pano e as peças, px
 const CONTACT = 2.5; // até aqui da folga ainda conta como encostado (atrito e sombra)
 // Atrito: fração da velocidade tangencial perdida por passo em contato.
@@ -82,6 +87,7 @@ const Mode = {
   Gust: 2,
   Lying: 3, // rajada acabou, assentando no chão
   Blown: 4,
+  Carried: 5, // inflado, preso pelas cordas
 } as const;
 type ModeValue = (typeof Mode)[keyof typeof Mode];
 
@@ -110,8 +116,8 @@ const HZ = (LZ + 1) / HALF_LEN;
 // Pontos do aro na frente (z > 0) onde as cordas estavam presas: 165°, 120°, 60° e 15°.
 const RIMS = [165, 120, 60, 15].map((deg) => Math.round((deg / 360) * SECTORS));
 // Ao soltar as cordas o domo murcha: o topo cai mais rápido que o aro, e o aro se abre um pouco.
-const DEFLATE_FALL = 60; // px/s a mais no topo
-const DEFLATE_SPREAD = 30; // px/s para fora, no aro
+const DEFLATE_FALL = 170; // px/s a mais no topo
+const DEFLATE_SPREAD = 45; // px/s para fora, no aro
 // Brilho de náilon: reflexo fraco e largo.
 const SHEEN = 0.16;
 
@@ -176,8 +182,12 @@ function buildMesh() {
   };
 }
 
-export function createCloth(canvas: HTMLCanvasElement): Cloth {
-  const ctx = canvas.getContext("2d")!;
+export function createCloth(front: HTMLCanvasElement, back: HTMLCanvasElement): Cloth {
+  const canvases = [front, back];
+  const ctx = front.getContext("2d")!;
+  const ctxBack = back.getContext("2d")!;
+  const anchors = new Float32Array(8);
+  const setOpacity = (o: number) => canvases.forEach((c) => (c.style.opacity = String(o)));
   const { ca, cb, ck, cone, ta, tb, tc, tg } = buildMesh();
   const NC = ca.length;
   const NT = ta.length;
@@ -199,7 +209,6 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
   let height = 1;
   let present = false;
   let mode: ModeValue = Mode.Sleep;
-  let body: ClothBody | null = null;
   let acc = 0;
   let age = 0; // desde o toque
   let settled = 0;
@@ -403,8 +412,7 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
         if (d < 1e-6) continue;
         const r = rest[c] * grow;
         if (cone[c] && d < r) continue;
-        // Tecido de verdade quase não estica, mas encolhe à toa (enruga em dobras finas): comprimir custa pouco.
-        const s = ((d - r) / d) * 0.5 * ck[c] * (d < r ? COMPRESS : 1);
+        const s = ((d - r) / d) * 0.5 * ck[c];
         P[a] += dx * s;
         P[a + 1] += dy * s;
         P[a + 2] += dz * s;
@@ -430,21 +438,19 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
 
   const draw = () => {
     ctx.clearRect(0, 0, width, height);
+    ctxBack.clearRect(0, 0, width, height);
     if (!present) return;
-    // cordas soltas: somem logo depois do toque
-    if (body && age < CORD_TIME) {
-      const bt = body.button;
-      const w = bt.x1 - bt.x0;
-      const ends = [bt.x0, bt.x0 + w * 0.3, bt.x1 - w * 0.3, bt.x1];
-      const rims = RIMS;
-      ctx.globalAlpha = 0.7 * (1 - age / CORD_TIME);
+    // cordas: presas na descida, somem logo depois do toque
+    const cords = mode === Mode.Carried ? 1 : 1 - age / CORD_TIME;
+    if (cords > 0) {
+      ctx.globalAlpha = 0.7 * cords;
       ctx.strokeStyle = "#c9d2ea";
       ctx.lineWidth = 0.8;
       ctx.beginPath();
       for (let n = 0; n < 4; n++) {
-        const o = ring(RINGS, rims[n]) * 3;
+        const o = ring(RINGS, RIMS[n]) * 3;
         ctx.moveTo(P[o], P[o + 1]);
-        ctx.lineTo(ends[n], bt.y0);
+        ctx.lineTo(anchors[n * 2], anchors[n * 2 + 1]);
       }
       ctx.stroke();
       ctx.globalAlpha = 1;
@@ -482,8 +488,10 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
       N[o + 2] /= l;
     }
     order.sort(byDepth);
-    ctx.lineWidth = 0.6;
-    ctx.lineJoin = "round";
+    for (const c of [ctx, ctxBack]) {
+      c.lineWidth = 0.6;
+      c.lineJoin = "round";
+    }
     for (let n = 0; n < NT; n++) {
       const t = order[n];
       const a = ta[t];
@@ -513,15 +521,16 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
       if (inside) lum *= 0.82;
       if (touch[a] || touch[bb] || touch[c]) lum *= 0.85;
       const color = COLORS[tg[t]][Math.round(Math.min(1, lum) * (LEVELS - 1))];
-      ctx.fillStyle = color;
-      ctx.strokeStyle = color;
-      ctx.beginPath();
-      ctx.moveTo(P[a3], P[a3 + 1]);
-      ctx.lineTo(P[b3], P[b3 + 1]);
-      ctx.lineTo(P[c3], P[c3 + 1]);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      const g = tz[t] < 0 ? ctxBack : ctx;
+      g.fillStyle = color;
+      g.strokeStyle = color;
+      g.beginPath();
+      g.moveTo(P[a3], P[a3 + 1]);
+      g.lineTo(P[b3], P[b3 + 1]);
+      g.lineTo(P[c3], P[c3 + 1]);
+      g.closePath();
+      g.fill();
+      g.stroke();
     }
   };
 
@@ -530,8 +539,9 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
     mode = Mode.Sleep;
     blastT = -1;
     fade = 0;
-    canvas.style.opacity = "1";
+    setOpacity(1);
     ctx.clearRect(0, 0, width, height);
+    ctxBack.clearRect(0, 0, width, height);
   };
 
   // Algum ponto do pano ainda está fora do chão, em cima do botão ou dos propulsores?
@@ -547,23 +557,38 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
   };
 
   return {
-    drop(cx, rimY, rx, ry, vy) {
-      // domo inflado: meio elipsoide, o aro em rimY
-      P[0] = cx;
-      P[1] = rimY - ry;
-      P[2] = 0;
+    carry(cx, rimY, rx, ry, tilt, px, py, ends) {
+      // domo inflado: meio elipsoide com o aro em rimY, girado em volta de (px, py) junto com o foguete
+      const rad = (tilt * Math.PI) / 180;
+      const cos = Math.cos(rad);
+      const sin = Math.sin(rad);
+      const put = (o: number, x: number, y: number, z: number) => {
+        P[o] = px + (x - px) * cos - (y - py) * sin;
+        P[o + 1] = py + (x - px) * sin + (y - py) * cos;
+        P[o + 2] = z;
+      };
+      put(0, cx, rimY - ry, 0);
       for (let r = 1; r <= RINGS; r++) {
         const s = r / RINGS;
         const rho = rx * Math.sin((s * Math.PI) / 2);
         const h = ry * Math.cos((s * Math.PI) / 2);
         for (let j = 0; j < SECTORS; j++) {
           const th = (j / SECTORS) * Math.PI * 2;
-          const o = ring(r, j) * 3;
-          P[o] = cx + rho * Math.cos(th);
-          P[o + 1] = rimY - h;
-          P[o + 2] = rho * Math.sin(th) * 0.9;
+          put(ring(r, j) * 3, cx + rho * Math.cos(th), rimY - h, rho * Math.sin(th) * 0.9);
         }
       }
+      for (let n = 0; n < 8; n++) anchors[n] = ends[n];
+      present = true;
+      mode = Mode.Carried;
+      blastT = -1;
+      fade = 0;
+      setOpacity(1);
+      draw();
+    },
+    drop(vy) {
+      if (mode !== Mode.Carried) return;
+      // centro do domo para o murchar: o ápice em x
+      const cx = P[0];
       for (let i = 0; i < COUNT; i++) {
         const o = i * 3;
         const s = i === 0 ? 0 : (Math.floor((i - 1) / SECTORS) + 1) / RINGS;
@@ -591,11 +616,9 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
       blastT = -1;
       fade = 0;
       speed = 1e3;
-      canvas.style.opacity = "1";
     },
     step(dt, b, blast) {
-      body = b;
-      if (!present) return;
+      if (!present || mode === Mode.Carried) return;
       blastPower = blast ? blast.power : 0;
       blastX = blast ? blast.x : 0;
       // o motor acendeu: a partir daqui o jato leva o pano embora
@@ -663,7 +686,7 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
       // garantia: 4 s depois do jato, o que sobrou na tela esmaece e some
       if (mode === Mode.Blown && blastT > BLAST_SAFETY) {
         fade += dt;
-        canvas.style.opacity = String(Math.max(0, 1 - fade / FADE_TIME));
+        setOpacity(Math.max(0, 1 - fade / FADE_TIME));
         if (fade >= FADE_TIME) {
           wipe();
           return;
@@ -676,9 +699,12 @@ export function createCloth(canvas: HTMLCanvasElement): Cloth {
       width = Math.max(w, 1);
       height = Math.max(h, 1);
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(width * dpr);
-      canvas.height = Math.round(height * dpr);
+      for (const c of canvases) {
+        c.width = Math.round(width * dpr);
+        c.height = Math.round(height * dpr);
+      }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctxBack.setTransform(dpr, 0, 0, dpr, 0, 0);
       draw();
     },
     clear: wipe,

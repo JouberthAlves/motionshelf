@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef, useEffect, useId, useRef, type ButtonHTMLAttributes, type MouseEvent } from "react";
+import { forwardRef, useEffect, useRef, type ButtonHTMLAttributes, type MouseEvent } from "react";
 import { createCloth, type ClothBody } from "./rocket-cloth";
 import { createFluidSmoke, createSpriteSmoke, type Jet, type Smoke } from "./rocket-smoke";
 
@@ -45,11 +45,11 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const spriteCanvasRef = useRef<HTMLCanvasElement>(null);
   const clothCanvasRef = useRef<HTMLCanvasElement>(null);
+  const clothBackRef = useRef<HTMLCanvasElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const flameRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const heatRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const padGlowRef = useRef<HTMLSpanElement>(null);
-  const chuteRef = useRef<HTMLSpanElement>(null);
   const launch = useRef(false);
   const startRef = useRef<(() => void) | null>(null);
   const reduced = useRef(false);
@@ -57,7 +57,6 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
   useEffect(() => {
     settings.current = { onLaunch, onLand };
   }, [onLaunch, onLand]);
-  const uid = useId().replace(/:/g, "");
 
   useEffect(() => {
     const playground = playgroundRef.current;
@@ -65,13 +64,13 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
     const glCanvas = glCanvasRef.current;
     const spriteCanvas = spriteCanvasRef.current;
     const clothCanvas = clothCanvasRef.current;
+    const clothBack = clothBackRef.current;
     const count = countRef.current;
-    const chute = chuteRef.current;
     const padGlow = padGlowRef.current;
-    if (!playground || !craft || !glCanvas || !spriteCanvas || !clothCanvas || !count || !chute || !padGlow) return;
+    if (!playground || !craft || !glCanvas || !spriteCanvas || !clothCanvas || !clothBack || !count || !padGlow) return;
     reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const cloth = createCloth(clothCanvas);
+    const cloth = createCloth(clothCanvas, clothBack);
     let width = 0;
     let height = 0;
     let cw = 0;
@@ -153,6 +152,24 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       };
     };
 
+    // Paraquedas inflado (o mesmo pano 3D), abrindo com chuteOpen e girando com o foguete em volta da base dele.
+    // Aro 46 px acima do botão, 132 × 36 px aberto; as cordas vão até o topo do botão.
+    const carryChute = () => {
+      const px = width / 2 + x;
+      const py = height - PAD_H + y;
+      const sy = 0.15 + 0.85 * chuteOpen;
+      const top = py - ch;
+      const w = cw;
+      const ends = [px - w / 2, px - w * 0.2, px + w * 0.2, px + w / 2];
+      const rad = (tilt * Math.PI) / 180;
+      const anchors: number[] = [];
+      for (const ex of ends) {
+        anchors.push(px + (ex - px) * Math.cos(rad) - (top - py) * Math.sin(rad));
+        anchors.push(py + (ex - px) * Math.sin(rad) + (top - py) * Math.cos(rad));
+      }
+      cloth.carry(px, top - 46 * sy, 66 * (0.3 + 0.7 * chuteOpen), 36 * sy, tilt, px, py, anchors);
+    };
+
     const draw = () => {
       craft.style.transform = `translate(calc(-50% + ${x}px), ${y}px) rotate(${tilt}deg)`;
       const flicker = 0.85 + Math.random() * 0.3;
@@ -166,8 +183,6 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       });
       // A plataforma acende com a chama enquanto o foguete está perto dela.
       padGlow.style.opacity = String(Math.min(1, throttle * 1.2) * Math.max(0, 1 + y / 140));
-      chute.style.opacity = String(chuteOpen);
-      chute.style.transform = `translateX(-50%) scale(${0.3 + 0.7 * chuteOpen}, ${0.15 + 0.85 * chuteOpen})`;
     };
 
     const say = (text: string) => {
@@ -234,12 +249,13 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
         // Balança sob o paraquedas e volta para cima da plataforma.
         tilt = Math.sin(clock * 2.2) * 7 * Math.min(1, -y / 120);
         x += (0 - x) * (1 - Math.exp(-dt / 0.9));
+        if (y >= 0) y = 0;
+        carryChute();
         if (y >= 0) {
-          y = 0;
           vy = 0;
-          // As cordas soltam: o paraquedas SVG some e o pano 3D nasce no mesmo lugar, descendo com o foguete.
+          // As cordas soltam: o domo começa a cair sobre o foguete.
           chuteOpen = 0;
-          cloth.drop(width / 2 + x, height - PAD_H - ch - 46, 66, 36, SINK);
+          cloth.drop(SINK);
           phase = "fold";
           timer = 0;
           settings.current.onLand?.();
@@ -362,6 +378,8 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
         className="absolute bottom-[-30px] left-1/2 h-[70px] w-[300px] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgb(255_150_70/0.55),rgb(255_90_30/0.18)_45%,transparent_70%)] mix-blend-plus-lighter"
         style={{ opacity: 0 }}
       />
+      {/* pano do paraquedas que fica atrás do foguete */}
+      <canvas ref={clothBackRef} aria-hidden="true" className="absolute inset-0 size-full" />
       <span
         ref={craftRef}
         className="pointer-events-auto absolute left-1/2 z-[1] inline-flex origin-bottom"
@@ -373,30 +391,6 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
           aria-live="polite"
           className="pointer-events-none absolute bottom-full left-1/2 mb-14 -translate-x-1/2 font-mono text-lg font-semibold tracking-[0.12em] text-[#5b86ff] uppercase opacity-0 transition-opacity"
         />
-        {/* paraquedas: listras azul e branco, cordas até as pontas do botão */}
-        <span
-          ref={chuteRef}
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-full left-1/2 origin-bottom"
-          style={{ opacity: 0, transform: "translateX(-50%) scale(0.3, 0.15)" }}
-        >
-          <svg viewBox="0 0 140 86" width={140} height={86} className="block overflow-visible">
-            <defs>
-              <linearGradient id={`${uid}-shade`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0.18" />
-                <stop offset="1" stopColor="#000000" stopOpacity="0.25" />
-              </linearGradient>
-            </defs>
-            {[0, 1, 2, 3, 4].map((g) => {
-              const a0 = Math.PI + (g / 5) * Math.PI;
-              const a1 = Math.PI + ((g + 1) / 5) * Math.PI;
-              const p = (a: number) => `${(70 + Math.cos(a) * 66).toFixed(1)} ${(40 + Math.sin(a) * 36).toFixed(1)}`;
-              return <path key={g} d={`M70 40 L${p(a0)} A66 36 0 0 1 ${p(a1)} Z`} fill={g % 2 ? "#eef2ff" : "#1f5bff"} />;
-            })}
-            <path d="M4 40 A66 36 0 0 1 136 40 Z" fill={`url(#${uid}-shade)`} />
-            <path d="M4 40 L40 86 M50 40 L58 86 M90 40 L82 86 M136 40 L100 86" stroke="#c9d2ea" strokeWidth={0.8} strokeOpacity={0.7} />
-          </svg>
-        </span>
         {/* travas que prendem os propulsores ao botão */}
         <span aria-hidden="true" className="absolute top-[9px] -right-[3px] -left-[3px] h-[3px] rounded-full bg-[#3a4360]" />
         <span aria-hidden="true" className="absolute -right-[3px] bottom-[9px] -left-[3px] h-[3px] rounded-full bg-[#3a4360]" />
