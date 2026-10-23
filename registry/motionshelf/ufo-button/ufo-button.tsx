@@ -15,7 +15,7 @@ export type UfoButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 const UFO_Y = 42; // centro do disco
 const UFO_W = 96;
 const SPEED = 280;
-const LIGHTS = 5;
+const LIGHTS = 7; // janelas da borda, que acendem em roda
 const MAX_SPARKS = 90;
 
 type Spark = { x: number; y: number; vy: number; life: number };
@@ -31,7 +31,11 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
   const stripesRef = useRef<HTMLSpanElement>(null);
   const prizeRef = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const lightRefs = useRef<(SVGCircleElement | null)[]>([]);
+  const lightRefs = useRef<(SVGEllipseElement | null)[]>([]);
+  const poolRef = useRef<HTMLSpanElement>(null);
+  const glowRef = useRef<HTMLSpanElement>(null);
+  const emitterRef = useRef<SVGEllipseElement>(null);
+  const litRef = useRef<HTMLSpanElement>(null);
   const settings = useRef({ range });
   useEffect(() => {
     settings.current = { range };
@@ -45,7 +49,10 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
     const prize = prizeRef.current;
     const canvas = canvasRef.current;
     const stripes = stripesRef.current;
-    if (!playground || !ufo || !beam || !prize || !canvas || !stripes) return;
+    const pool = poolRef.current;
+    const glow = glowRef.current;
+    const lit = litRef.current;
+    if (!playground || !ufo || !beam || !prize || !canvas || !stripes || !pool || !glow || !lit) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const ctx = canvas.getContext("2d");
 
@@ -87,8 +94,18 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
       const bank = Math.max(-12, Math.min(12, u.v / 22));
       ufo.style.transform = `translate(${u.x - UFO_W / 2}px, ${UFO_Y - 20 + bob}px) rotate(${bank}deg)`;
       const top = UFO_Y + 10 + bob;
-      beam.style.transform = `translate(${u.x}px, ${top}px) translateX(-50%)`;
-      beam.style.opacity = String(beamOn);
+        beam.style.transform = `translate(${u.x}px, ${top}px) translateX(-50%)`;
+      // A luz pulsa de leve, como um feixe de energia, e soma com o que está atrás (mix-blend plus-lighter).
+      const pulse = 0.9 + 0.1 * Math.sin(clock * 23) * Math.sin(clock * 3.1);
+        beam.style.opacity = String(beamOn * pulse);
+      // Poça de luz no chão onde o feixe bate, e o brilho do emissor embaixo do disco.
+      pool.style.transform = `translate(${u.x - 130}px, ${height - 30}px)`;
+      pool.style.opacity = String(beamOn * pulse);
+      glow.style.transform = `translate(${u.x - 45}px, ${top - 18}px)`;
+      glow.style.opacity = String(beamOn);
+      emitterRef.current?.setAttribute("opacity", String(0.35 + 0.65 * beamOn));
+      // O botão dentro do feixe recebe a luz azul por cima.
+      lit.style.opacity = String(beamOn * 0.9);
       // Faixas subindo pelo feixe: a camada desliza 24 px (um período) e recomeça.
       stripes.style.transform = `translateY(${-((clock * 40) % 24)}px)`;
       const k = Math.min(1, lift / 60);
@@ -96,7 +113,7 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
       prize.style.transform = `translate(${width / 2 - bw / 2}px, ${height - bh - lift}px) rotate(${wobble}deg) scale(${1 - 0.08 * k})`;
       // Luzes da borda acendem em roda.
       const on = Math.floor(clock * 7) % LIGHTS;
-      lightRefs.current.forEach((light, i) => light?.setAttribute("opacity", i === on ? "1" : "0.3"));
+      lightRefs.current.forEach((light, i) => light?.setAttribute("opacity", i === on ? "1" : i === (on + LIGHTS - 1) % LIGHTS ? "0.6" : "0.35"));
     };
 
     const step = (now: number) => {
@@ -131,6 +148,8 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
         }
         ctx.clearRect(0, 0, width, height);
         ctx.fillStyle = "#c9d6ff";
+        // Faíscas somam luz: um ponto e um halo fraco em volta.
+        ctx.globalCompositeOperation = "lighter";
         for (let i = sparks.length - 1; i >= 0; i--) {
           const s = sparks[i];
           s.y += s.vy * dt;
@@ -140,10 +159,15 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
             sparks.splice(i, 1);
             continue;
           }
-          ctx.globalAlpha = s.life * beamOn * 0.8;
+          ctx.globalAlpha = s.life * beamOn * 0.22;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = s.life * beamOn * 0.9;
           ctx.fillRect(s.x - 0.8, s.y - 0.8, 1.6, 1.6);
         }
         ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = "source-over";
       }
 
       draw();
@@ -196,18 +220,37 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
 
   return (
     <div ref={playgroundRef} className={`pointer-events-none absolute inset-0 overflow-hidden ${playgroundClassName}`}>
-      {/* feixe: trapézio de luz azul com faixas subindo */}
+      {/* poça de luz no chão, onde o feixe bate */}
       <span
-        ref={beamRef}
+        ref={poolRef}
         aria-hidden="true"
-        className="absolute top-0 left-0 w-[170px] overflow-hidden [clip-path:polygon(40%_0,60%_0,100%_100%,0_100%)]"
-        style={{ opacity: 0, background: "linear-gradient(180deg, rgb(125 155 255 / 0.55), rgb(91 134 255 / 0.10))" }}
-      >
-        <span
-          ref={stripesRef}
-          className="absolute inset-x-0 top-0 -bottom-[24px] bg-[repeating-linear-gradient(180deg,rgb(201_214_255/0.10)_0_2px,transparent_2px_24px)]"
-        />
+        className="absolute top-0 left-0 h-[60px] w-[260px] rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgb(170_195_255/0.55),rgb(91_134_255/0.22)_42%,transparent_70%)] mix-blend-plus-lighter"
+        style={{ opacity: 0 }}
+      />
+      {/* feixe: halo largo e desfocado, corpo mais claro e núcleo quase branco, com faixas subindo; o grupo
+          soma luz com o fundo (plus-lighter) em vez de cobrir com cor chapada */}
+      <span ref={beamRef} aria-hidden="true" className="absolute top-0 left-0 w-[210px] mix-blend-plus-lighter" style={{ opacity: 0 }}>
+        <span className="absolute inset-0 blur-[10px]">
+          <span className="absolute inset-0 bg-[linear-gradient(180deg,rgb(130_165_255/0.55),rgb(91_134_255/0.2)_55%,rgb(91_134_255/0.1))] [clip-path:polygon(39%_0,61%_0,100%_100%,0_100%)]" />
+        </span>
+        <span className="absolute inset-0 blur-[2px]">
+          <span className="absolute inset-0 bg-[linear-gradient(180deg,rgb(205_222_255/0.7),rgb(140_170_255/0.28)_50%,rgb(110_145_255/0.12))] [clip-path:polygon(44%_0,56%_0,82%_100%,18%_100%)]" />
+        </span>
+        <span className="absolute inset-0 overflow-hidden [clip-path:polygon(42%_0,58%_0,90%_100%,10%_100%)]">
+          <span
+            ref={stripesRef}
+            className="absolute inset-x-0 top-0 -bottom-[24px] bg-[repeating-linear-gradient(180deg,rgb(220_232_255/0.09)_0_3px,transparent_3px_24px)] blur-[1px]"
+          />
+        </span>
+        <span className="absolute top-0 bottom-[20%] left-1/2 w-[8px] -translate-x-1/2 bg-[linear-gradient(180deg,rgb(255_255_255/0.85),rgb(190_210_255/0.25)_60%,transparent)] blur-[3px]" />
       </span>
+      {/* brilho do emissor embaixo do disco: só acende com o feixe (parado, brilho permanente vira enfeite) */}
+      <span
+        ref={glowRef}
+        aria-hidden="true"
+        className="absolute top-0 left-0 h-[36px] w-[90px] rounded-[50%] bg-[radial-gradient(ellipse_at_center,rgb(200_220_255/0.9),rgb(110_150_255/0.35)_40%,transparent_70%)] mix-blend-plus-lighter"
+        style={{ opacity: 0 }}
+      />
       <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 size-full" />
       {/* o botão de verdade */}
       <span ref={prizeRef} className="pointer-events-auto absolute top-0 left-0 inline-flex origin-center" style={{ transform: "translate(-200px, -200px)" }}>
@@ -219,41 +262,79 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
           {...props}
         >
           {children}
+          {/* luz do feixe batendo no botão, de cima para baixo */}
+          <span
+            ref={litRef}
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 rounded-md bg-[linear-gradient(180deg,rgb(170_195_255/0.32),rgb(120_155_255/0.08)_60%,transparent)] shadow-[inset_0_1px_0_rgb(210_225_255/0.5)]"
+            style={{ opacity: 0 }}
+          />
         </button>
       </span>
-      {/* disco voador: cúpula de vidro, casco de metal e luzes na borda */}
+      {/* disco voador: fundo escuro, borda de metal com janelas acesas, deck, cúpula de vidro com reflexo e o
+          emissor embaixo, que acende com o feixe */}
       <span ref={ufoRef} aria-hidden="true" className="absolute top-0 left-0 h-[40px] origin-center" style={{ width: UFO_W, transform: "translate(-200px, 0px)" }}>
         <svg viewBox="0 0 96 40" width={UFO_W} height={40} className="block overflow-visible">
           <defs>
-            <linearGradient id={`${uid}-hull`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#c9d2ea" />
-              <stop offset="0.45" stopColor="#6a76a0" />
+            <linearGradient id={`${uid}-rim`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#eef2ff" />
+              <stop offset="0.35" stopColor="#a9b4cf" />
+              <stop offset="0.7" stopColor="#5b6687" />
               <stop offset="1" stopColor="#262d44" />
             </linearGradient>
-            <radialGradient id={`${uid}-dome`} cx="0.4" cy="0.35" r="0.7">
-              <stop offset="0" stopColor="#dfe7ff" stopOpacity="0.9" />
-              <stop offset="0.5" stopColor="#5b86ff" stopOpacity="0.55" />
-              <stop offset="1" stopColor="#1f5bff" stopOpacity="0.35" />
+            <linearGradient id={`${uid}-under`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#262d44" />
+              <stop offset="1" stopColor="#0b0e16" />
+            </linearGradient>
+            <linearGradient id={`${uid}-deck`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#8b93a7" />
+              <stop offset="1" stopColor="#3a4360" />
+            </linearGradient>
+            <radialGradient id={`${uid}-dome`} cx="0.38" cy="0.3" r="0.75">
+              <stop offset="0" stopColor="#eef4ff" stopOpacity="0.95" />
+              <stop offset="0.35" stopColor="#8fb0ff" stopOpacity="0.6" />
+              <stop offset="1" stopColor="#1f5bff" stopOpacity="0.4" />
             </radialGradient>
+            <filter id={`${uid}-glow`} x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.4" result="b" />
+              <feMerge>
+                <feMergeNode in="b" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
           </defs>
-          <ellipse cx={48} cy={15} rx={17} ry={12} fill={`url(#${uid}-dome)`} stroke="#9fb4ff" strokeOpacity={0.5} strokeWidth={0.6} />
-          <ellipse cx={48} cy={24} rx={46} ry={10} fill={`url(#${uid}-hull)`} />
-          <ellipse cx={48} cy={21} rx={44} ry={4} fill="#eef2ff" fillOpacity={0.18} />
-          <ellipse cx={48} cy={31} rx={16} ry={3.5} fill="#1b2033" />
-          <ellipse cx={48} cy={31} rx={9} ry={2} fill="#7d9bff" fillOpacity={0.8} />
-          {Array.from({ length: LIGHTS }, (_, i) => (
-            <circle
-              key={i}
-              ref={(el) => {
-                lightRefs.current[i] = el;
-              }}
-              cx={14 + i * 17}
-              cy={25 + Math.sin((i / (LIGHTS - 1)) * Math.PI) * 3}
-              r={2}
-              fill="#9fdcff"
-              opacity={0.3}
-            />
-          ))}
+          <ellipse cx={48} cy={28} rx={40} ry={7.5} fill={`url(#${uid}-under)`} />
+          <ellipse cx={48} cy={31.5} rx={13} ry={3.4} fill="#0b0e16" />
+          <ellipse ref={emitterRef} cx={48} cy={31.5} rx={8.5} ry={2} fill="#bcd0ff" opacity={0.35} filter={`url(#${uid}-glow)`} />
+          <ellipse cx={48} cy={24} rx={46} ry={8.5} fill={`url(#${uid}-rim)`} />
+          <ellipse cx={48} cy={21} rx={41} ry={3.2} fill="#ffffff" fillOpacity={0.22} />
+          <path d="M3 25 Q48 34 93 25" fill="none" stroke="#1b2033" strokeOpacity={0.6} strokeWidth={0.8} />
+          <ellipse cx={48} cy={17.5} rx={24} ry={5} fill={`url(#${uid}-deck)`} />
+          <path d="M33 17.5 A15 13 0 0 1 63 17.5 Z" fill={`url(#${uid}-dome)`} stroke="#c9d6ff" strokeOpacity={0.55} strokeWidth={0.6} />
+          <path d="M38 13 Q41 7 48 6" fill="none" stroke="#ffffff" strokeOpacity={0.7} strokeWidth={1.1} strokeLinecap="round" />
+          <g filter={`url(#${uid}-glow)`}>
+            {Array.from({ length: LIGHTS }, (_, i) => {
+              // Janelas na frente da borda: a perspectiva aproxima as das pontas e encolhe o tamanho.
+              const a = Math.PI * (0.12 + (0.76 * i) / (LIGHTS - 1));
+              const cx = 48 - Math.cos(a) * 40;
+              const cy = 25.5 + Math.sin(a) * 3.2;
+              const r = 1.3 + Math.sin(a) * 0.9;
+              return (
+                <ellipse
+                  key={i}
+                  ref={(el) => {
+                    lightRefs.current[i] = el;
+                  }}
+                  cx={cx}
+                  cy={cy}
+                  rx={r}
+                  ry={r * 0.75}
+                  fill="#a8e4ff"
+                  opacity={0.35}
+                />
+              );
+            })}
+          </g>
         </svg>
       </span>
     </div>

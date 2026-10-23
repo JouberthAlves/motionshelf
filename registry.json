@@ -207,7 +207,8 @@
       "title": "Rocket Launch",
       "description": "A button between two boosters: countdown, liftoff with flames and smoke, and a parachute landing.",
       "files": [
-        { "path": "registry/motionshelf/rocket-button/rocket-button.tsx", "type": "registry:component", "target": "components/motionshelf/rocket-button.tsx" }
+        { "path": "registry/motionshelf/rocket-button/rocket-button.tsx", "type": "registry:component", "target": "components/motionshelf/rocket-button.tsx" },
+        { "path": "registry/motionshelf/rocket-button/rocket-smoke.ts", "type": "registry:lib", "target": "components/motionshelf/rocket-smoke.ts" }
       ]
     },
     {

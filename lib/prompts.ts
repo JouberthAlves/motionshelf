@@ -436,20 +436,21 @@ const RECIPES: Record<string, Recipe> = {
     ),
     beats: [
       t("Click: a countdown 3, 2, 1 (about 0.42 s each) appears above the rocket in the accent color; on '1' the engines light and smoke starts piling up on the pad."),
-      t("Liftoff (fire onLaunch): flames at both nozzles flicker, the rocket accelerates upward (about 1500 px/s²) with a slight wobble and leaves through the top, while smoke from the nozzles hits the pad and rolls out sideways, growing and fading."),
+      t("Liftoff (fire onLaunch): layered flames (white core, orange body, an additive glow) flicker at both nozzles, the pad lights up orange, and the rocket accelerates upward (about 1500 px/s²) with a slight wobble and leaves through the top."),
+      t("The smoke is a small 2D fluid simulation on the GPU (stable fluids: advect, forces, vorticity confinement, pressure projection) with two dyes, smoke and heat: the jets push air down, where they hit the floor the flow fans out sideways and a cloud is born, heat rises and glows orange, curl-noise turbulence makes it billow, and it fades in about 3 s, faster up high."),
       t("After a short pause it comes back from the top under an open parachute, sinking at about 95 px/s, swaying a few degrees and drifting back over the pad."),
       t("On touchdown (fire onLand) the parachute deflates and fades, and the rocket settles upright."),
     ],
     adapt: [t("the button label and what liftoff and landing should do"), t("the size of the area (it needs room above the pad)"), t("the colors of the boosters and the parachute")],
     extra: [
-      t("Draw the smoke and the flame sparks on a 2D canvas behind the rocket; the rocket, flames and parachute move only with transform and opacity."),
+      t("Run the fluid only on a real GPU (check WEBGL_debug_renderer_info for SwiftShader/llvmpipe) and only while the rocket is launching; if 12 frames in a row take over 50 ms or the context is lost, switch to a 2D-canvas fallback of rotating noise-textured cloud sprites. The rocket, flames and parachute move only with transform and opacity."),
       t("With reduced motion, the click runs onLaunch and onLand right away with no animation."),
     ],
   },
   "ufo-button": {
     technique: "physics",
     look: t(
-      "A small flying saucer near the top of the area (metal hull, glass dome, a row of rim lights that chase around) and the button resting on the floor below. A trapezoid of blue light, with stripes drifting up, can shine down from the saucer.",
+      "A small flying saucer near the top of the area (dark underside, metal rim with a row of lit windows that chase around, a deck, a glass dome with a reflection, and an emitter underneath) and the button resting on the floor below. The beam is real light: a wide blurred halo, a brighter body and an almost white core, added to the background with mix-blend-mode: plus-lighter, with faint stripes drifting up and a pool of light on the floor.",
     ),
     beats: [
       t("Idle: the saucer drifts after the pointer's x near the top, banking a little with its speed and bobbing gently; with the pointer outside the area it parks off to one side."),
@@ -459,7 +460,7 @@ const RECIPES: Record<string, Recipe> = {
     adapt: [t("the button label"), t("how close the pointer must get before the abduction"), t("the colors of the saucer and the beam")],
     extra: [
       t("Release only when the pointer leaves the whole area, not when it leaves the button, so the button doesn't flee from the pointer."),
-      t("The beam's height is set once on resize; per frame only transform and opacity change. With reduced motion everything stays still."),
+      t("The beam's height is set once on resize; per frame only transform and opacity change (the light pulses slightly). Inside the beam the button gets a blue light from above. With reduced motion everything stays still."),
     ],
   },
   "magnet-button": {
