@@ -11,7 +11,7 @@ export type PropDoc = {
   description: Text;
 };
 
-export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy";
+export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy" | "buttons";
 
 export type Entry = {
   slug: string;
@@ -32,6 +32,7 @@ export const CATEGORIES: { id: CategoryId; name: Text }[] = [
   { id: "location", name: { en: "Location" } },
   { id: "scheduling", name: { en: "Scheduling" } },
   { id: "anatomy", name: { en: "Anatomy" } },
+  { id: "buttons", name: { en: "Buttons" } },
 ];
 
 const p = (name: string, type: string, def: string, en: string): PropDoc => ({
@@ -405,17 +406,21 @@ export const ENTRIES: Entry[] = [
     ],
   },
   {
-    slug: "langendorff-heart",
-    name: "Langendorff Heart",
-    category: "anatomy",
-    code: "HRT-01",
+    slug: "drone-button",
+    name: "Drone Button",
+    category: "buttons",
+    code: "DRN-01",
     summary: {
-      en: "An isolated human heart beats on a Langendorff rig: a pump pushes blue buffer into the coronaries, a gauge holds 70 mmHg and a chart recorder traces the left ventricle.",
+      en: "A button carried by a drone: it rests on its skids, spools up its rotors when the pointer comes in, flies to the cursor banking like a real quadcopter, kicks up dust near the floor and lands when the pointer leaves.",
     },
     dependencies: [],
     props: [
-      p("bpm", "number", "72", "Resting heart rate in beats per minute; the idle tour swings around it."),
-      CLASS,
+      p("children", "ReactNode", "—", "The button label."),
+      p("maxTilt", "number", "24", "Maximum bank in degrees while the drone flies sideways."),
+      p("agility", "number", "1", "How hard the autopilot chases the pointer; lower drifts, higher snaps."),
+      p("dust", "boolean", "true", "Kick up dust when the rotor wash reaches the floor."),
+      p("playgroundClassName", "string", '""', "Classes for the flight area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
     ],
   },
 ];

@@ -44,7 +44,7 @@ const MOBILE_H: Record<string, number> = {
   "sales-funnel": 270,
   "roi-balance": 270,
   "page-speed-gauge": 250,
-  "langendorff-heart": 320,
+  "drone-button": 300,
 };
 
 /**

@@ -36,5 +36,16 @@ export const PREVIEWS: Record<string, ComponentType> = {
   "sales-funnel": load(() => import("@/registry/motionshelf/sales-funnel/sales-funnel")),
   "roi-balance": load(() => import("@/registry/motionshelf/roi-balance/roi-balance")),
   "page-speed-gauge": load(() => import("@/registry/motionshelf/page-speed-gauge/page-speed-gauge")),
-  "langendorff-heart": load(() => import("@/registry/motionshelf/langendorff-heart/langendorff-heart")),
+  // O drone voa dentro do container posicionado mais próximo: na prévia ganha uma área de voo com chão.
+  "drone-button": load(() =>
+    import("@/registry/motionshelf/drone-button/drone-button").then(({ default: DroneButton }) => ({
+      default: function DroneButtonDemo() {
+        return (
+          <div className="relative h-[300px] w-[520px] max-w-full rounded-lg border border-edge bg-[radial-gradient(ellipse_at_50%_100%,rgb(31_91_255/0.1),transparent_65%)]">
+            <DroneButton>Book a demo</DroneButton>
+          </div>
+        );
+      },
+    })),
+  ),
 };

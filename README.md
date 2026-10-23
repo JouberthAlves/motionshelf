@@ -15,7 +15,7 @@
 **Motion your clients will ask for.**<br>
 Animated React components for sites that sell, installed as code you own.
 
-<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-18-1f5bff?style=flat-square" alt="18 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
+<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-19-1f5bff?style=flat-square" alt="19 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
 
 [Website](https://motionshelf-pi.vercel.app) · [Components](https://motionshelf-pi.vercel.app/components) · [Installation](https://motionshelf-pi.vercel.app/docs/installation) · [Make it with your agent](https://motionshelf-pi.vercel.app/docs/agents)
 
@@ -112,9 +112,19 @@ Payment notifications, chat flows, map pins, search results, booking slots, and 
       <b>Order Tracker</b><br><sub>Location</sub>
     </td>
   </tr>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/drone-button"><img src=".github/readme/drone-button.webp" alt="Drone Button" width="100%"></a><br>
+      <b>Drone Button</b><br><sub>Buttons</sub>
+    </td>
+    <td width="33%"></td>
+    <td width="33%"></td>
+  </tr>
 </table>
 
 The three **Anatomy** components are interactive isometric figures: move the pointer over them and the model behind them changes (ad budget, page weight), and the readout under the figure updates from the same numbers.
+
+The **Drone Button** is carried by a small quadcopter: move the pointer into its area and it takes off, flies to the cursor banking like a real drone, and lands when the pointer leaves. It is plain React with a physics loop, no animation library.
 
 ## Install
 

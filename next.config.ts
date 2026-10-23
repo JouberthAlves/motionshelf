@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
       // "Pix Notification" virou "Payment Notification": os endereços antigos continuam funcionando.
       { source: "/components/pix-notification", destination: "/components/payment-notification", permanent: true },
       { source: "/r/pix-notification.json", destination: "/r/payment-notification.json", permanent: true },
+      // Langendorff Heart saiu do catálogo (travava o site em GPU fraca): o endereço antigo vai pra galeria.
+      { source: "/components/langendorff-heart", destination: "/components", permanent: false },
+      // O Drone Button nasceu como teste em /lab e virou componente do catálogo.
+      { source: "/lab/drone-button", destination: "/components/drone-button", permanent: true },
     ];
   },
 };
