@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useId, useRef, type ButtonHTMLAttributes, type MouseEvent } from "react";
+import { createCloth, type ClothBody } from "./rocket-cloth";
 import { createFluidSmoke, createSpriteSmoke, type Jet, type Smoke } from "./rocket-smoke";
 
 export type RocketButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -13,7 +14,9 @@ export type RocketButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 // O botão vai entre dois propulsores, na plataforma do chão. No clique: contagem 3-2-1, ignição com fumaça
-// na plataforma, decolagem acelerando até sair por cima, e a volta descendo de paraquedas. px e segundos.
+// na plataforma, decolagem acelerando até sair por cima, e a volta descendo de paraquedas. No pouso o
+// paraquedas vira um pano 3D que cai sobre o botão e os propulsores; depois uma rajada o arranca e, no
+// próximo lançamento, o jato dos motores o sopra para fora. px e segundos.
 const PAD_H = 6;
 // Tempo e física de um Falcon 9 de verdade, em tempo real. A contagem anda 1 s por número: a ignição começa
 // em T-3, os motores chegam à potência máxima em T-1 e as garras soltam em T-0.
@@ -41,6 +44,7 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
   const craftRef = useRef<HTMLSpanElement>(null);
   const glCanvasRef = useRef<HTMLCanvasElement>(null);
   const spriteCanvasRef = useRef<HTMLCanvasElement>(null);
+  const clothCanvasRef = useRef<HTMLCanvasElement>(null);
   const countRef = useRef<HTMLSpanElement>(null);
   const flameRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const heatRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -60,12 +64,14 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
     const craft = craftRef.current;
     const glCanvas = glCanvasRef.current;
     const spriteCanvas = spriteCanvasRef.current;
+    const clothCanvas = clothCanvasRef.current;
     const count = countRef.current;
     const chute = chuteRef.current;
     const padGlow = padGlowRef.current;
-    if (!playground || !craft || !glCanvas || !spriteCanvas || !count || !chute || !padGlow) return;
+    if (!playground || !craft || !glCanvas || !spriteCanvas || !clothCanvas || !count || !chute || !padGlow) return;
     reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    const cloth = createCloth(clothCanvas);
     let width = 0;
     let height = 0;
     let cw = 0;
@@ -101,6 +107,7 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       cw = craft.offsetWidth;
       ch = craft.offsetHeight;
       smoke?.resize(width, height);
+      cloth.resize(width, height);
     };
     measure();
 
@@ -128,6 +135,22 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       const up = PAD_H - y; // fundo do foguete, medido do chão
       const off = cw / 2 + BOOSTER_OUT - BOOSTER_W / 2;
       return [-off, off].map((o) => ({ x: cx + o * Math.cos(rad), y: up - o * Math.sin(rad), dx, dy, power: throttle }));
+    };
+
+    // Corpo do foguete para o pano: chão, caixa do botão e propulsores, em px de tela.
+    const clothBody = (): ClothBody => {
+      const ground = height - PAD_H;
+      const cx = width / 2 + x;
+      const off = cw / 2 + BOOSTER_OUT - BOOSTER_W / 2;
+      const top = ground - 54 + y;
+      return {
+        ground,
+        button: { x0: cx - cw / 2, x1: cx + cw / 2, y0: ground - ch + y, depth: 14 },
+        boosters: [
+          { x: cx - off, r: BOOSTER_W / 2, top },
+          { x: cx + off, r: BOOSTER_W / 2, top },
+        ],
+      };
     };
 
     const draw = () => {
@@ -214,6 +237,9 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
         if (y >= 0) {
           y = 0;
           vy = 0;
+          // As cordas soltam: o paraquedas SVG some e o pano 3D nasce no mesmo lugar, descendo com o foguete.
+          chuteOpen = 0;
+          cloth.drop(width / 2 + x, height - PAD_H - ch - 46, 66, 36, SINK);
           phase = "fold";
           timer = 0;
           settings.current.onLand?.();
@@ -221,15 +247,17 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       } else if (phase === "fold") {
         tilt *= Math.exp(-dt / 0.08);
         x *= Math.exp(-dt / 0.1);
-        chuteOpen = Math.max(0, chuteOpen - dt * 2.2);
-        if (chuteOpen <= 0) phase = "idle";
+        if (timer > 0.4) phase = "idle";
       }
 
       // Fora das fases com motor ligado, a fumaça só continua se espalhando e sumindo.
       smoke?.step(dt, phase === "count" || phase === "lift" ? jets() : []);
+      // O jato dos motores, ainda perto do chão, sopra o pano para longe.
+      const blowing = phase === "count" || (phase === "lift" && y > -120);
+      cloth.step(dt, clothBody(), blowing ? { x: width / 2 + x, power: throttle } : null);
       draw();
       // Para quando pousou e a fumaça se dissipou (com folga de 1,5 s para o resto sumir).
-      quiet = phase === "idle" && (!smoke || smoke.amount() < 0.05) ? quiet + dt : 0;
+      quiet = phase === "idle" && (!smoke || smoke.amount() < 0.05) && !cloth.awake() ? quiet + dt : 0;
       if (phase === "idle" && quiet > 1.5) {
         smoke?.clear();
         tilt = 0;
@@ -258,6 +286,7 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       glCanvas.removeEventListener("webglcontextlost", dropFluid);
       cancelAnimationFrame(frame);
       smoke?.dispose();
+      cloth.clear();
       startRef.current = null;
     };
   }, [disabled]);
@@ -387,6 +416,8 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
       {/* fumaça na frente do foguete: ela envolve a base dele na plataforma */}
       <canvas ref={glCanvasRef} aria-hidden="true" className="absolute inset-0 z-[2] size-full" style={{ display: "none" }} />
       <canvas ref={spriteCanvasRef} aria-hidden="true" className="absolute inset-0 z-[2] size-full" style={{ display: "none" }} />
+      {/* pano do paraquedas, por cima do foguete e da fumaça */}
+      <canvas ref={clothCanvasRef} aria-hidden="true" className="absolute inset-0 z-[3] size-full" />
     </div>
   );
 });
