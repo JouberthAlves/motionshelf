@@ -77,7 +77,7 @@ export default async function ComponentPage({ params }: { params: Params }) {
           </Link>
           <p className="font-mono text-xs tracking-[0.12em] text-led-soft uppercase">{category}</p>
           <h1 className="display-wide mt-2 text-[clamp(1.75rem,9cqi,3rem)] text-text">{entry.name}</h1>
-          <p className="mt-3 max-w-2xl text-muted">{entry.summary[loc]}</p>
+          <p className="mt-3 max-w-xl text-pretty text-muted">{entry.summary[loc]}</p>
         </header>
 
         <section id="preview" className="scroll-mt-24">

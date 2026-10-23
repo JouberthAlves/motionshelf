@@ -24,15 +24,16 @@ export type Entry = {
   props: PropDoc[];
 };
 
+// Em ordem alfabética: é a ordem da lateral e do filtro da galeria. A vitrine da home segue a ordem de ENTRIES.
 export const CATEGORIES: { id: CategoryId; name: Text }[] = [
-  { id: "text", name: { en: "Text" } },
-  { id: "messages", name: { en: "Messages" } },
-  { id: "commerce", name: { en: "Commerce" } },
-  { id: "proof", name: { en: "Social proof" } },
-  { id: "location", name: { en: "Location" } },
-  { id: "scheduling", name: { en: "Scheduling" } },
   { id: "anatomy", name: { en: "Anatomy" } },
   { id: "buttons", name: { en: "Buttons" } },
+  { id: "commerce", name: { en: "Commerce" } },
+  { id: "location", name: { en: "Location" } },
+  { id: "messages", name: { en: "Messages" } },
+  { id: "scheduling", name: { en: "Scheduling" } },
+  { id: "proof", name: { en: "Social proof" } },
+  { id: "text", name: { en: "Text" } },
 ];
 
 const p = (name: string, type: string, def: string, en: string): PropDoc => ({
@@ -420,6 +421,87 @@ export const ENTRIES: Entry[] = [
       p("agility", "number", "1", "How hard the autopilot chases the pointer; lower drifts, higher snaps."),
       p("dust", "boolean", "true", "Kick up dust when the rotor wash reaches the floor."),
       p("playgroundClassName", "string", '""', "Classes for the flight area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "claw-button",
+    name: "Claw Machine",
+    category: "buttons",
+    code: "CLW-01",
+    summary: {
+      en: "An arcade claw rides a rail after the pointer; click the button and the claw grabs it, swings it over to the prize chute and drops it in, then a fresh one pops up.",
+    },
+    dependencies: [],
+    props: [
+      p("children", "ReactNode", "—", "The button label."),
+      p("chute", '"left" | "right"', '"right"', "Side of the prize chute."),
+      p("onComplete", "() => void", "—", "Called when the button drops into the chute, at the end of the grab."),
+      p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "rocket-button",
+    name: "Rocket Launch",
+    category: "buttons",
+    code: "RKT-01",
+    summary: {
+      en: "A button strapped between two boosters on a launch pad: click it for a 3-2-1 countdown, liftoff with flames and smoke, and a parachute ride back down to the pad.",
+    },
+    dependencies: [],
+    props: [
+      p("children", "ReactNode", "—", "The button label."),
+      p("onLaunch", "() => void", "—", "Called at liftoff, right after the countdown."),
+      p("onLand", "() => void", "—", "Called when the button is back on the pad under its parachute."),
+      p("playgroundClassName", "string", '""', "Classes for the flight area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "ufo-button",
+    name: "UFO Abduction",
+    category: "buttons",
+    code: "UFO-01",
+    summary: {
+      en: "A flying saucer prowls the top of the area; bring the pointer near the button and it beams it up to hover in the light, still clickable, until the pointer leaves.",
+    },
+    dependencies: [],
+    props: [
+      p("children", "ReactNode", "—", "The button label."),
+      p("range", "number", "140", "How close the pointer must get to the button, in px, before the saucer beams it up."),
+      p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "magnet-button",
+    name: "Magnet",
+    category: "buttons",
+    code: "MAG-01",
+    summary: {
+      en: "The pointer becomes a horseshoe magnet: iron filings behind the button line up along the field between it and the button, and the button leans toward it on a spring.",
+    },
+    dependencies: [],
+    props: [
+      p("children", "ReactNode", "—", "The button label."),
+      p("pull", "number", "36", "How far the button can be pulled toward the pointer, in px."),
+      p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "letters-button",
+    name: "Falling Letters",
+    category: "buttons",
+    code: "LTR-01",
+    summary: {
+      en: "Hover the button and its letters drop out one by one, bounce and pile up on the floor; move away and they spring back into place.",
+    },
+    dependencies: [],
+    props: [
+      p("label", "string", "—", "The button text; each letter falls on its own."),
+      p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
       p("className", "string", '""', "Extra classes for the button."),
     ],
   },

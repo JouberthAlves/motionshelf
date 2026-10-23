@@ -36,13 +36,69 @@ export const PREVIEWS: Record<string, ComponentType> = {
   "sales-funnel": load(() => import("@/registry/motionshelf/sales-funnel/sales-funnel")),
   "roi-balance": load(() => import("@/registry/motionshelf/roi-balance/roi-balance")),
   "page-speed-gauge": load(() => import("@/registry/motionshelf/page-speed-gauge/page-speed-gauge")),
-  // O drone voa dentro do container posicionado mais próximo: na prévia ganha uma área de voo com chão.
+  // Os botões da categoria Buttons ocupam o container posicionado mais próximo: na prévia cada um ganha
+  // uma área chapada, sem borda (dentro do palco viraria card dentro de card) e sem brilho de fundo.
   "drone-button": load(() =>
     import("@/registry/motionshelf/drone-button/drone-button").then(({ default: DroneButton }) => ({
       default: function DroneButtonDemo() {
         return (
-          <div className="relative h-[300px] w-[520px] max-w-full rounded-lg border border-edge bg-[radial-gradient(ellipse_at_50%_100%,rgb(31_91_255/0.1),transparent_65%)]">
+          <div className="relative h-[300px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
             <DroneButton>Book a demo</DroneButton>
+          </div>
+        );
+      },
+    })),
+  ),
+  "claw-button": load(() =>
+    import("@/registry/motionshelf/claw-button/claw-button").then(({ default: ClawButton }) => ({
+      default: function ClawButtonDemo() {
+        return (
+          <div className="relative h-[320px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <ClawButton>Claim your prize</ClawButton>
+          </div>
+        );
+      },
+    })),
+  ),
+  "rocket-button": load(() =>
+    import("@/registry/motionshelf/rocket-button/rocket-button").then(({ default: RocketButton }) => ({
+      default: function RocketButtonDemo() {
+        return (
+          <div className="relative h-[360px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <RocketButton>Launch now</RocketButton>
+          </div>
+        );
+      },
+    })),
+  ),
+  "ufo-button": load(() =>
+    import("@/registry/motionshelf/ufo-button/ufo-button").then(({ default: UfoButton }) => ({
+      default: function UfoButtonDemo() {
+        return (
+          <div className="relative h-[340px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <UfoButton>Take me</UfoButton>
+          </div>
+        );
+      },
+    })),
+  ),
+  "magnet-button": load(() =>
+    import("@/registry/motionshelf/magnet-button/magnet-button").then(({ default: MagnetButton }) => ({
+      default: function MagnetButtonDemo() {
+        return (
+          <div className="relative h-[300px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <MagnetButton>Get attracted</MagnetButton>
+          </div>
+        );
+      },
+    })),
+  ),
+  "letters-button": load(() =>
+    import("@/registry/motionshelf/letters-button/letters-button").then(({ default: LettersButton }) => ({
+      default: function LettersButtonDemo() {
+        return (
+          <div className="relative h-[260px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <LettersButton label="Start free trial" />
           </div>
         );
       },
