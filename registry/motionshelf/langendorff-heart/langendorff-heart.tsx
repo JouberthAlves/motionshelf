@@ -73,7 +73,14 @@ function deform(q: readonly number[], def: number[]): Point {
 const toWorld = (l: Point): Point => [0, 1, 2].map((i) => DATA.HO[i] + l[0] * DATA.HU[i] + l[1] * DATA.HV[i] + l[2] * DATA.HW[i]) as Point;
 
 // ---------- camada WebGL (porte do glLayer do kit anatomy, MIT) ----------
-type Layer = { draw: (values: Record<string, number | number[]>) => void; dispose: () => void };
+type Layer = {
+  /** true quando o shader terminou de compilar e o coração em WebGL pode desenhar. */
+  ready: () => boolean;
+  failed: () => boolean;
+  /** quality: fração da resolução (0–1); o canvas é esticado pelo CSS até o tamanho da figura. */
+  draw: (values: Record<string, number | number[]>, quality: number) => void;
+  dispose: () => void;
+};
 function softwareRenderer(gl: WebGLRenderingContext) {
   const info = gl.getExtension("WEBGL_debug_renderer_info");
   const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER));
@@ -88,34 +95,44 @@ function glLayer(canvas: HTMLCanvasElement, fixed: Record<string, number | numbe
     return null;
   }
   const derivatives = gl.getExtension("OES_standard_derivatives") ? "#extension GL_OES_standard_derivatives : enable\n" : "";
+  // O shader do coração é grande (ray-march de 230 passos) e, no Windows, compilar leva segundos. Com
+  // KHR_parallel_shader_compile ele compila em segundo plano: nada aqui pergunta o resultado antes de
+  // ficar pronto, porque perguntar trava a página até o fim da compilação (era o que congelava o site).
+  const parallel = gl.getExtension("KHR_parallel_shader_compile");
   const compile = (type: number, source: string) => {
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
-    if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return shader;
-    console.error(gl.getShaderInfoLog(shader));
-    return null;
+    return shader;
   };
   const vs = compile(gl.VERTEX_SHADER, "attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}");
   const fs = compile(gl.FRAGMENT_SHADER, derivatives + FRAGMENT);
-  if (!vs || !fs) return null;
   const program = gl.createProgram()!;
   gl.attachShader(program, vs);
   gl.attachShader(program, fs);
   gl.linkProgram(program);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return null;
-  gl.useProgram(program);
-  gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-  const at = gl.getAttribLocation(program, "p");
-  gl.enableVertexAttribArray(at);
-  gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
+  let state: "pending" | "ok" | "failed" = "pending";
   const types: Record<string, number> = {};
-  const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-  for (let i = 0; i < count; i++) {
-    const info = gl.getActiveUniform(program, i);
-    if (info) types[info.name.replace(/\[0\]$/, "")] = info.type;
-  }
+  const finish = () => {
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+      console.error(gl.getShaderInfoLog(fs) || gl.getProgramInfoLog(program));
+      state = "failed";
+      return;
+    }
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const at = gl.getAttribLocation(program, "p");
+    gl.enableVertexAttribArray(at);
+    gl.vertexAttribPointer(at, 2, gl.FLOAT, false, 0, 0);
+    const count = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    for (let i = 0; i < count; i++) {
+      const info = gl.getActiveUniform(program, i);
+      if (info) types[info.name.replace(/\[0\]$/, "")] = info.type;
+    }
+    for (const [name, value] of Object.entries(fixed)) set(name, value);
+    state = "ok";
+  };
   const set = (name: string, value: number | number[]) => {
     const where = gl.getUniformLocation(program, name);
     if (!where) return;
@@ -128,13 +145,18 @@ function glLayer(canvas: HTMLCanvasElement, fixed: Record<string, number | numbe
     else if (value.length === 3) gl.uniform3f(where, value[0], value[1], value[2]);
     else if (value.length === 4) gl.uniform4f(where, value[0], value[1], value[2], value[3]);
   };
-  for (const [name, value] of Object.entries(fixed)) set(name, value);
   return {
-    draw(values) {
+    ready() {
+      // Sem a extensão (navegador antigo), compila na hora, como antes.
+      if (state === "pending" && (!parallel || gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR))) finish();
+      return state === "ok";
+    },
+    failed: () => state === "failed",
+    draw(values, quality) {
       const box = canvas.getBoundingClientRect();
-      const ratio = Math.min(1.5, window.devicePixelRatio || 1);
-      const w = Math.max(1, Math.round(box.width * ratio));
-      const h = Math.max(1, Math.round(box.height * ratio));
+      // No máximo densidade 1 (não a da tela): o ray-march custa por pixel, e 1,5× é mais que o dobro.
+      const w = Math.max(1, Math.round(box.width * quality));
+      const h = Math.max(1, Math.round(box.height * quality));
       if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
@@ -184,7 +206,7 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
     };
     const tones = (...names: string[]) => names.flatMap((name) => rgb(css.getPropertyValue("--anatomy-" + name)));
     const palette = (name: string) => css.getPropertyValue(name).split(",").flatMap(rgb);
-    const layer = glLayer(canvas.current!, {
+    let layer = glLayer(canvas.current!, {
       uO: [...DATA.HO], uU: [...DATA.HU], uV: [...DATA.HV], uW: [...DATA.HW], uLight: 0, uStyle: 0,
       uMyo: tones("shade-0", "shade-1", "shade-2", "shade-3", "lit-top"),
       uFat: tones("shade-1", "shade-2", "shade-3", "top", "lit-top"),
@@ -192,7 +214,25 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
       uArt: palette("--h-art"), uVein: palette("--h-vein"), uLum: rgb(css.getPropertyValue("--h-lum")),
       uLit: tones("lit"), uHi: tones("hi"), uMid: tones("mid"), uLo: tones("lo"), uFaint: tones("faint"),
     });
-    if (layer) root.setAttribute("data-gl", "");
+    // O coração em SVG fica na tela até o shader compilar; se o aparelho não der conta, ele volta.
+    // O WebGL começa em 25% da resolução e sobe enquanto os quadros forem rápidos: um quadro inteiro
+    // de uma vez, numa GPU fraca, levava segundos, e o navegador derrubava o contexto (o "crash").
+    let quality = 0.25;
+    const dropGl = () => {
+      layer?.dispose();
+      layer = null;
+      root.removeAttribute("data-gl");
+    };
+    const glReady = () => {
+      if (!layer) return false;
+      if (layer.failed()) {
+        dropGl();
+        return false;
+      }
+      if (!layer.ready()) return false;
+      if (!root.hasAttribute("data-gl")) root.setAttribute("data-gl", "");
+      return true;
+    };
 
     const needle = $<SVGPathElement>("needle");
     const led = $<SVGCircleElement>("led");
@@ -222,11 +262,11 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
     const onDial = (r: number, a: number, lift: number): Point =>
       [0, 1, 2].map((i) => DATA.GAUGE_C[i] + DATA.GN[i] * (3.2 + lift) + r * (Math.cos(a) * DATA.GR[i] + Math.sin(a) * [0, 0, 1][i])) as Point;
 
-    const draw = (dt: number) => {
+    const draw = (dt: number, gl = true) => {
       const s = stateAt(clock, bpm);
       // Encurtamento de 8%, torção de 10°, abaulamento leve; o átrio contrai 9%.
       const def = [0.08 * s.act, 0.17 * s.act, 0.02 * s.act, 0.09 * s.atrium];
-      layer?.draw({ uDef: def, uTime: clock });
+      if (gl && glReady()) layer!.draw({ uDef: def, uTime: clock }, quality);
       // Manômetro: perfusão constante, com a ondulação dos roletes e o aperto sistólico das coronárias.
       const want = PERFUSION + 0.7 * Math.sin(rotor * 3) + 2.4 * s.act;
       for (let i = 0; i < 4; i++) {
@@ -325,19 +365,47 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
       root.setAttribute("aria-valuetext", `${Math.round(bpm)} beats per minute`);
     };
 
-    // rAF com rede de segurança: com a janela atrás de outra, o rAF para e a figura congelaria.
-    const schedule = (fn: (now: number) => void) => {
+    // rAF com rede de segurança: com a janela atrás de outra, o rAF para e a figura congelaria. A rede
+    // (o setTimeout) só anima o SVG: desenhar WebGL fora do rAF empilha trabalho numa GPU que já está
+    // atrasada, e a fila cresce até travar o navegador.
+    const schedule = (fn: (now: number, viaTimer: boolean) => void) => {
       let fired = false;
-      const go = (now: number) => {
+      const go = (now: number, viaTimer: boolean) => {
         if (fired) return;
         fired = true;
-        fn(now || performance.now());
+        fn(now || performance.now(), viaTimer);
       };
-      frame = requestAnimationFrame(go);
-      window.setTimeout(() => go(performance.now()), 60);
+      frame = requestAnimationFrame((now) => go(now, false));
+      window.setTimeout(() => go(performance.now(), true), 60);
     };
-    const tick = (now: number) => {
+    // Vigia do rAF com o WebGL ligado: quadro lento baixa a resolução; 5 lentos seguidos já na mínima e o
+    // coração volta para o SVG. Dez quadros rápidos seguidos sobem a resolução de novo, até 100%.
+    let slow = 0;
+    let fast = 0;
+    let lastRaf = 0;
+    const watch = (now: number) => {
+      const gap = lastRaf ? now - lastRaf : 0;
+      lastRaf = now;
+      if (!layer || !root.hasAttribute("data-gl") || !gap) return;
+      if (gap > 120) {
+        fast = 0;
+        if (quality > 0.2) quality = Math.max(0.2, quality * 0.6);
+        else if (++slow >= 5) dropGl();
+      } else {
+        slow = 0;
+        if (gap < 40 && ++fast >= 10 && quality < 1) {
+          fast = 0;
+          quality = Math.min(1, quality + 0.15);
+        }
+      }
+    };
+    // Contexto derrubado pelo navegador (GPU sem resposta): fica o SVG.
+    const onLost = () => dropGl();
+    const glCanvas = canvas.current!;
+    glCanvas.addEventListener("webglcontextlost", onLost);
+    const tick = (now: number, viaTimer = false) => {
       if (!active) return;
+      if (!viaTimer) watch(now);
       const dt = last ? Math.min((now - last) / 1000, 1 / 30) : 1 / 60;
       last = now;
       if (touring) {
@@ -349,7 +417,7 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
       beats += (dt * bpm) / 60;
       clock = (beats * 60) / bpm;
       time += dt;
-      draw(dt);
+      draw(dt, !viaTimer);
       if (visible && !reduced.matches) schedule(tick);
       else running = false;
     };
@@ -357,6 +425,7 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
       if (running || !visible || reduced.matches || !active) return;
       running = true;
       last = 0;
+      lastRaf = 0;
       schedule(tick);
     };
     const steer = (to: number) => {
@@ -411,6 +480,18 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
     }
     if (reduced.matches) clock = 0.12;
     draw(1 / 60);
+    // O shader compila em segundo plano: confere a cada 100 ms e, quando ficar pronto com a figura
+    // parada (fora da tela ou movimento reduzido), desenha um quadro para o coração em WebGL aparecer.
+    let compileTimer = 0;
+    const waitCompile = () => {
+      if (!active || !layer) return;
+      if (glReady()) {
+        if (!running) draw(0);
+        return;
+      }
+      compileTimer = window.setTimeout(waitCompile, 100);
+    };
+    waitCompile();
 
     return () => {
       active = false;
@@ -418,6 +499,8 @@ export default function LangendorffHeart({ bpm: rest = 72, className = "" }: Lan
       cancelAnimationFrame(frame);
       window.clearTimeout(idle);
       window.clearTimeout(startTimer);
+      window.clearTimeout(compileTimer);
+      glCanvas.removeEventListener("webglcontextlost", onLost);
       io.disconnect();
       root.removeEventListener("pointermove", onPointer);
       root.removeEventListener("keydown", onKey);
