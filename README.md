@@ -15,7 +15,7 @@
 **Motion your clients will ask for.**<br>
 Animated React components for sites that sell, installed as code you own.
 
-<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-19-1f5bff?style=flat-square" alt="19 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
+<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-24-1f5bff?style=flat-square" alt="24 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
 
 [Website](https://motionshelf-pi.vercel.app) · [Components](https://motionshelf-pi.vercel.app/components) · [Installation](https://motionshelf-pi.vercel.app/docs/installation) · [Make it with your agent](https://motionshelf-pi.vercel.app/docs/agents)
 
@@ -117,14 +117,34 @@ Payment notifications, chat flows, map pins, search results, booking slots, and 
       <a href="https://motionshelf-pi.vercel.app/components/drone-button"><img src=".github/readme/drone-button.webp" alt="Drone Button" width="100%"></a><br>
       <b>Drone Button</b><br><sub>Buttons</sub>
     </td>
-    <td width="33%"></td>
-    <td width="33%"></td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/claw-button"><img src=".github/readme/claw-button.webp" alt="Claw Machine" width="100%"></a><br>
+      <b>Claw Machine</b><br><sub>Buttons</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/rocket-button"><img src=".github/readme/rocket-button.webp" alt="Rocket Launch" width="100%"></a><br>
+      <b>Rocket Launch</b><br><sub>Buttons</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/ufo-button"><img src=".github/readme/ufo-button.webp" alt="UFO Abduction" width="100%"></a><br>
+      <b>UFO Abduction</b><br><sub>Buttons</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/magnet-button"><img src=".github/readme/magnet-button.webp" alt="Magnet" width="100%"></a><br>
+      <b>Magnet</b><br><sub>Buttons</sub>
+    </td>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/letters-button"><img src=".github/readme/letters-button.webp" alt="Falling Letters" width="100%"></a><br>
+      <b>Falling Letters</b><br><sub>Buttons</sub>
+    </td>
   </tr>
 </table>
 
 The three **Anatomy** components are interactive isometric figures: move the pointer over them and the model behind them changes (ad budget, page weight), and the readout under the figure updates from the same numbers.
 
-The **Drone Button** is carried by a small quadcopter: move the pointer into its area and it takes off, flies to the cursor banking like a real drone, and lands when the pointer leaves. It is plain React with a physics loop, no animation library.
+The six **Buttons** are real buttons with a small physics world around them: a drone that flies the button to the cursor, an arcade claw that grabs it, a rocket that launches it, a flying saucer that beams it up, a magnet that pulls it while iron filings trace the field, and letters that fall out and pile up. Each fills its nearest positioned container and is plain React with requestAnimationFrame, no animation library.
 
 ## Install
 

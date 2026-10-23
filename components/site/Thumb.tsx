@@ -25,6 +25,11 @@ export const STAGE: Record<string, number> = {
   "roi-balance": 600,
   "page-speed-gauge": 600,
   "drone-button": 520,
+  "claw-button": 520,
+  "rocket-button": 520,
+  "ufo-button": 520,
+  "magnet-button": 520,
+  "letters-button": 520,
 };
 
 /**

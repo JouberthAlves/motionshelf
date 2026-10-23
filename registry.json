@@ -191,6 +191,51 @@
       "files": [
         { "path": "registry/motionshelf/drone-button/drone-button.tsx", "type": "registry:component", "target": "components/motionshelf/drone-button.tsx" }
       ]
+    },
+    {
+      "name": "claw-button",
+      "type": "registry:component",
+      "title": "Claw Machine",
+      "description": "An arcade claw grabs the button and drops it into the prize chute on click.",
+      "files": [
+        { "path": "registry/motionshelf/claw-button/claw-button.tsx", "type": "registry:component", "target": "components/motionshelf/claw-button.tsx" }
+      ]
+    },
+    {
+      "name": "rocket-button",
+      "type": "registry:component",
+      "title": "Rocket Launch",
+      "description": "A button between two boosters: countdown, liftoff with flames and smoke, and a parachute landing.",
+      "files": [
+        { "path": "registry/motionshelf/rocket-button/rocket-button.tsx", "type": "registry:component", "target": "components/motionshelf/rocket-button.tsx" }
+      ]
+    },
+    {
+      "name": "ufo-button",
+      "type": "registry:component",
+      "title": "UFO Abduction",
+      "description": "A flying saucer beams the button up when the pointer comes near and sets it down when it leaves.",
+      "files": [
+        { "path": "registry/motionshelf/ufo-button/ufo-button.tsx", "type": "registry:component", "target": "components/motionshelf/ufo-button.tsx" }
+      ]
+    },
+    {
+      "name": "magnet-button",
+      "type": "registry:component",
+      "title": "Magnet",
+      "description": "The pointer is a magnet: iron filings trace the field and the button leans toward it.",
+      "files": [
+        { "path": "registry/motionshelf/magnet-button/magnet-button.tsx", "type": "registry:component", "target": "components/motionshelf/magnet-button.tsx" }
+      ]
+    },
+    {
+      "name": "letters-button",
+      "type": "registry:component",
+      "title": "Falling Letters",
+      "description": "The label letters fall out on hover, pile up on the floor and spring back when the pointer leaves.",
+      "files": [
+        { "path": "registry/motionshelf/letters-button/letters-button.tsx", "type": "registry:component", "target": "components/motionshelf/letters-button.tsx" }
+      ]
     }
   ]
 }

@@ -45,6 +45,11 @@ const MOBILE_H: Record<string, number> = {
   "roi-balance": 270,
   "page-speed-gauge": 250,
   "drone-button": 300,
+  "claw-button": 320,
+  "rocket-button": 360,
+  "ufo-button": 340,
+  "magnet-button": 300,
+  "letters-button": 260,
 };
 
 /**

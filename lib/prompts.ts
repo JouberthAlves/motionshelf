@@ -412,6 +412,87 @@ const RECIPES: Record<string, Recipe> = {
       t("Keep it a real button: keyboard focus, focus ring, click and disabled all work while it flies. With reduced motion or disabled, it stays parked and nothing animates."),
     ],
   },
+  "claw-button": {
+    technique: "physics",
+    look: t(
+      "An arcade claw machine inside the button's area: a rail across the top with a small carriage, a cable hanging from it ending in a two-prong metal claw, a prize chute cut into one corner of the floor (a dark slot with a lit edge and a tiny 'Prize ▾' label), and the button resting on the floor as the prize.",
+    ),
+    beats: [
+      t("Idle: the carriage follows the pointer's x along the rail (speed limited to about 520 px/s, accelerating and braking), and the claw swings as a damped pendulum driven by the carriage's acceleration."),
+      t("Click: the carriage moves over the button, the prongs open, the cable lowers until the prongs hug the top of the button, the prongs close (0.3 s), and the cable winds back up with the button hanging from the claw and swinging with it."),
+      t("The carriage carries the button over the chute, the prongs open and the button falls with the velocity it had, through the hole in the floor and out of sight. Fire onComplete at that moment."),
+      t("Half a second later a fresh button pops up in its place with a small overshoot, and the claw goes back to following the pointer."),
+    ],
+    adapt: [t("the button label and what happens when the prize drops"), t("which side the chute is on"), t("the size of the area")],
+    extra: [
+      t("The pendulum and the fall are simulated in px and seconds (gravity about 900); write the loop with requestAnimationFrame and refs, set transforms directly, and stop it when everything has settled."),
+      t("The button stays a real button: the grab starts from its click handler, keyboard Enter works too, and with reduced motion the click just runs onComplete without the animation."),
+    ],
+  },
+  "rocket-button": {
+    technique: "physics",
+    look: t(
+      "A button standing on a small launch pad, strapped between two white boosters (rounded nose cone, a blue band, a dark nozzle at the bottom). Above it there is room for a countdown and for a blue and white striped parachute.",
+    ),
+    beats: [
+      t("Click: a countdown 3, 2, 1 (about 0.42 s each) appears above the rocket in the accent color; on '1' the engines light and smoke starts piling up on the pad."),
+      t("Liftoff (fire onLaunch): flames at both nozzles flicker, the rocket accelerates upward (about 1500 px/s²) with a slight wobble and leaves through the top, while smoke from the nozzles hits the pad and rolls out sideways, growing and fading."),
+      t("After a short pause it comes back from the top under an open parachute, sinking at about 95 px/s, swaying a few degrees and drifting back over the pad."),
+      t("On touchdown (fire onLand) the parachute deflates and fades, and the rocket settles upright."),
+    ],
+    adapt: [t("the button label and what liftoff and landing should do"), t("the size of the area (it needs room above the pad)"), t("the colors of the boosters and the parachute")],
+    extra: [
+      t("Draw the smoke and the flame sparks on a 2D canvas behind the rocket; the rocket, flames and parachute move only with transform and opacity."),
+      t("With reduced motion, the click runs onLaunch and onLand right away with no animation."),
+    ],
+  },
+  "ufo-button": {
+    technique: "physics",
+    look: t(
+      "A small flying saucer near the top of the area (metal hull, glass dome, a row of rim lights that chase around) and the button resting on the floor below. A trapezoid of blue light, with stripes drifting up, can shine down from the saucer.",
+    ),
+    beats: [
+      t("Idle: the saucer drifts after the pointer's x near the top, banking a little with its speed and bobbing gently; with the pointer outside the area it parks off to one side."),
+      t("When the pointer comes within about 140 px of the button, the saucer moves over it, the beam fades in, and the button rises to about half the way up into the beam, wobbling slightly and shrinking a touch, with sparks rising through the light."),
+      t("The button stays up there, still clickable, while the pointer is anywhere in the area; when the pointer leaves, the button sinks back to the floor, the beam fades out and the saucer drifts away."),
+    ],
+    adapt: [t("the button label"), t("how close the pointer must get before the abduction"), t("the colors of the saucer and the beam")],
+    extra: [
+      t("Release only when the pointer leaves the whole area, not when it leaves the button, so the button doesn't flee from the pointer."),
+      t("The beam's height is set once on resize; per frame only transform and opacity change. With reduced motion everything stays still."),
+    ],
+  },
+  "magnet-button": {
+    technique: "physics",
+    look: t(
+      "A button in the middle of its area over a grid of short iron filings (gray strokes every 18 px, none under the button). Near the pointer floats a small horseshoe magnet, red N tip and light S tip, pointing at the button.",
+    ),
+    beats: [
+      t("With the pointer inside the area, the field is that of two poles, the pointer (+1) and the button's center (-1): E = Σ q·(p − c)/(|p − c|² + 400)^1.5. Each filing turns to line up with E (a stroke has no direction, so smooth the doubled angle to avoid 180° flips, about 0.08 s), and gets brighter with the field strength; filings near a pole turn almost white."),
+      t("The button leans toward the pointer: target offset = direction · pull · f, with f = clamp(1 − (distance − 40)/260, 0, 1)^1.5, on a damped spring (stiffness 160, damping ratio 0.55), tilting up to 4°. It wobbles a little when the pointer lets go."),
+      t("With the pointer outside, only the button's pole remains (weaker): the filings relax into a faint radial pattern around it and the button settles in the middle."),
+    ],
+    adapt: [t("the button label"), t("how strongly the button is pulled"), t("the colors of the filings and the magnet")],
+    extra: [
+      t("Draw the filings and the magnet on a 2D canvas; move the button only with transform. Stop the loop when the filings and the button have settled."),
+      t("With reduced motion, draw the resting radial pattern once and leave the button still."),
+    ],
+  },
+  "letters-button": {
+    technique: "physics",
+    look: t("A plain button sitting on the floor of its area with a short label; its letters are separate pieces laid exactly over an invisible copy of the label that keeps the button's size."),
+    beats: [
+      t("On hover the letters drop out one by one, 35 ms apart, each with a small hop (vy −120 to −30 px/s), a random sideways push (±70 px/s) and a random spin (±7 rad/s)."),
+      t("They fall with gravity (about 1900 px/s²), bounce on the floor and the side walls (restitution 0.35), slide to a stop with friction, collide with each other as circles and pile up."),
+      t("When the pointer leaves the button, after 150 ms each letter springs back to its slot (stiffness 180, damping ratio 0.7), turning upright by the shortest way. Hovering again drops them from wherever they are."),
+      t("On touch, a tap drops them and they come back 1.6 s after the finger lifts."),
+    ],
+    adapt: [t("the label"), t("the size of the area the letters can fall into")],
+    extra: [
+      t("The button keeps aria-label with the full text and the falling letters are aria-hidden; measure each letter's slot with getBoundingClientRect on an invisible copy of the label (divide by the scale) and re-measure on resize and when the fonts load."),
+      t("Step the physics in sub-steps of at most 1/120 s so letters don't pass through each other; stop the loop when every letter is home or resting on the floor. With reduced motion the letters never fall."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";
