@@ -435,8 +435,8 @@ const RECIPES: Record<string, Recipe> = {
       "A button standing on a small launch pad, strapped between two white boosters (rounded nose cone, a blue band, a dark nozzle at the bottom). Above it there is room for a countdown and for a blue and white striped parachute.",
     ),
     beats: [
-      t("Click: a countdown 3, 2, 1 (about 0.42 s each) appears above the rocket in the accent color; on '1' the engines light and smoke starts piling up on the pad."),
-      t("Liftoff (fire onLaunch): layered flames (white core, orange body, an additive glow) flicker at both nozzles, the pad lights up orange, and the rocket accelerates upward (about 1500 px/s²) with a slight wobble and leaves through the top."),
+      t("Click: a real-time countdown 3, 2, 1 (1 s each) appears above the rocket in the accent color. Like a Falcon 9, the engines ignite at T-3, ramp to full thrust by T-1 and hold the rocket on the pad (a tiny shake) while smoke piles up, then release at T-0."),
+      t("Liftoff (fire onLaunch): layered flames (white core, orange body, an additive glow) flicker at both nozzles and the pad lights up orange. Use real physics at real scale: the rocket is 70 m tall, so px per meter = rocket height / 70; acceleration = 9.81 × (thrust-to-weight − 1), with thrust-to-weight starting at 1.4 and rising as propellant burns (1.4 / (1 − t / 200)). It creeps off the pad, takes about 6 s to climb its own height, keeps accelerating with a barely visible wobble and leaves through the top."),
       t("The smoke is a small 2D fluid simulation on the GPU (stable fluids: advect, forces, vorticity confinement, pressure projection) with two dyes, smoke and heat: the jets push air down, where they hit the floor the flow fans out sideways and a cloud is born, heat rises and glows orange, curl-noise turbulence makes it billow, and it fades in about 3 s, faster up high."),
       t("After a short pause it comes back from the top under an open parachute, sinking at about 95 px/s, swaying a few degrees and drifting back over the pad."),
       t("On touchdown (fire onLand) the parachute deflates and fades, and the rocket settles upright."),
