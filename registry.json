@@ -238,6 +238,15 @@
       "files": [
         { "path": "registry/motionshelf/letters-button/letters-button.tsx", "type": "registry:component", "target": "components/motionshelf/letters-button.tsx" }
       ]
+    },
+    {
+      "name": "bulb-toggle",
+      "type": "registry:component",
+      "title": "Light Bulb",
+      "description": "A hanging light bulb switch: pull the chain or click, the filament warms up and the glow fills the room.",
+      "files": [
+        { "path": "registry/motionshelf/bulb-toggle/bulb-toggle.tsx", "type": "registry:component", "target": "components/motionshelf/bulb-toggle.tsx" }
+      ]
     }
   ]
 }

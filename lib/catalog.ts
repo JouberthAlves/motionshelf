@@ -11,7 +11,7 @@ export type PropDoc = {
   description: Text;
 };
 
-export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy" | "buttons";
+export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy" | "buttons" | "toggles";
 
 export type Entry = {
   slug: string;
@@ -34,6 +34,7 @@ export const CATEGORIES: { id: CategoryId; name: Text }[] = [
   { id: "scheduling", name: { en: "Scheduling" } },
   { id: "proof", name: { en: "Social proof" } },
   { id: "text", name: { en: "Text" } },
+  { id: "toggles", name: { en: "Toggles" } },
 ];
 
 const p = (name: string, type: string, def: string, en: string): PropDoc => ({
@@ -503,6 +504,24 @@ export const ENTRIES: Entry[] = [
       p("label", "string", "—", "The button text; each letter falls on its own."),
       p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
       p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
+  {
+    slug: "bulb-toggle",
+    name: "Light Bulb",
+    category: "toggles",
+    code: "BLB-01",
+    summary: {
+      en: "A light bulb hangs from a cord: pull its chain (or click) and the filament warms up before the glow fills the room and pools on the floor.",
+    },
+    dependencies: [],
+    props: [
+      p("checked", "boolean", "—", "Lit or not, when controlled."),
+      p("defaultChecked", "boolean", "false", "Initial state when uncontrolled."),
+      p("onCheckedChange", "(checked: boolean) => void", "—", "Called with the new state on every pull, click or key press."),
+      p("label", "string", '"Light"', "Accessible name of the switch."),
+      p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the switch (the chain's touch target)."),
     ],
   },
 ];
