@@ -494,6 +494,28 @@ const RECIPES: Record<string, Recipe> = {
       t("Step the physics in sub-steps of at most 1/120 s so letters don't pass through each other; stop the loop when every letter is home or resting on the floor. With reduced motion the letters never fall."),
     ],
   },
+  "bulb-toggle": {
+    technique: "physics",
+    look: t("A bare light bulb hanging from a thin cord at the top of its area: a dark metal socket, a clear glass bulb with a coiled filament, and a thin pull chain of small beads hanging beside it, ending in a round metal bead. Off, it is just dark glass."),
+    beats: [
+      t("Pull the chain down with the pointer: the beads spread apart as it stretches (only their translate changes), with resistance after 28 px. Released past 22 px it toggles; then the chain springs back with a small bounce (stiffness 700, damping 18). Clicking the bulb, or pressing Enter or Space on the switch, toggles it too, with a simulated tug."),
+      t("The fixture is a damped pendulum from the cord's anchor (gravity 900 px/s², damping 1.6): the tug pulls it to one side while you hold the chain and it swings back and settles when you let go; a click on the glass pushes it away from the side you touched."),
+      t("Turning on, the filament warms like a real one: in about 0.15 s it goes from dull grey to orange to bright warm white (three stacked copies of the coil, only their opacity changes). Once it is hot the glow spreads (time constant about 0.16 s): a wide blurred halo, a brighter body and a near-white core over the glass, plus a soft warm pool of light on the floor under the bulb that follows its swing."),
+      t("Turning off is faster: the glow is gone in about 0.06 s and the filament stays orange for a moment before going dark. Off and at rest, there is no glow at all."),
+    ],
+    adapt: [
+      t("the accessible name of the switch"),
+      t("whether it starts on or off, and whether the state is controlled by your app"),
+      t("the size of the area and how long the cord is"),
+      t("the color of the light (keep it warm white unless your brand needs otherwise)"),
+    ],
+    extra: [
+      t("Make the light additive: put mix-blend-mode: plus-lighter on the container that carries the opacity, not on its blurred children (an opacity below 1 isolates the group and the children's blend turns normal). Keep those light layers outside any transformed parent, positioned from the bulb's computed center, so they add to the real background."),
+      t("It is a real switch: a <button role=\"switch\" aria-checked> with an accessible name, at least 44 × 44 px of touch target around the bead (an invisible larger target), a visible focus ring, and a checked / defaultChecked / onCheckedChange API that works controlled and uncontrolled."),
+      t("Run the loop with requestAnimationFrame and refs, writing only transform and opacity, and stop it when the pendulum, the chain and the light have settled. Map the pointer into layout pixels even when the component is shown scaled."),
+      t("With prefers-reduced-motion, change state instantly (no warming, no swing, the chain snaps back), and listen to the media query's change event so turning it on after the page opened also works."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";

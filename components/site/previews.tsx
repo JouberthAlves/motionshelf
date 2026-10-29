@@ -104,4 +104,15 @@ export const PREVIEWS: Record<string, ComponentType> = {
       },
     })),
   ),
+  "bulb-toggle": load(() =>
+    import("@/registry/motionshelf/bulb-toggle/bulb-toggle").then(({ default: BulbToggle }) => ({
+      default: function BulbToggleDemo() {
+        return (
+          <div className="relative h-[320px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <BulbToggle />
+          </div>
+        );
+      },
+    })),
+  ),
 };
