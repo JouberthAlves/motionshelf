@@ -152,4 +152,15 @@ export const PREVIEWS: Record<string, ComponentType> = {
       },
     })),
   ),
+  "origami-button": load(() =>
+    import("@/registry/motionshelf/origami-button/origami-button").then(({ default: OrigamiButton }) => ({
+      default: function OrigamiButtonDemo() {
+        return (
+          <div className="relative h-[340px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
+            <OrigamiButton>Send message</OrigamiButton>
+          </div>
+        );
+      },
+    })),
+  ),
 };

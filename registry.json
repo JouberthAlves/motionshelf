@@ -256,6 +256,15 @@
       "files": [
         { "path": "registry/motionshelf/hourglass-loader/hourglass-loader.tsx", "type": "registry:component", "target": "components/motionshelf/hourglass-loader.tsx" }
       ]
+    },
+    {
+      "name": "origami-button",
+      "type": "registry:component",
+      "title": "Origami",
+      "description": "Folds into a paper plane on click, flies a loop around the area and unfolds back into the button.",
+      "files": [
+        { "path": "registry/motionshelf/origami-button/origami-button.tsx", "type": "registry:component", "target": "components/motionshelf/origami-button.tsx" }
+      ]
     }
   ]
 }

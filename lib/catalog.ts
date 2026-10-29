@@ -543,6 +543,23 @@ export const ENTRIES: Entry[] = [
       CLASS,
     ],
   },
+  {
+    slug: "origami-button",
+    name: "Origami",
+    category: "buttons",
+    code: "ORI-01",
+    summary: {
+      en: "Click and the button folds along its creases into a paper plane, loops the loop across the area, swoops back and unfolds right where it was.",
+    },
+    dependencies: [],
+    props: [
+      p("children", "ReactNode", "—", "The button label, printed on the paper."),
+      p("onFold", "() => void", "—", "Called on click, as the paper starts to fold."),
+      p("onReturn", "() => void", "—", "Called when the plane has landed and unfolded back into the button."),
+      p("playgroundClassName", "string", '""', "Classes for the flight area, which fills the nearest positioned ancestor."),
+      p("className", "string", '""', "Extra classes for the button."),
+    ],
+  },
 ];
 
 export const bySlug = (slug: string) => ENTRIES.find((e) => e.slug === slug);

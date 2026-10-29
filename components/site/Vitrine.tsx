@@ -52,6 +52,7 @@ const MOBILE_H: Record<string, number> = {
   "letters-button": 260,
   "bulb-toggle": 320,
   "hourglass-loader": 260,
+  "origami-button": 340,
 };
 
 /**

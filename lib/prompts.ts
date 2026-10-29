@@ -531,6 +531,21 @@ const RECIPES: Record<string, Recipe> = {
       t('Stop the loop off screen and in a hidden tab. Use role="progressbar" with aria-valuenow when progress is given, otherwise role="status". With reduced motion (listen to the media query change) show a still hourglass with the current amount, no stream and no flip.'),
     ],
   },
+  "origami-button": {
+    technique: "physics",
+    look: t("A plain dark button in the lower middle of an open area. It is really a sheet of paper: the same rounded rectangle, border and label, drawn on a 2D canvas when it moves."),
+    beats: [
+      t("Click (fire onFold): in 0.6 s the sheet folds like real paper in three steps — the two right corners fold back to make a point, the sheet folds in half along its length, and the wings fold back out along a diagonal crease from the nose to the tail, so the plane is a narrow dart. Each face is a flat polygon of the sheet with its own 3D hinge rotation; faces are lit by one light from the upper left, so each fold has a lit and a shaded side, and the creases are thin light lines."),
+      t("While folding, the paper turns from facing you to a side view of the plane, seen slightly from above so the wings show."),
+      t("Flight, 1.8 s along a smooth 3D path: it recedes a little, climbs to the right, flies a full vertical loop (upside down at the top), turns away from you at the right edge banking into the turn, crosses back to the left with a slight dip, turns toward you on the left and glides back to where the button was, slowing to a stop. A faint trail follows the tail."),
+      t("Landing: the plane unfolds back into the button in 0.6 s (wings, half, corners) and turns to face you; then the real button reappears (fire onReturn)."),
+    ],
+    adapt: [t("the button label and what folding and returning should do"), t("the size of the area (the loop needs about 300 px of height)"), t("the paper colors")],
+    extra: [
+      t("Draw each face with a canvas affine transform solved from three of its corners (paper → screen, orthographic projection), clip to the face and draw the button's look as a texture, so the label folds with the paper. The front of the flat sheet must look exactly like the button, so the swap between the real button and the canvas is invisible."),
+      t("Orient the plane from the path: tangent forward, an up vector carried with a rotation-minimizing frame (so the loop goes upside down naturally), bank from the sideways curvature, slerp between the flat button and the flight attitude while folding. Clicks during the flight are ignored; with reduced motion (listen for the media query change too) the click runs onFold and onReturn with no animation."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";
