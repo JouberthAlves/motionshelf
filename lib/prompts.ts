@@ -494,6 +494,58 @@ const RECIPES: Record<string, Recipe> = {
       t("Step the physics in sub-steps of at most 1/120 s so letters don't pass through each other; stop the loop when every letter is home or resting on the floor. With reduced motion the letters never fall."),
     ],
   },
+  "bulb-toggle": {
+    technique: "physics",
+    look: t("A bare light bulb hanging from a thin cord at the top of its area: a dark metal socket, a clear glass bulb with a coiled filament, and a thin pull chain of small beads hanging beside it, ending in a round metal bead. Off, it is just dark glass."),
+    beats: [
+      t("Pull the chain down with the pointer: the beads spread apart as it stretches (only their translate changes), with resistance after 28 px. Released past 22 px it toggles; then the chain springs back with a small bounce (stiffness 700, damping 18). Clicking the bulb, or pressing Enter or Space on the switch, toggles it too, with a simulated tug."),
+      t("The fixture is a damped pendulum from the cord's anchor (gravity 900 px/s², damping 1.6): the tug pulls it to one side while you hold the chain and it swings back and settles when you let go; a click on the glass pushes it away from the side you touched."),
+      t("Turning on, the filament warms like a real one: in about 0.15 s it goes from dull grey to orange to bright warm white (three stacked copies of the coil, only their opacity changes). Once it is hot the glow spreads (time constant about 0.16 s): a wide blurred halo, a brighter body and a near-white core over the glass, plus a soft warm pool of light on the floor under the bulb that follows its swing."),
+      t("Turning off is faster: the glow is gone in about 0.06 s and the filament stays orange for a moment before going dark. Off and at rest, there is no glow at all."),
+    ],
+    adapt: [
+      t("the accessible name of the switch"),
+      t("whether it starts on or off, and whether the state is controlled by your app"),
+      t("the size of the area and how long the cord is"),
+      t("the color of the light (keep it warm white unless your brand needs otherwise)"),
+    ],
+    extra: [
+      t("Make the light additive: put mix-blend-mode: plus-lighter on the container that carries the opacity, not on its blurred children (an opacity below 1 isolates the group and the children's blend turns normal). Keep those light layers outside any transformed parent, positioned from the bulb's computed center, so they add to the real background."),
+      t("It is a real switch: a <button role=\"switch\" aria-checked> with an accessible name, at least 44 × 44 px of touch target around the bead (an invisible larger target), a visible focus ring, and a checked / defaultChecked / onCheckedChange API that works controlled and uncontrolled."),
+      t("Run the loop with requestAnimationFrame and refs, writing only transform and opacity, and stop it when the pendulum, the chain and the light have settled. Map the pointer into layout pixels even when the component is shown scaled."),
+      t("With prefers-reduced-motion, change state instantly (no warming, no swing, the chain snaps back), and listen to the media query's change event so turning it on after the page opened also works."),
+    ],
+  },
+  "hourglass-loader": {
+    technique: "physics",
+    look: t("A glass hourglass with two bulbs, dark metal caps and two posts, warm sand in 2–3 tones; the glass is drawn on top of the sand with a thin reflection."),
+    beats: [
+      t("A thin stream of grains falls through the neck under gravity. The top surface sinks into a funnel at the 34° angle of repose while the rim stays flat."),
+      t("The bottom grows as a cone at the same angle, and some grains roll down its slopes."),
+      t("The sand runs at a constant rate for `duration` (4 s). When the top is empty the hourglass flips 180° in 0.6 s with a small overshoot and a slight lift; the sand stays packed during the turn and drops into place right after, and the cycle starts again."),
+      t("With `progress`, the amount follows the real value (no flip; at 1 the top is empty), easing up over about 0.25 s and resetting instantly if progress goes back."),
+    ],
+    adapt: [t("the size and colors of the sand and the frame"), t("whether it loops or shows real progress (and where that number comes from)"), t("the label for screen readers")],
+    extra: [
+      t("Draw the sand on a 2D canvas and the glass and frame in SVG; both piles come from one shared glass profile function, with the sand clipped to the glass. Flip only with a transform on the whole hourglass, simulating in the hourglass's own frame so gravity turns with it."),
+      t('Stop the loop off screen and in a hidden tab. Use role="progressbar" with aria-valuenow when progress is given, otherwise role="status". With reduced motion (listen to the media query change) show a still hourglass with the current amount, no stream and no flip.'),
+    ],
+  },
+  "origami-button": {
+    technique: "physics",
+    look: t("A plain dark button in the lower middle of an open area. It is really a sheet of paper: the same rounded rectangle, border and label, drawn on a 2D canvas when it moves."),
+    beats: [
+      t("Click (fire onFold): in 0.6 s the sheet folds like real paper in three steps — the two right corners fold back to make a point, the sheet folds in half along its length, and the wings fold back out along a diagonal crease from the nose to the tail, so the plane is a narrow dart. Each face is a flat polygon of the sheet with its own 3D hinge rotation; faces are lit by one light from the upper left, so each fold has a lit and a shaded side, and the creases are thin light lines."),
+      t("While folding, the paper turns from facing you to a side view of the plane, seen slightly from above so the wings show."),
+      t("Flight, 1.8 s along a smooth 3D path: it recedes a little, climbs to the right, flies a full vertical loop (upside down at the top), turns away from you at the right edge banking into the turn, crosses back to the left with a slight dip, turns toward you on the left and glides back to where the button was, slowing to a stop. A faint trail follows the tail."),
+      t("Landing: the plane unfolds back into the button in 0.6 s (wings, half, corners) and turns to face you; then the real button reappears (fire onReturn)."),
+    ],
+    adapt: [t("the button label and what folding and returning should do"), t("the size of the area (the loop needs about 300 px of height)"), t("the paper colors")],
+    extra: [
+      t("Draw each face with a canvas affine transform solved from three of its corners (paper → screen, orthographic projection), clip to the face and draw the button's look as a texture, so the label folds with the paper. The front of the flat sheet must look exactly like the button, so the swap between the real button and the canvas is invisible."),
+      t("Orient the plane from the path: tangent forward, an up vector carried with a rotation-minimizing frame (so the loop goes upside down naturally), bank from the sideways curvature, slerp between the flat button and the flight attitude while folding. Clicks during the flight are ignored; with reduced motion (listen for the media query change too) the click runs onFold and onReturn with no animation."),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";

@@ -102,7 +102,10 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
     const playground = playgroundRef.current;
     const craft = craftRef.current;
     if (!playground || !craft || disabled) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Movimento reduzido acompanhado ao vivo: ligado no meio do voo, o drone pousa na hora; desligado, o
+    // próximo movimento do cursor faz ele voar de novo.
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduced = motion.matches;
 
     // Deslocamento a partir do ponto de pouso (embaixo, no meio); y negativo é no ar.
     const pos = { x: 0, y: 0 };
@@ -338,7 +341,7 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
     };
 
     const start = () => {
-      if (frame) return;
+      if (frame || reduced) return;
       measure();
       frame = requestAnimationFrame(step);
     };
@@ -354,6 +357,7 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      if (reduced) return;
       const rect = playground.getBoundingClientRect();
       measure();
       // Desconta a escala de quem mostra o componente reduzido: o cursor vira px do layout.
@@ -375,6 +379,33 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
       if (event.pointerType === "touch") land();
     };
 
+    // Repouso imediato: para o laço, assenta o drone no chão onde ele está, hélices paradas e sem poeira.
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      measure();
+      mode = "landed";
+      const { reachX } = bounds();
+      pos.x = Math.max(-reachX, Math.min(reachX, pos.x));
+      pos.y = 0;
+      vel.x = vel.y = 0;
+      target.x = pos.x;
+      target.y = 0;
+      thrust = 0;
+      bank = 0;
+      phase = REST;
+      particles.length = 0;
+      emitDebt = 0;
+      ctx?.clearRect(0, 0, width, height);
+      draw(0);
+    };
+    const onMotionChange = () => {
+      reduced = motion.matches;
+      if (reduced) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
+
     // Mantém o drone pousado dentro do container quando ele muda de tamanho.
     const observer = new ResizeObserver(() => {
       measure();
@@ -393,6 +424,7 @@ const DroneButton = forwardRef<HTMLButtonElement, DroneButtonProps>(function Dro
     document.documentElement.addEventListener("pointerleave", land);
     window.addEventListener("blur", land);
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       observer.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerMove);

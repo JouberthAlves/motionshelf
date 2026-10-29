@@ -238,6 +238,33 @@
       "files": [
         { "path": "registry/motionshelf/letters-button/letters-button.tsx", "type": "registry:component", "target": "components/motionshelf/letters-button.tsx" }
       ]
+    },
+    {
+      "name": "bulb-toggle",
+      "type": "registry:component",
+      "title": "Light Bulb",
+      "description": "A hanging light bulb switch: pull the chain or click, the filament warms up and the glow fills the room.",
+      "files": [
+        { "path": "registry/motionshelf/bulb-toggle/bulb-toggle.tsx", "type": "registry:component", "target": "components/motionshelf/bulb-toggle.tsx" }
+      ]
+    },
+    {
+      "name": "hourglass-loader",
+      "type": "registry:component",
+      "title": "Hourglass",
+      "description": "A glass hourglass loader with falling sand that flips itself, or follows real progress.",
+      "files": [
+        { "path": "registry/motionshelf/hourglass-loader/hourglass-loader.tsx", "type": "registry:component", "target": "components/motionshelf/hourglass-loader.tsx" }
+      ]
+    },
+    {
+      "name": "origami-button",
+      "type": "registry:component",
+      "title": "Origami",
+      "description": "Folds into a paper plane on click, flies a loop around the area and unfolds back into the button.",
+      "files": [
+        { "path": "registry/motionshelf/origami-button/origami-button.tsx", "type": "registry:component", "target": "components/motionshelf/origami-button.tsx" }
+      ]
     }
   ]
 }
