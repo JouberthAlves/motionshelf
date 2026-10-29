@@ -50,6 +50,7 @@ const MOBILE_H: Record<string, number> = {
   "ufo-button": 340,
   "magnet-button": 300,
   "letters-button": 260,
+  "origami-button": 340,
 };
 
 /**

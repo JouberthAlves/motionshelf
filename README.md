@@ -15,7 +15,7 @@
 **Motion your clients will ask for.**<br>
 Animated React components for sites that sell, installed as code you own.
 
-<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-24-1f5bff?style=flat-square" alt="24 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
+<a href="https://motionshelf-pi.vercel.app"><img src="https://img.shields.io/badge/site-motionshelf-1f5bff?style=flat-square" alt="Website"></a> <img src="https://img.shields.io/badge/components-25-1f5bff?style=flat-square" alt="25 components"> <img src="https://img.shields.io/badge/React-19-20232a?style=flat-square&logo=react" alt="React 19"> <img src="https://img.shields.io/badge/Tailwind_CSS-v4-20232a?style=flat-square&logo=tailwindcss" alt="Tailwind CSS v4"> <img src="https://img.shields.io/badge/GSAP-3-20232a?style=flat-square&logo=greensock" alt="GSAP 3"> <img src="https://img.shields.io/badge/shadcn-registry-20232a?style=flat-square" alt="shadcn registry"> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-20232a?style=flat-square" alt="MIT license"></a>
 
 [Website](https://motionshelf-pi.vercel.app) · [Components](https://motionshelf-pi.vercel.app/components) · [Installation](https://motionshelf-pi.vercel.app/docs/installation) · [Make it with your agent](https://motionshelf-pi.vercel.app/docs/agents)
 
@@ -140,11 +140,17 @@ Payment notifications, chat flows, map pins, search results, booking slots, and 
       <b>Falling Letters</b><br><sub>Buttons</sub>
     </td>
   </tr>
+  <tr>
+    <td width="33%" align="center" valign="top">
+      <a href="https://motionshelf-pi.vercel.app/components/origami-button"><img src=".github/readme/origami-button.webp" alt="Origami" width="100%"></a><br>
+      <b>Origami</b><br><sub>Buttons</sub>
+    </td>
+  </tr>
 </table>
 
 The three **Anatomy** components are interactive isometric figures: move the pointer over them and the model behind them changes (ad budget, page weight), and the readout under the figure updates from the same numbers.
 
-The six **Buttons** are real buttons with a small physics world around them: a drone that flies the button to the cursor, an arcade claw that grabs it, a rocket that launches it, a flying saucer that beams it up, a magnet that pulls it while iron filings trace the field, and letters that fall out and pile up. Each fills its nearest positioned container and is plain React with requestAnimationFrame, no animation library.
+The seven **Buttons** are real buttons with a small physics world around them: a drone that flies the button to the cursor, an arcade claw that grabs it, a rocket that launches it, a flying saucer that beams it up, a magnet that pulls it while iron filings trace the field, letters that fall out and pile up, and a sheet of paper that folds into a plane, loops the loop and lands back as the button. Each fills its nearest positioned container and is plain React with requestAnimationFrame, no animation library.
 
 ## Install
 
