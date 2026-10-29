@@ -238,6 +238,15 @@
       "files": [
         { "path": "registry/motionshelf/letters-button/letters-button.tsx", "type": "registry:component", "target": "components/motionshelf/letters-button.tsx" }
       ]
+    },
+    {
+      "name": "hourglass-loader",
+      "type": "registry:component",
+      "title": "Hourglass",
+      "description": "A glass hourglass loader with falling sand that flips itself, or follows real progress.",
+      "files": [
+        { "path": "registry/motionshelf/hourglass-loader/hourglass-loader.tsx", "type": "registry:component", "target": "components/motionshelf/hourglass-loader.tsx" }
+      ]
     }
   ]
 }
