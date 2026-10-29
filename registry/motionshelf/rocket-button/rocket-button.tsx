@@ -68,7 +68,9 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
     const count = countRef.current;
     const padGlow = padGlowRef.current;
     if (!playground || !craft || !glCanvas || !spriteCanvas || !clothCanvas || !clothBack || !count || !padGlow) return;
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Movimento reduzido acompanhado ao vivo (ver onMotionChange, mais abaixo).
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reduced.current = motion.matches;
 
     const cloth = createCloth(clothCanvas, clothBack);
     let width = 0;
@@ -291,6 +293,33 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
     };
     startRef.current = start;
 
+    // Repouso imediato: para o laço, apaga contagem, chama, fumaça e pano, e põe o foguete na plataforma.
+    // O voo em andamento termina na hora: dispara uma vez cada aviso que ainda faltava (onLaunch, onLand).
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      const pendingLaunch = launch.current || phase === "count";
+      const pendingLand = pendingLaunch || phase === "lift" || phase === "away" || phase === "descend";
+      launch.current = false;
+      phase = "idle";
+      timer = 0;
+      x = y = vy = tilt = throttle = chuteOpen = 0;
+      quiet = slow = 0;
+      say("");
+      smoke?.clear();
+      cloth.clear();
+      draw();
+      if (pendingLaunch) settings.current.onLaunch?.();
+      if (pendingLand) settings.current.onLand?.();
+    };
+    // Ligado no meio do voo, para na hora; desligado, o próximo clique lança de novo.
+    const onMotionChange = () => {
+      reduced.current = motion.matches;
+      if (reduced.current) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
+
     const observer = new ResizeObserver(() => {
       measure();
       draw();
@@ -298,6 +327,7 @@ const RocketButton = forwardRef<HTMLButtonElement, RocketButtonProps>(function R
     observer.observe(playground);
     draw();
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       observer.disconnect();
       glCanvas.removeEventListener("webglcontextlost", dropFluid);
       cancelAnimationFrame(frame);

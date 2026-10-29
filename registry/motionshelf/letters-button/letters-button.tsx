@@ -67,7 +67,9 @@ const LettersButton = forwardRef<HTMLButtonElement, LettersButtonProps>(function
     const playground = playgroundRef.current;
     const wrap = wrapRef.current;
     if (!playground || !wrap) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Movimento reduzido acompanhado ao vivo (ver onMotionChange, mais abaixo).
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduced = motion.matches;
 
     const letters: Letter[] = [];
     chars.forEach((ch, i) => {
@@ -315,13 +317,13 @@ const LettersButton = forwardRef<HTMLButtonElement, LettersButtonProps>(function
     };
 
     const onEnter = (event: PointerEvent) => {
-      if (event.pointerType !== "touch") drop();
+      if (event.pointerType !== "touch" && !reduced) drop();
     };
     const onLeave = (event: PointerEvent) => {
-      if (event.pointerType !== "touch") release(RETURN_DELAY);
+      if (event.pointerType !== "touch" && !reduced) release(RETURN_DELAY);
     };
     const onDown = (event: PointerEvent) => {
-      if (event.pointerType !== "touch") return;
+      if (event.pointerType !== "touch" || reduced) return;
       touching = true;
       drop();
     };
@@ -330,6 +332,27 @@ const LettersButton = forwardRef<HTMLButtonElement, LettersButtonProps>(function
       touching = false;
       release(TOUCH_RETURN);
     };
+
+    // Repouso imediato: para o laço e põe cada letra de volta na casa, reta e parada (rótulo legível).
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      restT = 0;
+      touching = false;
+      for (const l of letters) {
+        l.phase = "home";
+        l.returnT = -1;
+        l.vx = l.vy = l.av = 0;
+      }
+      measure();
+    };
+    // Ligado com as letras no chão, elas voltam na hora; desligado, o próximo hover derruba de novo.
+    const onMotionChange = () => {
+      reduced = motion.matches;
+      if (reduced) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
 
     measure();
     const observer = new ResizeObserver(measure);
@@ -341,9 +364,9 @@ const LettersButton = forwardRef<HTMLButtonElement, LettersButtonProps>(function
       if (!cancelled) measure();
     });
 
-    // Sem movimento ou desabilitado: as letras ficam nas casas e só o botão funciona.
-    const interactive = !disabled && !reduced;
-    if (interactive) {
+    // Desabilitado: as letras ficam nas casas e só o botão funciona. Com movimento reduzido os ouvintes
+    // ficam ligados, mas cada um confere a preferência na hora e não faz nada.
+    if (!disabled) {
       wrap.addEventListener("pointerenter", onEnter, { passive: true });
       wrap.addEventListener("pointerleave", onLeave, { passive: true });
       wrap.addEventListener("pointerdown", onDown, { passive: true });
@@ -351,6 +374,7 @@ const LettersButton = forwardRef<HTMLButtonElement, LettersButtonProps>(function
       window.addEventListener("pointercancel", onUp);
     }
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       cancelled = true;
       observer.disconnect();
       wrap.removeEventListener("pointerenter", onEnter);
