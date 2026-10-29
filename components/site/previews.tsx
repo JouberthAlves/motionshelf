@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { ComponentType } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 
 // Um preview por slug, carregado só no navegador (cada componente traz o próprio GSAP).
 const load = (loader: () => Promise<{ default: ComponentType }>) =>
@@ -110,6 +110,43 @@ export const PREVIEWS: Record<string, ComponentType> = {
         return (
           <div className="relative h-[320px] w-[520px] max-w-full rounded-lg bg-[#0d0f14]">
             <BulbToggle />
+          </div>
+        );
+      },
+    })),
+  ),
+  // Duas ampulhetas lado a lado: uma em loop e outra seguindo um carregamento falso.
+  "hourglass-loader": load(() =>
+    import("@/registry/motionshelf/hourglass-loader/hourglass-loader").then(({ default: HourglassLoader }) => ({
+      default: function HourglassLoaderDemo() {
+        const [v, setV] = useState(0);
+        useEffect(() => {
+          let value = 0;
+          let hold = 0; // ms segurando em 100%
+          const id = window.setInterval(() => {
+            if (value >= 1) {
+              hold += 250;
+              if (hold >= 1200) {
+                value = 0;
+                hold = 0;
+              }
+            } else {
+              value = Math.min(1, value + 0.02 + Math.random() * 0.05);
+            }
+            setV(value);
+          }, 250);
+          return () => window.clearInterval(id);
+        }, []);
+        return (
+          <div className="relative flex h-[260px] w-[520px] max-w-full items-center justify-center gap-14 rounded-lg bg-[#0d0f14]">
+            <div className="flex flex-col items-center">
+              <HourglassLoader size={170} />
+              <p className="mt-3 text-center font-mono text-xs tabular-nums text-white/60">Loop</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <HourglassLoader size={170} progress={v} />
+              <p className="mt-3 text-center font-mono text-xs tabular-nums text-white/60">{Math.round(v * 100)}%</p>
+            </div>
           </div>
         );
       },

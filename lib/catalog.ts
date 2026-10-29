@@ -11,7 +11,7 @@ export type PropDoc = {
   description: Text;
 };
 
-export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy" | "buttons" | "toggles";
+export type CategoryId = "text" | "messages" | "commerce" | "proof" | "location" | "scheduling" | "anatomy" | "buttons" | "loaders" | "toggles";
 
 export type Entry = {
   slug: string;
@@ -29,6 +29,7 @@ export const CATEGORIES: { id: CategoryId; name: Text }[] = [
   { id: "anatomy", name: { en: "Anatomy" } },
   { id: "buttons", name: { en: "Buttons" } },
   { id: "commerce", name: { en: "Commerce" } },
+  { id: "loaders", name: { en: "Loaders" } },
   { id: "location", name: { en: "Location" } },
   { id: "messages", name: { en: "Messages" } },
   { id: "scheduling", name: { en: "Scheduling" } },
@@ -522,6 +523,24 @@ export const ENTRIES: Entry[] = [
       p("label", "string", '"Light"', "Accessible name of the switch."),
       p("playgroundClassName", "string", '""', "Classes for the play area, which fills the nearest positioned ancestor."),
       p("className", "string", '""', "Extra classes for the switch (the chain's touch target)."),
+    ],
+  },
+  {
+    slug: "hourglass-loader",
+    name: "Hourglass",
+    category: "loaders",
+    code: "HRG-01",
+    summary: {
+      en: "A glass hourglass whose sand really falls: the top sinks into a funnel, the bottom grows into a cone with grains rolling down, and it flips itself when the top runs out. Pass progress to show real loading.",
+    },
+    dependencies: [],
+    props: [
+      p("progress", "number", "—", "0 to 1. When set, the sand follows real progress and the hourglass never flips; at 1 the top is empty."),
+      p("duration", "number", "4", "Seconds the sand takes to run through in the looping mode."),
+      p("onFlip", "() => void", "—", "Called each time the hourglass starts a flip."),
+      p("size", "number", "160", "Height in px; the width follows."),
+      p("label", "string", '"Loading"', "Accessible name."),
+      CLASS,
     ],
   },
 ];

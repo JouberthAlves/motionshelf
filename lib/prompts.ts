@@ -516,6 +516,21 @@ const RECIPES: Record<string, Recipe> = {
       t("With prefers-reduced-motion, change state instantly (no warming, no swing, the chain snaps back), and listen to the media query's change event so turning it on after the page opened also works."),
     ],
   },
+  "hourglass-loader": {
+    technique: "physics",
+    look: t("A glass hourglass with two bulbs, dark metal caps and two posts, warm sand in 2–3 tones; the glass is drawn on top of the sand with a thin reflection."),
+    beats: [
+      t("A thin stream of grains falls through the neck under gravity. The top surface sinks into a funnel at the 34° angle of repose while the rim stays flat."),
+      t("The bottom grows as a cone at the same angle, and some grains roll down its slopes."),
+      t("The sand runs at a constant rate for `duration` (4 s). When the top is empty the hourglass flips 180° in 0.6 s with a small overshoot and a slight lift; the sand stays packed during the turn and drops into place right after, and the cycle starts again."),
+      t("With `progress`, the amount follows the real value (no flip; at 1 the top is empty), easing up over about 0.25 s and resetting instantly if progress goes back."),
+    ],
+    adapt: [t("the size and colors of the sand and the frame"), t("whether it loops or shows real progress (and where that number comes from)"), t("the label for screen readers")],
+    extra: [
+      t("Draw the sand on a 2D canvas and the glass and frame in SVG; both piles come from one shared glass profile function, with the sand clipped to the glass. Flip only with a transform on the whole hourglass, simulating in the hourglass's own frame so gravity turns with it."),
+      t('Stop the loop off screen and in a hidden tab. Use role="progressbar" with aria-valuenow when progress is given, otherwise role="status". With reduced motion (listen to the media query change) show a still hourglass with the current amount, no stream and no flip.'),
+    ],
+  },
 };
 
 export const techniqueOf = (slug: string): Technique => RECIPES[slug]?.technique ?? "gsap";

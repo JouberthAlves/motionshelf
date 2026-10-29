@@ -31,6 +31,7 @@ export const STAGE: Record<string, number> = {
   "magnet-button": 520,
   "letters-button": 520,
   "bulb-toggle": 520,
+  "hourglass-loader": 520,
 };
 
 /**
