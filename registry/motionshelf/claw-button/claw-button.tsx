@@ -53,7 +53,9 @@ const ClawButton = forwardRef<HTMLButtonElement, ClawButtonProps>(function ClawB
     const claw = clawRef.current;
     const prize = prizeRef.current;
     if (!playground || !carriage || !swing || !cable || !claw || !prize) return;
-    reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Movimento reduzido acompanhado ao vivo (ver onMotionChange, mais abaixo).
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reduced.current = motion.matches;
 
     let width = 0;
     let height = 0;
@@ -221,6 +223,7 @@ const ClawButton = forwardRef<HTMLButtonElement, ClawButtonProps>(function ClawB
     startRef.current = start;
 
     const onPointerMove = (event: PointerEvent) => {
+      if (reduced.current) return;
       const rect = playground.getBoundingClientRect();
       // Desconta a escala de quem mostra o componente reduzido.
       const px = (event.clientX - rect.left) * (width / (rect.width || 1));
@@ -228,6 +231,37 @@ const ClawButton = forwardRef<HTMLButtonElement, ClawButtonProps>(function ClawB
       pointerX = px < 0 || py < 0 || px > width || py > height ? null : px;
       start();
     };
+    // Repouso imediato: para o laço e volta carrinho, garra e prêmio para casa. Se havia uma pegada em
+    // andamento (pedida ou com o prêmio no ar), avisa onComplete uma vez, como se ele tivesse caído na rampa.
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      const pending = grab.current || (phase !== "idle" && phase !== "respawn");
+      grab.current = false;
+      phase = "idle";
+      timer = 0;
+      pointerX = null;
+      measure();
+      cart.x = cart.target = homeX();
+      cart.v = 0;
+      length = REST_L;
+      theta = omega = 0;
+      open = openTarget = 0.35;
+      prizePos.x = homeX();
+      prizePos.y = height - bh / 2;
+      prizePos.vx = prizePos.vy = prizePos.rot = 0;
+      prizePos.scale = 1;
+      draw();
+      if (pending) settings.current.onComplete?.();
+    };
+    // Ligado no meio da pegada, para na hora; desligado, o próximo clique anima de novo.
+    const onMotionChange = () => {
+      reduced.current = motion.matches;
+      if (reduced.current) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
+
     const observer = new ResizeObserver(() => {
       measure();
       if (phase === "idle") {
@@ -240,6 +274,7 @@ const ClawButton = forwardRef<HTMLButtonElement, ClawButtonProps>(function ClawB
     draw();
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       observer.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       cancelAnimationFrame(frame);
