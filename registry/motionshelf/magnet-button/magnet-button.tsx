@@ -52,8 +52,9 @@ const MagnetButton = forwardRef<HTMLButtonElement, MagnetButtonProps>(function M
     const canvas = canvasRef.current;
     const magnet = magnetRef.current;
     if (!playground || !wrap || !canvas || !magnet) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const animated = !reduced && !disabled;
+    // Movimento reduzido acompanhado ao vivo (ver onMotionChange, mais abaixo).
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduced = motion.matches;
     const ctx = canvas.getContext("2d");
 
     let width = 0;
@@ -307,10 +308,11 @@ const MagnetButton = forwardRef<HTMLButtonElement, MagnetButtonProps>(function M
     };
 
     const start = () => {
-      if (!frame && animated) frame = requestAnimationFrame(step);
+      if (!frame && !reduced && !disabled) frame = requestAnimationFrame(step);
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      if (reduced) return;
       const rect = playground.getBoundingClientRect();
       // Desconta a escala de quem mostra o componente reduzido: o cursor vira px do layout.
       const px = (event.clientX - rect.left) * (playground.clientWidth / (rect.width || 1));
@@ -330,6 +332,24 @@ const MagnetButton = forwardRef<HTMLButtonElement, MagnetButtonProps>(function M
       if (event.pointerType === "touch") release();
     };
 
+    // Repouso imediato: para o laço, esconde o ímã, volta o botão ao centro e as limalhas ao estado parado.
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      cursor = null;
+      magnet.style.opacity = "0";
+      pos.x = pos.y = vel.x = vel.y = rot = 0;
+      placeButton();
+      paintRest();
+    };
+    // Ligado no meio do puxão, para na hora; desligado, o próximo movimento do cursor anima de novo.
+    const onMotionChange = () => {
+      reduced = motion.matches;
+      if (reduced) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
+
     const observer = new ResizeObserver(() => {
       measure();
       placeButton();
@@ -342,7 +362,8 @@ const MagnetButton = forwardRef<HTMLButtonElement, MagnetButtonProps>(function M
     placeButton();
     paintRest();
 
-    if (animated) {
+    // Os ouvintes ficam ligados mesmo com movimento reduzido: cada um confere a preferência na hora.
+    if (!disabled) {
       window.addEventListener("pointermove", onPointerMove, { passive: true });
       window.addEventListener("pointerdown", onPointerMove, { passive: true });
       window.addEventListener("pointerup", onPointerEnd);
@@ -351,6 +372,7 @@ const MagnetButton = forwardRef<HTMLButtonElement, MagnetButtonProps>(function M
       window.addEventListener("blur", release);
     }
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       observer.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerMove);

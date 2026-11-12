@@ -53,7 +53,9 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
     const glow = glowRef.current;
     const lit = litRef.current;
     if (!playground || !ufo || !beam || !prize || !canvas || !stripes || !pool || !glow || !lit) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Movimento reduzido acompanhado ao vivo (ver onMotionChange, mais abaixo).
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reduced = motion.matches;
     const ctx = canvas.getContext("2d");
 
     let width = 0;
@@ -186,6 +188,7 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
     };
 
     const onPointerMove = (event: PointerEvent) => {
+      if (reduced) return;
       const rect = playground.getBoundingClientRect();
       // Desconta a escala de quem mostra o componente reduzido.
       const px = (event.clientX - rect.left) * (width / (rect.width || 1));
@@ -194,11 +197,33 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
       start();
     };
     const onPointerEnd = (event: PointerEvent) => {
-      if (event.pointerType === "touch") {
+      if (event.pointerType === "touch" && !reduced) {
         pointer = null;
         start();
       }
     };
+    // Repouso imediato: para o laço, apaga o feixe e as faíscas, desce o botão e estaciona o disco.
+    const rest = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      last = 0;
+      pointer = null;
+      abducting = false;
+      lift = liftV = beamOn = 0;
+      measure();
+      u.x = park();
+      u.v = 0;
+      sparks.length = 0;
+      ctx?.clearRect(0, 0, width, height);
+      draw();
+    };
+    // Ligado no meio da abdução, para na hora; desligado, o próximo movimento do cursor anima de novo.
+    const onMotionChange = () => {
+      reduced = motion.matches;
+      if (reduced) rest();
+    };
+    motion.addEventListener("change", onMotionChange);
+
     const observer = new ResizeObserver(() => {
       measure();
       if (!frame) u.x = park();
@@ -210,6 +235,7 @@ const UfoButton = forwardRef<HTMLButtonElement, UfoButtonProps>(function UfoButt
     window.addEventListener("pointerdown", onPointerMove, { passive: true });
     window.addEventListener("pointerup", onPointerEnd);
     return () => {
+      motion.removeEventListener("change", onMotionChange);
       observer.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerdown", onPointerMove);
